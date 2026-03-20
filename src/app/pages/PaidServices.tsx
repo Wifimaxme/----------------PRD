@@ -1,5 +1,6 @@
 import { EducationLayout } from "../components/EducationLayout";
 import { Wallet, FileText, Download, AlertCircle } from "lucide-react";
+import { Link } from "react-router";
 
 export function PaidServices() {
   return (
@@ -61,24 +62,6 @@ export function PaidServices() {
           </div>
         </section>
 
-        {/* Payment Order */}
-        <section>
-          <h3 className="font-bold text-lg mb-4">Приказ об утверждении стоимости</h3>
-          <div className="bg-white border border-gray-200 rounded-lg p-4 flex items-center justify-between">
-            <div className="flex items-center gap-3">
-              <FileText className="w-5 h-5 text-purple-600" />
-              <div>
-                <p className="font-semibold">Приказ № 01/2024 от 01.09.2024</p>
-                <p className="text-sm text-gray-600">Об утверждении стоимости платных образовательных услуг</p>
-              </div>
-            </div>
-            <button className="bg-purple-600 text-white px-4 py-2 rounded-lg hover:bg-purple-700 transition flex items-center gap-2 text-sm">
-              <Download className="w-4 h-4" />
-              Скачать
-            </button>
-          </div>
-        </section>
-
         {/* Contract */}
         <section>
           <h3 className="font-bold text-lg mb-4">Договор об оказании платных образовательных услуг</h3>
@@ -89,11 +72,11 @@ export function PaidServices() {
               Договор заключается в форме публичной оферты. Оплата услуг через сайт является 
               акцептом (принятием) условий договора.
             </p>
-            <button className="bg-purple-600 text-white px-6 py-3 rounded-lg hover:bg-purple-700 transition flex items-center gap-2">
+            <Link to="/oferta" className="inline-flex w-fit bg-purple-600 text-white px-6 py-3 rounded-lg hover:bg-purple-700 transition items-center gap-2">
               <FileText className="w-5 h-5" />
-              Скачать договор-оферту (PDF)
-            </button>
-            <p className="text-xs text-gray-600 mt-2">Документ заверен УКЭП директора</p>
+              Перейти к тексту Оферты
+            </Link>
+            <p className="text-xs text-gray-600 mt-2">Текст публичной оферты размещен на сайте</p>
           </div>
 
           <div className="bg-white border border-gray-200 p-4 rounded-lg">

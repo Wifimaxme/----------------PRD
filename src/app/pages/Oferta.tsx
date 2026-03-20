@@ -1,7 +1,25 @@
 import { Header } from "../components/Header";
 import { Footer } from "../components/Footer";
+import { useEffect } from "react";
+import { useLocation } from "react-router";
 
 export function Oferta() {
+  const location = useLocation();
+
+  useEffect(() => {
+    if (location.hash) {
+      const id = location.hash.replace("#", "");
+      const element = document.getElementById(id);
+      if (element) {
+        setTimeout(() => {
+          element.scrollIntoView({ behavior: "smooth", block: "start" });
+        }, 100);
+      }
+    } else {
+      window.scrollTo({ top: 0, behavior: "smooth" });
+    }
+  }, [location]);
+
   return (
     <div className="min-h-screen bg-gray-50 flex flex-col">
       <Header />
@@ -46,7 +64,7 @@ export function Oferta() {
             <p>3.9. Для многодетных семей, для семей, в которых 2 (двое) детей получают услуги и детей сотрудников детского сада предусмотрена скидка 30% от стоимости пакета услуг из 8 занятий.</p>
           </div>
 
-          <h2 className="text-xl font-bold mt-8 mb-4">4. Оформление заказа</h2>
+          <h2 id="admission" className="text-xl font-bold mt-8 mb-4 scroll-mt-28">4. Оформление заказа</h2>
           <div className="space-y-2 text-gray-700">
             <p>4.1. Заказ Товара или Услуги осуществляется Заказчиком на Сайте.</p>
             <p>4.2. Наименование, количество, ассортимент, артикул, цена выбранного Заказчиком Товара указываются в корзине.</p>
@@ -114,7 +132,7 @@ export function Oferta() {
             <p>8.5. Способ возврата. Возврат осуществляется тем же способом, которым была произведена оплата.</p>
           </div>
 
-          <h2 className="text-xl font-bold mt-8 mb-4">9. ПРАВИЛА «Чемпион и К»</h2>
+          <h2 id="rules" className="text-xl font-bold mt-8 mb-4 scroll-mt-28">9. ПРАВИЛА «Чемпион и К»</h2>
           <div className="space-y-2 text-gray-700">
             <p>9.1. Правила «Чемпион и К» обязательны для исполнения Родителем и ребенком Родителя.</p>
             <p>9.2. Родитель обязан внимательно изучить и соблюдать и научить ребенка Правилам.</p>

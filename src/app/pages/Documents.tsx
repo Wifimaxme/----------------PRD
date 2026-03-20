@@ -1,5 +1,5 @@
 import { EducationLayout } from "../components/EducationLayout";
-import { FileText, Download, Shield } from "lucide-react";
+import { FileText, Download, Shield, ExternalLink } from "lucide-react";
 
 type DocumentItem = {
   id: string;
@@ -15,36 +15,41 @@ const documents: DocumentItem[] = [
     id: "charter",
     name: "Устав ООО «Чемпион и К»",
     type: "PDF",
-    size: "2.4 МБ",
+    size: "3.5 МБ",
     signed: true,
+    href: "/УСТАВ.pdf",
   },
   {
     id: "inn",
-    name: "Свидетельство ИНН",
+    name: "Свидетельство о постановке на учет",
     type: "PDF",
-    size: "0.8 МБ",
+    size: "2.0 МБ",
     signed: true,
+    href: "/ИНН.pdf",
   },
   {
     id: "ogrn",
-    name: "Свидетельство ОГРН",
+    name: "ЕГРЮЛ / ОГРН",
     type: "PDF",
-    size: "0.9 МБ",
+    size: "6.6 МБ",
     signed: true,
+    href: "/ЕГРЮЛ.pdf",
   },
   {
     id: "student-rules",
     name: "Правила внутреннего распорядка обучающихся",
-    type: "PDF",
-    size: "1.2 МБ",
-    signed: true,
+    type: "Оферта",
+    size: "раздел 9",
+    signed: false,
+    href: "/oferta#rules",
   },
   {
     id: "admission-rules",
     name: "Правила приема, отчисления и перевода обучающихся",
-    type: "PDF",
-    size: "1.5 МБ",
-    signed: true,
+    type: "Оферта",
+    size: "разделы 4, 7А, 7Б",
+    signed: false,
+    href: "/oferta#admission",
   },
   {
     id: "public-offer",
@@ -123,8 +128,8 @@ export function Documents() {
                       href={doc.href}
                       className="bg-purple-600 text-white px-4 py-2 rounded-lg hover:bg-purple-700 transition flex items-center gap-2 text-sm whitespace-nowrap"
                     >
-                      <Download className="w-4 h-4" />
-                      Открыть
+                      {doc.type === "PDF" ? <Download className="w-4 h-4" /> : <ExternalLink className="w-4 h-4" />}
+                      {doc.type === "PDF" ? "Скачать" : "Перейти"}
                     </a>
                   ) : (
                     <button
@@ -132,7 +137,7 @@ export function Documents() {
                       disabled
                       className="bg-gray-100 text-gray-400 cursor-not-allowed px-4 py-2 rounded-lg transition flex items-center gap-2 text-sm whitespace-nowrap"
                     >
-                      <Download className="w-4 h-4" />
+                      {doc.type === "PDF" ? <Download className="w-4 h-4" /> : <ExternalLink className="w-4 h-4" />}
                       Скоро
                     </button>
                   )}

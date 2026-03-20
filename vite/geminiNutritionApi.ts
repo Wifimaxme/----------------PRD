@@ -1019,7 +1019,7 @@ async function generateNutritionInsightWithGemini(
   };
 }
 
-function createNutritionApiMiddleware(apiKey?: string): Connect.NextHandleFunction {
+export function createNutritionApiMiddleware(apiKey?: string): Connect.NextHandleFunction {
   return (req, res, next) => {
     const pathname = req.url ? new URL(req.url, "http://localhost").pathname : "";
 

@@ -345,7 +345,7 @@ function buildFilename() {
   return `guide-adaptation-${date}.pdf`;
 }
 
-function createQuizGuideMiddleware(apiKey?: string): Connect.NextHandleFunction {
+export function createQuizGuideMiddleware(apiKey?: string): Connect.NextHandleFunction {
   return (req, res, next) => {
     const pathname = req.url ? new URL(req.url, "http://localhost").pathname : "";
 
