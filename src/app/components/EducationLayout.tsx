@@ -1,6 +1,6 @@
 import { Link, NavLink } from "react-router";
 import { Eye, EyeOff, ZoomIn, ZoomOut, Type } from "lucide-react";
-import { useState } from "react";
+import { useState, useEffect, useRef } from "react";
 
 interface EducationLayoutProps {
   children: React.ReactNode;
@@ -17,13 +17,35 @@ const navigationItems = [
   { to: "/education-info/paid-services", label: "Платные услуги" },
   { to: "/education-info/finance", label: "Финансово-хозяйственная деятельность" },
   { to: "/education-info/vacancies", label: "Вакантные места" },
-  { to: "/education-info/accessibility", label: "Доступная среда" },
+  { to: "/education-info/scholarships", label: "Стипендии и меры поддержки" },
+  { to: "/education-info/catering", label: "Организация питания" },
   { to: "/education-info/international", label: "Международное сотрудничество" },
+  { to: "/education-info/standards", label: "Образовательные стандарты" },
 ];
 
 export function EducationLayout({ children, title }: EducationLayoutProps) {
   const [accessibilityMode, setAccessibilityMode] = useState(false);
   const [fontSize, setFontSize] = useState(16);
+  const navRef = useRef<HTMLElement>(null);
+
+  useEffect(() => {
+    // Keep the active nav item in view horizontally upon navigation
+    if (navRef.current) {
+      const activeItem = navRef.current.querySelector('[aria-current="page"]') as HTMLElement;
+      if (activeItem) {
+        const container = navRef.current;
+        const containerWidth = container.clientWidth;
+        const itemLeft = activeItem.offsetLeft;
+        const itemWidth = activeItem.clientWidth;
+        
+        // Use instant scroll so it doesn't animate on page load, 
+        // looking like it magically stayed there
+        container.scrollTo({
+          left: Math.max(0, itemLeft - containerWidth / 2 + itemWidth / 2),
+        });
+      }
+    }
+  }, []);
 
   const toggleAccessibility = () => {
     setAccessibilityMode(!accessibilityMode);
@@ -93,9 +115,10 @@ export function EducationLayout({ children, title }: EducationLayoutProps) {
       {/* Navigation */}
       <div className={`${accessibilityMode ? 'bg-gray-800' : 'bg-white'} border-b sticky top-0 z-40`}>
         <div className="container mx-auto px-4">
-          <nav className="flex overflow-x-auto gap-1 py-2">
+          <nav ref={navRef} className="flex overflow-x-auto gap-1 py-2 no-scrollbar">
             {navigationItems.map((item) => (
               <NavLink
+                preventScrollReset={true}
                 key={item.to}
                 to={item.to}
                 end

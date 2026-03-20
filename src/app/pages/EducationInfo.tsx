@@ -1,5 +1,5 @@
 import { Link } from "react-router";
-import { FileText, Users, GraduationCap, Building, Wallet, Briefcase, Heart, Globe } from "lucide-react";
+import { FileText, Users, GraduationCap, Building, Wallet, Briefcase, Globe, Award, Coffee, BookOpenCheck } from "lucide-react";
 
 const sections = [
   {
@@ -57,16 +57,28 @@ const sections = [
     link: "/education-info/vacancies",
   },
   {
-    title: "Доступная среда",
-    icon: Heart,
-    description: "Условия для лиц с ОВЗ, инклюзивные проекты",
-    link: "/education-info/accessibility",
+    title: "Стипендии и меры поддержки обучающихся",
+    icon: Award,
+    description: "Информация о стипендиях и социальной поддержке обучающихся",
+    link: "/education-info/scholarships",
+  },
+  {
+    title: "Организация питания в образовательной организации",
+    icon: Coffee,
+    description: "Информация об условиях питания обучающихся",
+    link: "/education-info/catering",
   },
   {
     title: "Международное сотрудничество",
     icon: Globe,
     description: "Сведения о международных договорах",
     link: "/education-info/international",
+  },
+  {
+    title: "Образовательные стандарты и требования",
+    icon: BookOpenCheck,
+    description: "Информация о ФГОС и нормативном регулировании",
+    link: "/education-info/standards",
   },
 ];
 

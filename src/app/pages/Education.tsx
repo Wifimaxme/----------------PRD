@@ -1,25 +1,7 @@
-import { useState } from "react";
 import { EducationLayout } from "../components/EducationLayout";
 import { GraduationCap, Calendar, Clock, FileText, CheckCircle2 } from "lucide-react";
-import { downloadEducationProgramPdf } from "../utils/educationProgramPdf";
 
 export function Education() {
-  const [isDownloadingProgram, setIsDownloadingProgram] = useState(false);
-  const [downloadError, setDownloadError] = useState<string | null>(null);
-
-  const handleProgramDownload = async () => {
-    setIsDownloadingProgram(true);
-    setDownloadError(null);
-
-    try {
-      await downloadEducationProgramPdf();
-    } catch (error) {
-      console.error(error);
-      setDownloadError("Не удалось подготовить PDF программы. Попробуйте еще раз.");
-    } finally {
-      setIsDownloadingProgram(false);
-    }
-  };
 
   return (
     <EducationLayout title="Образование">
@@ -134,7 +116,7 @@ export function Education() {
           </div>
           <div className="mt-4 bg-blue-50 border border-blue-200 p-4 rounded-lg">
             <p className="text-sm text-gray-700">
-              Окончание занятий для всех возрастных групп строго до 19:30 в соответствии с требованиями СанПиН.
+              Окончание занятий для всех возрастных групп строго до 19:00 в соответствии с требованиями СанПиН.
             </p>
           </div>
         </section>
@@ -209,21 +191,18 @@ export function Education() {
         <section className="bg-gray-50 p-6 rounded-lg">
           <h4 className="font-semibold mb-4">Документы для скачивания</h4>
           <div className="space-y-2">
-            <button
-              type="button"
-              onClick={() => void handleProgramDownload()}
-              disabled={isDownloadingProgram}
-              className="w-full md:w-auto bg-purple-600 text-white px-6 py-3 rounded-lg hover:bg-purple-700 transition flex items-center gap-2 disabled:cursor-wait disabled:opacity-70"
+            <a
+              href="/Дополнительная_Общеразвивающая_программа_Футбол.pdf"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="inline-flex w-fit bg-purple-600 text-white px-6 py-3 rounded-lg hover:bg-purple-700 transition items-center gap-2"
             >
               <FileText className="w-5 h-5" />
-              {isDownloadingProgram ? "Готовим PDF..." : "Скачать полную образовательную программу (PDF)"}
-            </button>
+              Скачать полную образовательную программу (PDF)
+            </a>
             <p className="text-xs text-gray-600 mt-2">
-              PDF формируется автоматически на основе данных официального раздела сайта.
+              Официальный документ со всеми разделами и аннотациями.
             </p>
-            {downloadError ? (
-              <p className="text-sm text-red-600 mt-2">{downloadError}</p>
-            ) : null}
           </div>
         </section>
       </div>

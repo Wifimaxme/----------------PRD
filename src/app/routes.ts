@@ -1,21 +1,23 @@
-import { createBrowserRouter, replace } from "react-router";
+import { createHashRouter, replace } from "react-router";
 import { Home } from "./pages/Home";
 import { BasicInfo } from "./pages/BasicInfo";
 import { Structure } from "./pages/Structure";
 import { Documents } from "./pages/Documents";
 import { Education } from "./pages/Education";
+import { Standards } from "./pages/Standards";
 import { Staff } from "./pages/Staff";
 import { Materials } from "./pages/Materials";
 import { PaidServices } from "./pages/PaidServices";
 import { Finance } from "./pages/Finance";
 import { Vacancies } from "./pages/Vacancies";
-import { Accessibility } from "./pages/Accessibility";
+import { Scholarships } from "./pages/Scholarships";
+import { Catering } from "./pages/Catering";
 import { International } from "./pages/International";
 import { Oferta } from "./pages/Oferta";
 import { AINutritionist } from "./pages/AINutritionist";
 import { PrivacyPolicy } from "./pages/PrivacyPolicy";
 
-export const router = createBrowserRouter([
+export const router = createHashRouter([
   {
     path: "/",
     Component: Home,
@@ -53,6 +55,10 @@ export const router = createBrowserRouter([
     Component: Education,
   },
   {
+    path: "/education-info/standards",
+    Component: Standards,
+  },
+  {
     path: "/education-info/staff",
     Component: Staff,
   },
@@ -73,8 +79,12 @@ export const router = createBrowserRouter([
     Component: Vacancies,
   },
   {
-    path: "/education-info/accessibility",
-    Component: Accessibility,
+    path: "/education-info/scholarships",
+    Component: Scholarships,
+  },
+  {
+    path: "/education-info/catering",
+    Component: Catering,
   },
   {
     path: "/education-info/international",

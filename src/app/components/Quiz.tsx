@@ -123,20 +123,18 @@ export function Quiz() {
       <motion.div
         initial={{ opacity: 0, y: 20 }}
         animate={{ opacity: 1, y: 0 }}
-        className="relative mx-auto max-w-3xl overflow-hidden rounded-[2rem] border border-gray-100 bg-white shadow-[0_32px_80px_-36px_rgba(124,58,237,0.45)]"
+        className="relative mx-auto w-full max-w-3xl overflow-hidden rounded-[1.25rem] border border-black/6 bg-[linear-gradient(180deg,rgba(255,255,255,0.62),rgba(255,255,255,0.34))]"
       >
-        <div className="absolute inset-x-0 top-0 h-1.5 bg-gradient-to-r from-purple-600 via-purple-500 to-orange-500"></div>
-        <div className="absolute -top-12 right-0 h-40 w-40 rounded-full bg-orange-100 blur-3xl"></div>
-        <div className="absolute bottom-0 left-0 h-40 w-40 rounded-full bg-purple-100 blur-3xl"></div>
+        <div className="absolute inset-x-0 top-0 h-1 bg-gradient-to-r from-purple-600 via-purple-500 to-orange-500"></div>
 
-        <div className="relative p-8 md:p-10">
-          <div className="inline-flex items-center gap-2 rounded-full bg-emerald-50 px-4 py-2 text-sm font-semibold text-emerald-700">
+        <div className="relative p-7 md:p-8">
+          <div className="ui-eyebrow text-emerald-700">
             <CheckCircle2 className="h-4 w-4" />
             Гайд готов
           </div>
 
           <div className="mt-6 flex flex-col gap-5 md:flex-row md:items-start">
-            <div className="flex h-[4.5rem] w-[4.5rem] shrink-0 items-center justify-center rounded-[1.75rem] bg-gradient-to-br from-purple-600 to-orange-500 shadow-lg shadow-purple-200">
+            <div className="flex h-14 w-14 shrink-0 items-center justify-center rounded-xl bg-gradient-to-br from-purple-600 to-orange-500">
               <Gift className="h-9 w-9 text-white" />
             </div>
 
@@ -144,7 +142,7 @@ export function Quiz() {
               <h3 className="text-3xl font-bold tracking-tight text-gray-900">
                 Персональные рекомендации готовы
               </h3>
-              <p className="mt-3 max-w-2xl text-base leading-relaxed text-gray-600">
+              <p className="ui-body mt-3 max-w-2xl">
                 Мы собрали короткий PDF-гайд по адаптации к первой тренировке.
                 Первое пробное занятие по-прежнему бесплатно, а гайд можно
                 сохранить сразу после прохождения теста.
@@ -152,11 +150,11 @@ export function Quiz() {
             </div>
           </div>
 
-          <div className="mt-8 grid gap-3 md:grid-cols-3">
+          <div className="mt-8 overflow-hidden border-y border-black/8 md:grid md:grid-cols-3 md:divide-x md:divide-black/6">
             {answerSummary.map((item) => (
               <div
                 key={item.label}
-                className="rounded-[1.5rem] border border-gray-100 bg-gray-50/80 p-4 text-left"
+                className="border-b border-black/6 px-0 py-4 text-left last:border-b-0 md:border-b-0 md:px-4"
               >
                 <div className="text-[11px] font-semibold uppercase tracking-[0.16em] text-gray-400">
                   {item.label}
@@ -168,16 +166,14 @@ export function Quiz() {
             ))}
           </div>
 
-          <div className="mt-8 rounded-[1.75rem] border border-purple-100 bg-gradient-to-br from-purple-50 to-orange-50 p-5 text-left">
+          <div className="mt-6 border-l-2 border-purple-200 pl-4 text-left">
             <div className="flex items-start gap-3">
-              <div className="mt-0.5 flex h-11 w-11 shrink-0 items-center justify-center rounded-2xl bg-white text-purple-600 shadow-sm">
-                <FileText className="h-5 w-5" />
-              </div>
+              <FileText className="mt-0.5 h-5 w-5 shrink-0 text-purple-600" />
               <div>
                 <div className="text-sm font-semibold uppercase tracking-[0.16em] text-purple-600">
                   Что внутри PDF
                 </div>
-                <p className="mt-2 text-sm leading-relaxed text-gray-600">
+                <p className="ui-body-sm mt-2">
                   Рекомендации перед первым занятием, список вещей, фразы для
                   поддержки ребёнка и короткий чек-лист для родителя.
                 </p>
@@ -189,14 +185,14 @@ export function Quiz() {
             <button
               onClick={handleGuideDownload}
               disabled={isDownloadingGuide}
-              className="inline-flex flex-1 items-center justify-center gap-2 rounded-2xl bg-gradient-to-r from-purple-600 to-orange-500 px-6 py-4 font-semibold text-white transition hover:-translate-y-0.5 hover:shadow-xl hover:shadow-purple-200 disabled:cursor-not-allowed disabled:from-purple-400 disabled:to-orange-300"
+              className="ui-button-primary inline-flex flex-1 bg-gradient-to-r from-purple-600 to-orange-500 px-6 py-4 disabled:cursor-not-allowed disabled:from-purple-400 disabled:to-orange-300"
             >
               <Download className="h-5 w-5" />
               {isDownloadingGuide ? "Готовим PDF..." : "Скачать PDF-гайд"}
             </button>
             <button
               onClick={reset}
-              className="inline-flex items-center justify-center gap-2 rounded-2xl border border-gray-200 bg-white px-6 py-4 font-semibold text-gray-600 transition hover:border-purple-300 hover:text-purple-700"
+              className="ui-button-secondary inline-flex px-6 py-4 text-gray-600"
             >
               <RotateCcw className="h-5 w-5" />
               Пройти заново
@@ -204,12 +200,12 @@ export function Quiz() {
           </div>
 
           {guideError ? (
-            <div className="mt-4 rounded-2xl border border-red-100 bg-red-50 px-4 py-3 text-sm text-red-600">
+            <div className="mt-4 rounded-xl border border-red-100 bg-red-50/90 px-4 py-3 text-sm text-red-600">
               {guideError}
             </div>
           ) : null}
           {guideNotice ? (
-            <div className="mt-4 rounded-2xl border border-amber-100 bg-amber-50 px-4 py-3 text-sm text-amber-700">
+            <div className="mt-4 rounded-xl border border-amber-100 bg-amber-50/90 px-4 py-3 text-sm text-amber-700">
               {guideNotice}
             </div>
           ) : null}
@@ -223,25 +219,23 @@ export function Quiz() {
       key={currentQuestion}
       initial={{ opacity: 0, x: 20 }}
       animate={{ opacity: 1, x: 0 }}
-      className="relative mx-auto max-w-3xl overflow-hidden rounded-[2rem] border border-gray-100 bg-white shadow-[0_32px_80px_-36px_rgba(124,58,237,0.45)]"
+      className="relative mx-auto w-full max-w-3xl overflow-hidden rounded-[1.25rem] border border-black/6 bg-[linear-gradient(180deg,rgba(255,255,255,0.62),rgba(255,255,255,0.34))]"
     >
-      <div className="absolute inset-x-0 top-0 h-1.5 bg-gradient-to-r from-purple-600 via-purple-500 to-orange-500"></div>
-      <div className="absolute -top-12 right-0 h-40 w-40 rounded-full bg-purple-100 blur-3xl"></div>
-      <div className="absolute bottom-0 left-0 h-40 w-40 rounded-full bg-orange-100 blur-3xl"></div>
+      <div className="absolute inset-x-0 top-0 h-1 bg-gradient-to-r from-purple-600 via-purple-500 to-orange-500"></div>
 
-      <div className="relative p-8 md:p-10">
+      <div className="relative p-7 md:p-8">
         <div className="flex flex-col gap-4 md:flex-row md:items-center md:justify-between">
-          <div className="inline-flex items-center gap-2 rounded-full bg-purple-50 px-4 py-2 text-sm font-semibold text-purple-700">
+          <div className="ui-eyebrow">
             <Sparkles className="h-4 w-4" />
             Экспресс-тест для родителей
           </div>
-          <div className="rounded-full bg-gray-100 px-4 py-2 text-sm font-semibold text-gray-600">
+          <div className="text-sm font-semibold text-gray-500">
             Вопрос {currentQuestion + 1} / {questions.length}
           </div>
         </div>
 
         <div className="mt-6">
-          <div className="h-2 overflow-hidden rounded-full bg-gray-100">
+          <div className="h-2 overflow-hidden rounded-full bg-black/6">
             <div
               className="h-full rounded-full bg-gradient-to-r from-purple-600 to-orange-500 transition-all duration-500"
               style={{ width: `${progress}%` }}
@@ -253,7 +247,7 @@ export function Quiz() {
           <h3 className="text-3xl font-bold tracking-tight text-gray-900">
             {questions[currentQuestion].question}
           </h3>
-          <p className="mt-3 max-w-2xl text-base leading-relaxed text-gray-600">
+          <p className="ui-body mt-3 max-w-2xl">
             Ответ поможет подобрать спокойные рекомендации по адаптации и
             подготовить PDF-гайд без лишней теории.
           </p>
@@ -265,10 +259,10 @@ export function Quiz() {
           <button
             key={index}
             onClick={() => handleAnswer(option)}
-            className="group w-full rounded-[1.5rem] border border-gray-200 bg-white px-5 py-4 text-left shadow-sm transition-all hover:-translate-y-0.5 hover:border-purple-300 hover:bg-gradient-to-r hover:from-purple-50 hover:to-orange-50 hover:shadow-md"
+            className="group w-full rounded-[0.95rem] border border-black/6 bg-white/35 px-5 py-4 text-left transition hover:border-purple-200 hover:bg-white/78"
           >
             <div className="flex items-center gap-4">
-              <div className="flex h-11 w-11 shrink-0 items-center justify-center rounded-2xl bg-gray-100 font-bold text-gray-500 transition group-hover:bg-white group-hover:text-purple-600">
+              <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-[#f7f2eb] font-bold text-gray-500 transition group-hover:bg-white group-hover:text-purple-600">
                 0{index + 1}
               </div>
               <span className="flex-1 text-base font-semibold text-gray-700 group-hover:text-gray-900">
@@ -279,7 +273,7 @@ export function Quiz() {
           </button>
         ))}
 
-        <div className="rounded-[1.5rem] border border-gray-100 bg-gray-50/80 px-5 py-4 text-sm leading-relaxed text-gray-600">
+        <div className="ui-body-sm border-t border-black/8 pt-4">
           После последнего ответа вы сразу получите персональный PDF-гайд по
           адаптации ребенка к первой тренировке.
         </div>

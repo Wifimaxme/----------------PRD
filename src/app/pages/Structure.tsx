@@ -75,16 +75,22 @@ export function Structure() {
                 <tr className="bg-gray-100">
                   <th className="border border-gray-300 p-3 text-left">Наименование органа</th>
                   <th className="border border-gray-300 p-3 text-left">Руководитель</th>
-                  <th className="border border-gray-300 p-3 text-left">Полномочия</th>
+                  <th className="border border-gray-300 p-3 text-left">Место нахождения и контакты</th>
                 </tr>
               </thead>
               <tbody>
                 <tr>
-                  <td className="border border-gray-300 p-3">Директор</td>
-                  <td className="border border-gray-300 p-3">Рублевская Юлия Владимировна</td>
                   <td className="border border-gray-300 p-3">
-                    Единоличный исполнительный орган, осуществляющий текущее руководство
-                    деятельностью организации
+                    Директор
+                    <div className="text-sm text-gray-600 mt-1">Единоличный исполнительный орган</div>
+                  </td>
+                  <td className="border border-gray-300 p-3">Рублевская Юлия Владимировна</td>
+                  <td className="border border-gray-300 p-3 text-sm">
+                    <div className="space-y-1">
+                      <p><strong>Телефон:</strong> <a href="tel:+79039037633" className="text-purple-600 hover:underline">+7-903-903-76-33</a></p>
+                      <p><strong>E-mail:</strong> <a href="mailto:maxme2016@yandex.ru" className="text-purple-600 hover:underline">maxme2016@yandex.ru</a></p>
+                      <p><strong>Место нахождения:</strong> 630088, Новосибирская область, г. Новосибирск, ул. 9-ый бронный переулок, д. 37</p>
+                    </div>
                   </td>
                 </tr>
               </tbody>
