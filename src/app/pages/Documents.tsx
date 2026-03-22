@@ -1,6 +1,5 @@
 import { EducationLayout } from "../components/EducationLayout";
 import { FileText, Download, Shield, ExternalLink } from "lucide-react";
-import { Link } from "react-router";
 
 type DocumentItem = {
   id: string;
@@ -136,13 +135,13 @@ export function Documents() {
                         Скачать
                       </a>
                     ) : (
-                      <Link
-                        to={doc.href as string}
+                      <a
+                        href={`#${doc.href}`}
                         className="bg-purple-600 text-white px-4 py-2 rounded-lg hover:bg-purple-700 transition flex items-center gap-2 text-sm whitespace-nowrap"
                       >
                         <ExternalLink className="w-4 h-4" />
                         Перейти
-                      </Link>
+                      </a>
                     )
                   ) : (
                     <button
