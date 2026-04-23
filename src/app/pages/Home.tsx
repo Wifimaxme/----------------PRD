@@ -264,12 +264,12 @@ const personalAccountSteps = [
   {
     step: "01",
     title: "Доступ в систему",
-    description: "Администратор школы заводит ваш профиль после записи на занятия. Оплата станет доступна сразу после добавления.",
+    description: "Обратитесь к администратору школы и запишитесь на бесплатное пробное занятие. Личный кабинет станет доступен сразу после записи.",
   },
   {
     step: "02",
     title: "Удобный вход",
-    description: "Авторизуйтесь по номеру телефона или через наш новый Telegram-бот «Макс Бот» — без запоминания паролей.",
+    description: "Авторизуйтесь в личном кабинете через «MAX - бот», по номеру телефона или через Telegram-бот — без запоминания паролей.",
   },
   {
     step: "03",
@@ -871,65 +871,31 @@ export function Home() {
                   <LogIn className="h-5 w-5" />
                   Личный кабинет
                 </a>
-                <a
-                  href="https://t.me/WifimaxBot" // Placeholder for new bot
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className={`${secondaryButtonClass} flex items-center justify-center gap-2`}
-                >
-                  <Send className="h-5 w-5" />
-                  Бот Макс
-                </a>
-              </div>
-              
-              <div className="mt-5 text-sm text-gray-500 flex items-center gap-2 italic">
-                <Sparkles className="h-4 w-4 text-orange-400" />
-                Кнопка кабинета всегда доступна в шапке сайта
               </div>
             </div>
 
-            <div className="relative">
+            <div className="relative flex items-center justify-center">
               <div className="absolute -left-12 -top-12 h-64 w-64 rounded-full bg-orange-100/40 blur-3xl"></div>
               <div className="absolute -bottom-16 -right-16 h-80 w-80 rounded-full bg-purple-100/50 blur-3xl"></div>
 
-              <div className="relative h-full">
-                <div className="flex h-full flex-col justify-center">
-                  <div className="mx-auto w-full max-w-[500px] rounded-[2rem] border border-black/8 bg-white p-6 sm:p-10 shadow-[0_32px_64px_-24px_rgba(15,23,42,0.22)]">
-                    <div className="mb-8 flex items-center justify-between border-b border-black/6 pb-6">
-                      <div className="flex items-center gap-4">
-                        <div className="flex h-12 w-12 items-center justify-center rounded-2xl bg-gradient-to-br from-orange-400 to-orange-600 text-white shadow-lg shadow-orange-200">
-                          <QrCode className="h-6 w-6" />
-                        </div>
-                        <div>
-                          <div className="font-bold text-gray-900">QR-авторизация</div>
-                          <div className="text-sm text-gray-500">Для быстрого входа</div>
-                        </div>
-                      </div>
-                      <div className="hidden sm:flex flex-col items-end">
-                        <div className="text-[10px] font-bold uppercase tracking-widest text-orange-500">Maks Bot</div>
-                        <div className="text-xs text-gray-400">@wifimax_bot</div>
-                      </div>
-                    </div>
-
-                    <div className="relative isolate">
-                      <div className="absolute -inset-2 rounded-[1.8rem] bg-gradient-to-br from-orange-100 to-purple-100 opacity-50 blur-lg"></div>
-                      <div className="relative flex aspect-square items-center justify-center overflow-hidden rounded-[1.6rem] border-2 border-dashed border-orange-200 bg-slate-50 p-6 sm:p-8">
-                        <img
-                          src="/images/qr-code.png"
-                          alt="QR Code Personal Account"
-                          className="h-full w-full object-contain"
-                        />
-                      </div>
-                    </div>
-
-                    <div className="mt-10 text-center">
-                      <p className="text-2xl font-black tracking-tight text-gray-900">Наведите камеру</p>
-                      <p className="mt-3 text-base leading-relaxed text-gray-500">
-                        чтобы мгновенно открыть Личный кабинет или запустить чат-бота
-                      </p>
-                    </div>
+              <div className="relative z-10 mx-auto w-full max-w-[320px]">
+                {/* iPhone Mockup Container */}
+                <div className="relative aspect-[9/19] w-full overflow-hidden rounded-[3rem] border-[10px] border-slate-900 bg-slate-900 shadow-[0_45px_100px_-20px_rgba(0,0,0,0.4)]">
+                  {/* Notch */}
+                  <div className="absolute left-1/2 top-0 z-20 h-7 w-32 -translate-x-1/2 rounded-b-2xl bg-slate-900"></div>
+                  
+                  {/* Screen Content */}
+                  <div className="h-full w-full bg-slate-800">
+                    <img
+                      src="/images/lk-screen.jpg"
+                      alt="Личный кабинет интерфейс"
+                      className="h-full w-full object-cover"
+                    />
                   </div>
                 </div>
+                
+                {/* Decorative glow */}
+                <div className="absolute -inset-4 -z-10 rounded-[4rem] bg-orange-500/10 blur-2xl"></div>
               </div>
             </div>
           </div>
@@ -969,13 +935,9 @@ export function Home() {
                 База знаний
               </div>
               <h2 className={sectionTitleClass}>
-                Материалы для родителей без перегруженной витрины статей
+                Материалы для родителей
               </h2>
             </div>
-            <p className="max-w-2xl text-base leading-relaxed text-gray-600 lg:justify-self-end">
-              Один главный материал и короткие дополнительные чтения справа. Такой ритм ближе к
-              редакционной подаче и лучше сочетается с облегчённой структурой страницы.
-            </p>
           </div>
 
           <div className="mt-12 grid gap-6 lg:grid-cols-[1.08fr_0.92fr]">
@@ -1074,32 +1036,32 @@ export function Home() {
               <div className="max-w-2xl">
                 <div className="ui-eyebrow">
                   <Sparkles className="h-4 w-4" />
-                  Финальный шаг
+                  Следующий шаг
                 </div>
                 <h2 className={sectionTitleClass}>
-                  Готовы познакомить ребёнка со спортом спокойно и без перегруза?
+                  Войдите в личный кабинет и управляйте обучением ребенка
                 </h2>
                 <p className="mt-5 max-w-xl text-lg leading-relaxed text-gray-600">
-                  Запишитесь на бесплатное пробное занятие и посмотрите, как ребёнок реагирует на
-                  формат, тренера и игровую среду уже в знакомом для него пространстве.
+                  Все оплаты, расписание и связь с администратором в одном месте. 
+                  Начните с бесплатного пробного занятия.
                 </p>
               </div>
 
               <div className="flex flex-col gap-4 sm:flex-row lg:flex-col">
-                <button
-                  onClick={() => document.getElementById('personal-account')?.scrollIntoView({ behavior: 'smooth' })}
-                  className={primaryButtonClass}
-                >
-                  Записаться на пробное занятие
-                </button>
                 <a
-                  href="https://t.me/ChampionikBot"
+                  href="https://lk.wifimax.me"
                   target="_blank"
                   rel="noopener noreferrer"
+                  className={primaryButtonClass}
+                >
+                  Войти в Личный кабинет
+                </a>
+                <button
+                  onClick={() => document.getElementById('personal-account')?.scrollIntoView({ behavior: 'smooth' })}
                   className={secondaryButtonClass}
                 >
-                  Связаться через Telegram
-                </a>
+                  Как это работает?
+                </button>
               </div>
             </div>
           </div>
