@@ -16,7 +16,9 @@ import {
   MessageCircle,
   PlayCircle,
   Send,
-  Sparkles
+  Sparkles,
+  QrCode,
+  LogIn
 } from "lucide-react";
 
 const coaches = [
@@ -258,21 +260,21 @@ const pricingPlans = [
   },
 ];
 
-const telegramBotSteps = [
+const personalAccountSteps = [
   {
     step: "01",
-    title: "Отсканируйте QR-код",
-    description: "Или откройте бота по кнопке, если вы уже на смартфоне.",
+    title: "Доступ в систему",
+    description: "Администратор школы заводит ваш профиль после записи на занятия. Оплата станет доступна сразу после добавления.",
   },
   {
     step: "02",
-    title: "Авторизуйтесь",
-    description: "Бот привяжет ваш аккаунт и поможет быстро перейти к оплате.",
+    title: "Удобный вход",
+    description: "Авторизуйтесь по номеру телефона или через наш новый Telegram-бот «Макс Бот» — без запоминания паролей.",
   },
   {
     step: "03",
-    title: "Управляйте абонементом",
-    description: "Следите за расписанием, оплатой и уведомлениями в одном месте.",
+    title: "Оплачивайте онлайн",
+    description: "Вносите оплату за обучение, проверяйте баланс и следите за историей платежей в реальном времени.",
   },
 ];
 
@@ -409,7 +411,7 @@ export function Home() {
 
               <div className="mt-8 flex flex-col gap-4 sm:flex-row">
                 <button
-                  onClick={() => document.getElementById('telegram-bot')?.scrollIntoView({ behavior: 'smooth' })}
+                  onClick={() => document.getElementById('personal-account')?.scrollIntoView({ behavior: 'smooth' })}
                   className={primaryButtonClass}
                 >
                   Записаться на пробное занятие
@@ -799,7 +801,7 @@ export function Home() {
                       </div>
 
                       <button
-                        onClick={() => document.getElementById('telegram-bot')?.scrollIntoView({ behavior: 'smooth' })}
+                        onClick={() => document.getElementById('personal-account')?.scrollIntoView({ behavior: 'smooth' })}
                         className={`mt-8 inline-flex w-full items-center justify-center ${plan.highlighted ? secondaryButtonClass : primaryButtonClass}`}
                       >
                         Оплатить онлайн
@@ -828,92 +830,103 @@ export function Home() {
         </div>
       </section>
 
-      {/* Telegram Bot Section */}
-      <section id="telegram-bot" className="py-24 overflow-hidden">
+      {/* Personal Account Section */}
+      <section id="personal-account" className="py-24 overflow-hidden bg-slate-50/50">
         <div className="container mx-auto px-4">
-          <div className="grid gap-10 lg:grid-cols-[0.78fr_1.22fr] lg:gap-14">
+          <div className="grid gap-10 lg:grid-cols-[0.82fr_1.18fr] lg:gap-14">
             <div className="max-w-xl">
               <div className="ui-eyebrow ui-eyebrow-warm">
-                <MessageCircle className="h-4 w-4" />
-                Удобная оплата и управление
+                <LogIn className="h-4 w-4" />
+                Личный кабинет родителя
               </div>
               <h2 className={sectionTitleClass}>
-                Личный Telegram-бот вместо тяжёлого кабинета
+                Управляйте обучением в один клик
               </h2>
               <p className="mt-5 text-lg leading-relaxed text-gray-600">
-                Мы собрали оплату, расписание и важные уведомления в одном привычном для родителей
-                канале. Без отдельного интерфейса, сложной авторизации и лишних действий.
+                Мы запустили современный Личный кабинет. Теперь вся информация о занятиях, 
+                оплате и успехах ребёнка доступна в одном месте — с компьютера или смартфона.
               </p>
 
-              <div className="mt-8 space-y-5">
-                {telegramBotSteps.map((item) => (
-                  <div key={item.step} className="border-b border-black/8 pb-5 last:border-b-0 last:pb-0">
-                    <div className="flex items-start gap-4">
-                      <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-full bg-[#fff1e8] text-sm font-bold text-orange-600">
-                        {item.step}
-                      </div>
-                      <div>
-                        <h3 className="text-lg font-bold tracking-tight text-gray-900">{item.title}</h3>
-                        <p className="mt-2 text-sm leading-relaxed text-gray-600">
-                          {item.description}
-                        </p>
-                      </div>
+              <div className="mt-10 space-y-6">
+                {personalAccountSteps.map((item) => (
+                  <div key={item.step} className="group relative border-l-2 border-orange-100 pl-8 transition-colors hover:border-orange-500 pb-2">
+                    <div className="absolute -left-3 top-0 flex h-6 w-6 items-center justify-center rounded-full bg-white border-2 border-orange-200 text-[10px] font-bold text-orange-600 shadow-sm group-hover:border-orange-500 group-hover:bg-orange-500 group-hover:text-white transition-all">
+                      {item.step}
                     </div>
+                    <h3 className="text-xl font-bold tracking-tight text-gray-900">{item.title}</h3>
+                    <p className="mt-2 text-base leading-relaxed text-gray-600">
+                      {item.description}
+                    </p>
                   </div>
                 ))}
               </div>
 
-              <div className="mt-8 flex flex-col gap-4 sm:flex-row">
+              <div className="mt-10 flex flex-col gap-4 sm:flex-row">
                 <a
-                  href="https://t.me/ChampionikBot"
+                  href="https://lk.wifimax.me"
                   target="_blank"
                   rel="noopener noreferrer"
-                  className={primaryButtonClass}
+                  className={`${primaryButtonClass} flex items-center justify-center gap-2`}
+                >
+                  <LogIn className="h-5 w-5" />
+                  Личный кабинет
+                </a>
+                <a
+                  href="https://t.me/WifimaxBot" // Placeholder for new bot
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className={`${secondaryButtonClass} flex items-center justify-center gap-2`}
                 >
                   <Send className="h-5 w-5" />
-                  Перейти в бота
+                  Бот Макс
                 </a>
-                <a
-                  href="https://rutube.ru/video/private/959ee2dd9aed926a54474ed088b3b7d0/?p=1bC7v88oJgV-xAbU5823dg"
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className={secondaryButtonClass}
-                >
-                  <PlayCircle className="h-5 w-5" />
-                  Видеоинструкция
-                </a>
+              </div>
+              
+              <div className="mt-5 text-sm text-gray-500 flex items-center gap-2 italic">
+                <Sparkles className="h-4 w-4 text-orange-400" />
+                Кнопка кабинета всегда доступна в шапке сайта
               </div>
             </div>
 
             <div className="relative">
-              <div className="absolute left-10 top-6 h-40 w-40 rounded-full bg-purple-100/70 blur-3xl"></div>
-              <div className="absolute bottom-0 right-0 h-48 w-48 rounded-full bg-orange-100/75 blur-3xl"></div>
-
+              <div className="absolute -left-12 -top-12 h-64 w-64 rounded-full bg-orange-100/40 blur-3xl"></div>
+              <div className="absolute -bottom-16 -right-16 h-80 w-80 rounded-full bg-purple-100/50 blur-3xl"></div>
 
               <div className="relative h-full">
                 <div className="flex h-full flex-col justify-center">
-
-                  <div className="mx-auto w-full rounded-[1.25rem] border border-black/6 bg-white/78 p-5 sm:p-8 shadow-[0_18px_34px_-28px_rgba(15,23,42,0.18)]">
-                    <div className="mb-6 flex items-center justify-between">
-                      <div className="flex gap-1.5">
-                         <div className="h-3.5 w-3.5 rounded-full bg-red-400"></div>
-                         <div className="h-3.5 w-3.5 rounded-full bg-yellow-400"></div>
-                         <div className="h-3.5 w-3.5 rounded-full bg-green-400"></div>
+                  <div className="mx-auto w-full max-w-[500px] rounded-[2rem] border border-black/8 bg-white p-6 sm:p-10 shadow-[0_32px_64px_-24px_rgba(15,23,42,0.22)]">
+                    <div className="mb-8 flex items-center justify-between border-b border-black/6 pb-6">
+                      <div className="flex items-center gap-4">
+                        <div className="flex h-12 w-12 items-center justify-center rounded-2xl bg-gradient-to-br from-orange-400 to-orange-600 text-white shadow-lg shadow-orange-200">
+                          <QrCode className="h-6 w-6" />
+                        </div>
+                        <div>
+                          <div className="font-bold text-gray-900">QR-авторизация</div>
+                          <div className="text-sm text-gray-500">Для быстрого входа</div>
+                        </div>
                       </div>
-                      <div className="text-sm font-medium text-gray-400">championik_bot</div>
+                      <div className="hidden sm:flex flex-col items-end">
+                        <div className="text-[10px] font-bold uppercase tracking-widest text-orange-500">Maks Bot</div>
+                        <div className="text-xs text-gray-400">@wifimax_bot</div>
+                      </div>
                     </div>
 
-                    <div className="flex h-[320px] items-center justify-center overflow-hidden rounded-[1.4rem] border border-dashed border-black/10 bg-[#f7f4ef] p-6 lg:h-[400px]">
-                      <img
-                        src="/images/qr-code.png"
-                        alt="QR Code ChampionikBot"
-                        className="h-full w-full object-contain"
-                      />
+                    <div className="relative isolate">
+                      <div className="absolute -inset-2 rounded-[1.8rem] bg-gradient-to-br from-orange-100 to-purple-100 opacity-50 blur-lg"></div>
+                      <div className="relative flex aspect-square items-center justify-center overflow-hidden rounded-[1.6rem] border-2 border-dashed border-orange-200 bg-slate-50 p-6 sm:p-8">
+                        <img
+                          src="/images/qr-code.png"
+                          alt="QR Code Personal Account"
+                          className="h-full w-full object-contain"
+                        />
+                      </div>
                     </div>
 
-                    <div className="mt-8 border-t border-black/8 pt-6 text-center">
-                      <p className="text-xl font-bold text-gray-900">Наведите камеру</p>
-                      <p className="mt-2 text-base text-gray-500">чтобы открыть Telegram-бот школы</p>
+                    <div className="mt-10 text-center">
+                      <p className="text-2xl font-black tracking-tight text-gray-900">Наведите камеру</p>
+                      <p className="mt-3 text-base leading-relaxed text-gray-500">
+                        чтобы мгновенно открыть Личный кабинет или запустить чат-бота
+                      </p>
                     </div>
                   </div>
                 </div>
@@ -1074,7 +1087,7 @@ export function Home() {
 
               <div className="flex flex-col gap-4 sm:flex-row lg:flex-col">
                 <button
-                  onClick={() => document.getElementById('telegram-bot')?.scrollIntoView({ behavior: 'smooth' })}
+                  onClick={() => document.getElementById('personal-account')?.scrollIntoView({ behavior: 'smooth' })}
                   className={primaryButtonClass}
                 >
                   Записаться на пробное занятие
