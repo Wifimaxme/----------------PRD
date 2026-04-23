@@ -885,11 +885,11 @@ export function Home() {
                   <div className="absolute left-1/2 top-0 z-20 h-7 w-32 -translate-x-1/2 rounded-b-2xl bg-slate-900"></div>
                   
                   {/* Screen Content */}
-                  <div className="h-full w-full bg-slate-800">
+                  <div className="h-full w-full bg-[#101010]">
                     <img
                       src="/images/lk-screen.jpg"
                       alt="Личный кабинет интерфейс"
-                      className="h-full w-full object-cover"
+                      className="h-full w-full object-contain"
                     />
                   </div>
                 </div>
