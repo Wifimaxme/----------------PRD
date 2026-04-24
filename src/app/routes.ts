@@ -1,34 +1,17 @@
 import { createHashRouter, replace } from "react-router";
-import { Home } from "./pages/Home";
-import { BasicInfo } from "./pages/BasicInfo";
-import { Structure } from "./pages/Structure";
-import { Documents } from "./pages/Documents";
-import { Education } from "./pages/Education";
-import { Standards } from "./pages/Standards";
-import { Staff } from "./pages/Staff";
-import { Materials } from "./pages/Materials";
-import { PaidServices } from "./pages/PaidServices";
-import { Finance } from "./pages/Finance";
-import { Vacancies } from "./pages/Vacancies";
-import { Scholarships } from "./pages/Scholarships";
-import { Catering } from "./pages/Catering";
-import { International } from "./pages/International";
-import { Oferta } from "./pages/Oferta";
-
-import { PrivacyPolicy } from "./pages/PrivacyPolicy";
 
 export const router = createHashRouter([
   {
     path: "/",
-    Component: Home,
+    lazy: () => import("./pages/Home").then(m => ({ Component: m.Home })),
   },
   {
     path: "/oferta",
-    Component: Oferta,
+    lazy: () => import("./pages/Oferta").then(m => ({ Component: m.Oferta })),
   },
   {
     path: "/privacy-policy",
-    Component: PrivacyPolicy,
+    lazy: () => import("./pages/PrivacyPolicy").then(m => ({ Component: m.PrivacyPolicy })),
   },
 
   {
@@ -37,54 +20,54 @@ export const router = createHashRouter([
   },
   {
     path: "/education-info/basic",
-    Component: BasicInfo,
+    lazy: () => import("./pages/BasicInfo").then(m => ({ Component: m.BasicInfo })),
   },
   {
     path: "/education-info/structure",
-    Component: Structure,
+    lazy: () => import("./pages/Structure").then(m => ({ Component: m.Structure })),
   },
   {
     path: "/education-info/documents",
-    Component: Documents,
+    lazy: () => import("./pages/Documents").then(m => ({ Component: m.Documents })),
   },
   {
     path: "/education-info/education",
-    Component: Education,
+    lazy: () => import("./pages/Education").then(m => ({ Component: m.Education })),
   },
   {
     path: "/education-info/standards",
-    Component: Standards,
+    lazy: () => import("./pages/Standards").then(m => ({ Component: m.Standards })),
   },
   {
     path: "/education-info/staff",
-    Component: Staff,
+    lazy: () => import("./pages/Staff").then(m => ({ Component: m.Staff })),
   },
   {
     path: "/education-info/materials",
-    Component: Materials,
+    lazy: () => import("./pages/Materials").then(m => ({ Component: m.Materials })),
   },
   {
     path: "/education-info/paid-services",
-    Component: PaidServices,
+    lazy: () => import("./pages/PaidServices").then(m => ({ Component: m.PaidServices })),
   },
   {
     path: "/education-info/finance",
-    Component: Finance,
+    lazy: () => import("./pages/Finance").then(m => ({ Component: m.Finance })),
   },
   {
     path: "/education-info/vacancies",
-    Component: Vacancies,
+    lazy: () => import("./pages/Vacancies").then(m => ({ Component: m.Vacancies })),
   },
   {
     path: "/education-info/scholarships",
-    Component: Scholarships,
+    lazy: () => import("./pages/Scholarships").then(m => ({ Component: m.Scholarships })),
   },
   {
     path: "/education-info/catering",
-    Component: Catering,
+    lazy: () => import("./pages/Catering").then(m => ({ Component: m.Catering })),
   },
   {
     path: "/education-info/international",
-    Component: International,
+    lazy: () => import("./pages/International").then(m => ({ Component: m.International })),
   },
 ]);
