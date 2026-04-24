@@ -2,8 +2,6 @@ import { defineConfig, loadEnv } from 'vite'
 import path from 'path'
 import tailwindcss from '@tailwindcss/vite'
 import react from '@vitejs/plugin-react'
-import { geminiGuideApiPlugin } from './vite/geminiGuideApi'
-import { geminiNutritionApiPlugin } from './vite/geminiNutritionApi'
 
 export default defineConfig(({ mode }) => {
   const env = loadEnv(mode, process.cwd(), '')
