@@ -1,4 +1,4 @@
-import{j as e}from"./index-DE3bgKbJ.js";import{E as a}from"./EducationLayout-ByLipRfH.js";import{G as t}from"./graduation-cap-CezfWqq4.js";import{c as l}from"./createLucideIcon-CL-F1X4C.js";import{F as r}from"./file-text-DNPKuwBH.js";import{C as s}from"./circle-check-B65NfRxl.js";/**
+import{j as e}from"./index-DwRDXukd.js";import{E as a}from"./EducationLayout-BJbzeTtK.js";import{G as t}from"./graduation-cap-BJHOg7eH.js";import{c as l}from"./createLucideIcon-CPyDp1gM.js";import{F as r}from"./file-text-YXdGVlA5.js";import{C as s}from"./circle-check-B8Oojm5A.js";/**
  * @license lucide-react v0.487.0 - ISC
  *
  * This source code is licensed under the ISC license.
