@@ -1,30 +1,8 @@
-import { useEffect, useRef } from 'react';
 import { useNavigate } from 'react-router';
 import { Trophy, MapPin, Calendar, UserCheck, Users, RussianRuble, CircleDot, ArrowLeft, CheckCircle2 } from 'lucide-react';
 
-const WIDGET_ID = "014n3Ytgl71ceXIGW8wK2EFs9WxitEj3lmTf";
-const WIDGET_CONTAINER_ID = "SiteWidgetMoyklass87110";
-
 export function Signup() {
     const navigate = useNavigate();
-    const widgetHostRef = useRef<HTMLDivElement | null>(null);
-
-    useEffect(() => {
-        const host = widgetHostRef.current;
-        if (!host) return;
-
-        host.innerHTML = `<div id="${WIDGET_CONTAINER_ID}"></div>`;
-
-        const script = document.createElement('script');
-        script.src = `https://app.moyklass.com/api/site/widget/?id=${WIDGET_ID}`;
-        script.async = true;
-        script.setAttribute('charset', 'UTF-8');
-        host.appendChild(script);
-
-        return () => {
-            host.innerHTML = '';
-        };
-    }, []);
 
     return (
         <div className="min-h-screen bg-slate-100 flex items-center justify-center p-4 md:p-8 font-sans relative overflow-hidden">
@@ -143,7 +121,11 @@ export function Signup() {
 
                             <div className="mt-6">
                                 {/* Контейнер для виджета Мой Класс */}
-                                <div ref={widgetHostRef} className="min-h-[400px] w-full" />
+                                <iframe
+                                    src="/moyklass-widget.html"
+                                    title="Запись на занятия"
+                                    style={{ width: '100%', minHeight: '700px', border: 'none', display: 'block' }}
+                                />
                             </div>
                         </div>
 
