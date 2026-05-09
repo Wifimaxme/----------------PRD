@@ -410,12 +410,12 @@ export function Home() {
               </p>
 
               <div className="mt-8 flex flex-col gap-4 sm:flex-row">
-                <button
-                  onClick={() => document.getElementById('personal-account')?.scrollIntoView({ behavior: 'smooth' })}
+                <Link
+                  to="/signup"
                   className={primaryButtonClass}
                 >
                   Записаться на пробное занятие
-                </button>
+                </Link>
                 <button
                   onClick={() => {
                     document.getElementById('hero-video')?.scrollIntoView({ behavior: 'smooth', block: 'center' });
@@ -820,9 +820,6 @@ export function Home() {
                       публичной оферте
                     </Link>.
                   </p>
-                  <span className="text-[11px] font-semibold uppercase tracking-[0.18em] text-gray-400">
-                    Оплата онлайн через Telegram
-                  </span>
                 </div>
               </div>
             </div>
@@ -863,7 +860,7 @@ export function Home() {
 
               <div className="mt-10 flex flex-col gap-4 sm:flex-row">
                 <a
-                  href="https://lk.wifimax.me"
+                  href="https://lk.champion-footboll.ru/"
                   target="_blank"
                   rel="noopener noreferrer"
                   className={`${primaryButtonClass} flex items-center justify-center gap-2`}
@@ -1049,7 +1046,7 @@ export function Home() {
 
               <div className="flex flex-col gap-4 sm:flex-row lg:flex-col">
                 <a
-                  href="https://lk.wifimax.me"
+                  href="https://lk.champion-footboll.ru/"
                   target="_blank"
                   rel="noopener noreferrer"
                   className={primaryButtonClass}

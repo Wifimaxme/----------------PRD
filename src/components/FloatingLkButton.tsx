@@ -13,7 +13,7 @@ export default function FloatingLkButton() {
   const newTab = !isMobileOrTelegram();
   return (
     <a
-      href="https://lk.wifimax.me"
+      href="https://lk.champion-footboll.ru/"
       target={newTab ? '_blank' : '_self'}
       rel={newTab ? 'noopener noreferrer' : undefined}
       style={{ textDecoration: 'none' }}
