@@ -13,6 +13,10 @@ export const router = createHashRouter([
     path: "/privacy-policy",
     lazy: () => import("./pages/PrivacyPolicy").then(m => ({ Component: m.PrivacyPolicy })),
   },
+  {
+    path: "/signup",
+    lazy: () => import("./pages/Signup").then(m => ({ Component: m.Signup })),
+  },
 
   {
     path: "/education-info",
