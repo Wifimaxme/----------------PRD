@@ -2,53 +2,47 @@
  * Express route to drop into the LK backend (lk.champion-footboll.ru).
  *
  * Accepts JSON from the public signup form on champion-footboll.ru/#/signup
- * and creates a record in MoyKlass.
+ * and creates an "ученик" (он же лид) in MoyKlass.
  *
- * IMPORTANT — about MoyKlass terminology
- * ──────────────────────────────────────
- * In MoyKlass API there is no "lead" entity. Both leads and clients are
- * the same object called "user" / "ученик", differing only by status
- * (clientStateId). New signups go in via:
+ * Verified against the actual CRM (May 2026) — see fields summary below.
  *
- *   POST /v1/company/users
+ * Endpoint: POST /v1/company/users  (no /leads endpoint; lead and client
+ *                                    are the same "user", differ only by
+ *                                    clientStateId)
  *
- * Custom fields are called "признаки ученика" (UserAttribute) and live
- * at GET /v1/company/userAttributes. Every attribute has a numeric `id`
- * and a string `alias`, and you can set values either way:
+ * Top-level user fields used:
+ *   name   – string (имя ребёнка)
+ *   phone  – string (контактный телефон родителя, формат +7XXXXXXXXXX)
  *
- *   { "attributes": { "birthday": "2020-05-15" } }      // by alias
- *   { "attributes": { "1":        "2020-05-15" } }     // by id
+ * Custom attributes used (returned as array on GET, sent as array on POST):
+ *   alias=birthday        id=1     type=date         → дата рождения
+ *   alias=nomer_sada      id=9160  type=number       → номер сада
+ *   alias=gruppa_v_sadu   id=9158  type=string       → группа в саду
+ *   alias=client_type     id=4     type=multiselect  → льготы (массив id вариантов)
  *
- * (The same shape that the filter on GET /users uses:
- *  ?attributes[birthday]=...)
- *
- * The aliases for this CRM, per the operator: birthday, nomer_sada,
- * gruppa_v_sadu, lgota. Override via env if they differ.
+ * client_type variants (id → name):
+ *   26942 Многодетный
+ *   26943 СВО
+ *   40101 Сотрудник
+ *   40102 2 детей
+ *   40103 Опекун
  *
  * Mount example:
  *   const leads = require('./routes/leads.route');
- *   app.post('/api/leads',       express.json(), leads.create);
+ *   app.post('/api/leads',       express.json(), leads);
  *   app.get ('/api/leads/probe',                 leads.probe);
  *
- * Required env:
- *   MOYKLASS_API_KEY  – API key from MoyKlass → Настройки → API.
- *
- * Optional env:
- *   MOYKLASS_FILIAL_ID         – default filial id for new users.
- *   MOYKLASS_CLIENT_STATE_ID   – default status id (e.g. "новая заявка").
- *   MOYKLASS_ATTR_BIRTHDAY     – default 'birthday'
- *   MOYKLASS_ATTR_KINDERGARTEN – default 'nomer_sada'
- *   MOYKLASS_ATTR_GROUP        – default 'gruppa_v_sadu'
- *   MOYKLASS_ATTR_PRIVILEGE    – default 'lgota'
+ * Required env: MOYKLASS_API_KEY.
  */
 
 const MOYKLASS_BASE = 'https://api.moyklass.com';
 
-const ATTR = {
-    birthday: process.env.MOYKLASS_ATTR_BIRTHDAY || 'birthday',
-    kindergarten: process.env.MOYKLASS_ATTR_KINDERGARTEN || 'nomer_sada',
-    group: process.env.MOYKLASS_ATTR_GROUP || 'gruppa_v_sadu',
-    privilege: process.env.MOYKLASS_ATTR_PRIVILEGE || 'lgota',
+const CLIENT_TYPE_VARIANT_IDS = {
+    'Многодетный': 26942,
+    'СВО': 26943,
+    'Сотрудник': 40101,
+    '2 детей': 40102,
+    'Опекун': 40103,
 };
 
 let cachedToken = null;
@@ -78,7 +72,7 @@ async function getAccessToken(apiKey) {
 }
 
 async function moyklassFetch(path, accessToken, init = {}) {
-    const resp = await fetch(`${MOYKLASS_BASE}${path}`, {
+    return fetch(`${MOYKLASS_BASE}${path}`, {
         ...init,
         headers: {
             'Content-Type': 'application/json',
@@ -86,7 +80,6 @@ async function moyklassFetch(path, accessToken, init = {}) {
             ...(init.headers || {}),
         },
     });
-    return resp;
 }
 
 async function create(req, res) {
@@ -96,7 +89,7 @@ async function create(req, res) {
         const childName = String(body.childName || '').trim();
         const phone = String(body.phone || '').trim();
         const dob = String(body.dob || '').trim();
-        const kindergarten = body.kindergarten ? String(body.kindergarten).trim() : '';
+        const kindergartenRaw = body.kindergarten ? String(body.kindergarten).trim() : '';
         const group = body.group ? String(body.group).trim() : '';
         const privilege = body.privilege ? String(body.privilege).trim() : '';
         const source = body.source ? String(body.source).trim() : 'champion-footboll.ru';
@@ -118,12 +111,27 @@ async function create(req, res) {
 
         const accessToken = await getAccessToken(apiKey);
 
-        const attributes = {
-            [ATTR.birthday]: dob,
-        };
-        if (kindergarten) attributes[ATTR.kindergarten] = kindergarten;
-        if (group) attributes[ATTR.group] = group;
-        if (privilege) attributes[ATTR.privilege] = privilege;
+        const attributes = [
+            { attributeAlias: 'birthday', value: dob },
+        ];
+
+        if (kindergartenRaw) {
+            const n = Number(kindergartenRaw.replace(/\D/g, ''));
+            if (Number.isFinite(n) && n > 0) {
+                attributes.push({ attributeAlias: 'nomer_sada', value: n });
+            }
+        }
+        if (group) {
+            attributes.push({ attributeAlias: 'gruppa_v_sadu', value: group });
+        }
+        if (privilege) {
+            const variantId = CLIENT_TYPE_VARIANT_IDS[privilege];
+            if (variantId) {
+                attributes.push({ attributeAlias: 'client_type', value: [variantId] });
+            } else {
+                console.warn('[leads] unknown privilege variant:', privilege);
+            }
+        }
 
         const payload = {
             name: childName,
@@ -145,7 +153,7 @@ async function create(req, res) {
 
         if (!createResp.ok) {
             const errorBody = await createResp.text().catch(() => '');
-            console.error('[leads] MoyKlass POST /users failed', {
+            console.error('[leads] MoyKlass POST /v1/company/users failed', {
                 status: createResp.status,
                 body: errorBody.slice(0, 1000),
                 payload,
@@ -166,12 +174,8 @@ async function create(req, res) {
 }
 
 /**
- * GET /api/leads/probe
- *
- * One-shot diagnostic. Returns the list of признаки ученика so the
- * operator can confirm the alias names ("birthday", "nomer_sada", etc.)
- * actually exist on this CRM. Hit it once after wiring things up; you
- * can keep it or remove it later.
+ * GET /api/leads/probe — диагностика, возвращает сводку по признакам
+ * ученика и вариантам client_type, чтобы можно было сверить.
  */
 async function probe(_req, res) {
     try {
@@ -186,11 +190,21 @@ async function probe(_req, res) {
             return res.status(502).json({ error: 'GET /userAttributes failed', status: resp.status, body: text.slice(0, 500) });
         }
         const list = await resp.json();
+        const usedAliases = ['birthday', 'nomer_sada', 'gruppa_v_sadu', 'client_type'];
         const summary = Array.isArray(list)
-            ? list.map((f) => ({ id: f.id, alias: f.alias, name: f.name, type: f.type }))
+            ? list
+                .filter((f) => usedAliases.includes(f.alias))
+                .map((f) => ({
+                    id: f.id,
+                    alias: f.alias,
+                    name: f.name,
+                    type: f.type,
+                    ...(f.variants ? { variants: f.variants.map((v) => ({ id: v.id, name: v.name })) } : {}),
+                }))
             : list;
         return res.json({
-            expectedAliases: ATTR,
+            usedAliases,
+            knownPrivilegeVariants: CLIENT_TYPE_VARIANT_IDS,
             attributes: summary,
         });
     } catch (err) {
@@ -198,9 +212,6 @@ async function probe(_req, res) {
     }
 }
 
-module.exports = { create, probe };
-// Backwards-compat: a default Express handler that does the create.
-module.exports.default = create;
-// Allow `app.post('/api/leads', leadsRoute)` style:
-Object.assign(module.exports, { create, probe });
-module.exports = Object.assign(create, { create, probe });
+module.exports = create;
+module.exports.create = create;
+module.exports.probe = probe;

@@ -26,12 +26,14 @@ function todayIso(): string {
     return new Date().toISOString().slice(0, 10);
 }
 
+// `value` совпадает с названием варианта `client_type` в MoyKlass
+// (alias=client_type, multiselect). Бэкенд сам подменит на id.
 const PRIVILEGE_OPTIONS = [
     { value: '', label: 'Без льготы (обычный тариф 2760 ₽)' },
-    { value: 'Многодетная семья', label: 'Многодетная семья' },
+    { value: 'Многодетный', label: 'Многодетная семья' },
     { value: 'Опекун', label: 'Опекун' },
-    { value: 'Сотрудник ДОУ', label: 'Сотрудник детского сада' },
-    { value: '2+ детей в школе', label: '2+ детей в школе' },
+    { value: 'Сотрудник', label: 'Сотрудник детского сада' },
+    { value: '2 детей', label: '2+ детей в нашей школе' },
 ];
 
 export function Signup() {
@@ -302,13 +304,14 @@ export function Signup() {
 
                                         <div>
                                             <label className="block text-xs font-bold uppercase tracking-wide text-slate-700 mb-1.5">
-                                                Детский сад
+                                                Номер детского сада
                                             </label>
                                             <input
                                                 type="text"
                                                 value={kindergarten}
-                                                onChange={(e) => setKindergarten(e.target.value)}
-                                                placeholder="Номер сада или район Новосибирска"
+                                                onChange={(e) => setKindergarten(e.target.value.replace(/\D/g, '').slice(0, 6))}
+                                                inputMode="numeric"
+                                                placeholder="Например, 123"
                                                 className="w-full px-4 py-3 rounded-xl border-2 border-slate-200 focus:border-indigo-500 focus:outline-none transition text-slate-900 placeholder:text-slate-400"
                                                 disabled={status === 'submitting'}
                                             />
