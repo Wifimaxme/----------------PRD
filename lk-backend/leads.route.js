@@ -4,42 +4,38 @@
  * Mount at POST /api/leads. Receives JSON from the public signup form on
  * champion-footboll.ru/#/signup and creates a lead in MoyKlass.
  *
- * The LK backend already has a working MoyKlass integration
- * ("moyklass":"online" in /api/health), so prefer your existing
- * MoyKlass client / service instead of the inline auth call below.
+ * Custom field IDs are auto-discovered by name on the first request and
+ * cached for an hour, so the only required env is MOYKLASS_API_KEY. Make
+ * sure the field names in MoyKlass admin match the constants below
+ * (override via env if you renamed them).
  *
- * Mount example (in your existing app.js / server.js):
- *
+ * Mount example:
  *   const leadsRoute = require('./routes/leads.route');
  *   app.post('/api/leads', express.json(), leadsRoute);
- *
- * Field mapping (frontend → MoyKlass POST /v1/company/leads):
- *   childName      → name           (standard, required by MoyKlass)
- *   phone          → phone          (standard)
- *   dob            → dob            (standard, ISO YYYY-MM-DD)
- *   kindergarten   → customFieldsValues[MOYKLASS_CF_KINDERGARTEN_ID]
- *   group          → customFieldsValues[MOYKLASS_CF_GROUP_ID]
- *   source         → description    (free-form comment)
  *
  * Required env:
  *   MOYKLASS_API_KEY  – API key from MoyKlass → Сотрудники → API.
  *
- * Optional env (fill in once and the corresponding form fields will land
- * in the right CRM card sections):
- *   MOYKLASS_FILIAL_ID            – default filial id for new leads.
- *   MOYKLASS_STATUS_ID            – default status id (e.g. "новая заявка").
- *   MOYKLASS_CF_KINDERGARTEN_ID   – numeric id of the "детский сад" custom field.
- *   MOYKLASS_CF_GROUP_ID          – numeric id of the "группа" custom field.
- *
- * To find a custom field id: GET /v1/company/customFields with your
- * accessToken and look for the field by name. Or open the field in
- * MoyKlass admin and copy the id from the URL.
+ * Optional env:
+ *   MOYKLASS_FILIAL_ID, MOYKLASS_STATUS_ID — числовые id филиала/статуса.
+ *   MOYKLASS_CF_KINDERGARTEN_NAME — override field name (default "Детский сад").
+ *   MOYKLASS_CF_GROUP_NAME        — override field name (default "Группа").
+ *   MOYKLASS_CF_PRIVILEGE_NAME    — override field name (default "Льгота").
  */
 
 const MOYKLASS_BASE = 'https://api.moyklass.com';
 
+const FIELD_NAMES = {
+    kindergarten: process.env.MOYKLASS_CF_KINDERGARTEN_NAME || 'Детский сад',
+    group: process.env.MOYKLASS_CF_GROUP_NAME || 'Группа',
+    privilege: process.env.MOYKLASS_CF_PRIVILEGE_NAME || 'Льгота',
+};
+
 let cachedToken = null;
 let cachedTokenExpiresAt = 0;
+
+let cachedFieldIds = null;
+let cachedFieldIdsExpiresAt = 0;
 
 async function getAccessToken(apiKey) {
     const now = Date.now();
@@ -60,8 +56,56 @@ async function getAccessToken(apiKey) {
         throw new Error('MoyKlass auth response missing accessToken');
     }
     cachedToken = data.accessToken;
-    cachedTokenExpiresAt = now + 23 * 60 * 60 * 1000; // tokens live ~24h
+    cachedTokenExpiresAt = now + 23 * 60 * 60 * 1000;
     return cachedToken;
+}
+
+async function discoverCustomFieldIds(accessToken) {
+    const now = Date.now();
+    if (cachedFieldIds && now < cachedFieldIdsExpiresAt) {
+        return cachedFieldIds;
+    }
+
+    const ids = { kindergarten: null, group: null, privilege: null };
+
+    // MoyKlass returns lead-side custom fields here. Some installations
+    // expose this at /v1/company/leadCustomFields — try both.
+    const candidates = [
+        `${MOYKLASS_BASE}/v1/company/customFields`,
+        `${MOYKLASS_BASE}/v1/company/leadCustomFields`,
+    ];
+
+    for (const url of candidates) {
+        try {
+            const resp = await fetch(url, {
+                headers: { 'x-access-token': accessToken },
+            });
+            if (!resp.ok) continue;
+            const data = await resp.json();
+            const list = Array.isArray(data) ? data : data?.customFields ?? data?.fields ?? [];
+            if (!Array.isArray(list) || list.length === 0) continue;
+
+            for (const field of list) {
+                const name = String(field?.name || '').trim();
+                const id = field?.id;
+                if (!name || id == null) continue;
+                if (name.localeCompare(FIELD_NAMES.kindergarten, 'ru', { sensitivity: 'base' }) === 0) {
+                    ids.kindergarten = Number(id);
+                } else if (name.localeCompare(FIELD_NAMES.group, 'ru', { sensitivity: 'base' }) === 0) {
+                    ids.group = Number(id);
+                } else if (name.localeCompare(FIELD_NAMES.privilege, 'ru', { sensitivity: 'base' }) === 0) {
+                    ids.privilege = Number(id);
+                }
+            }
+            if (ids.kindergarten || ids.group || ids.privilege) break;
+        } catch {
+            // try next candidate
+        }
+    }
+
+    cachedFieldIds = ids;
+    cachedFieldIdsExpiresAt = now + 60 * 60 * 1000;
+    return ids;
 }
 
 module.exports = async function leadsRoute(req, res) {
@@ -73,6 +117,7 @@ module.exports = async function leadsRoute(req, res) {
         const dob = String(body.dob || '').trim();
         const kindergarten = body.kindergarten ? String(body.kindergarten).trim() : '';
         const group = body.group ? String(body.group).trim() : '';
+        const privilege = body.privilege ? String(body.privilege).trim() : '';
         const source = body.source ? String(body.source).trim() : 'champion-footboll.ru';
 
         if (childName.length < 2) {
@@ -91,19 +136,47 @@ module.exports = async function leadsRoute(req, res) {
         }
 
         const accessToken = await getAccessToken(apiKey);
+        const fieldIds = await discoverCustomFieldIds(accessToken);
 
         const customFieldsValues = [];
-        if (kindergarten && process.env.MOYKLASS_CF_KINDERGARTEN_ID) {
-            customFieldsValues.push({
-                customFieldId: Number(process.env.MOYKLASS_CF_KINDERGARTEN_ID),
-                value: kindergarten,
-            });
+        const missingFields = [];
+        if (kindergarten) {
+            if (fieldIds.kindergarten) {
+                customFieldsValues.push({ customFieldId: fieldIds.kindergarten, value: kindergarten });
+            } else {
+                missingFields.push(FIELD_NAMES.kindergarten);
+            }
         }
-        if (group && process.env.MOYKLASS_CF_GROUP_ID) {
-            customFieldsValues.push({
-                customFieldId: Number(process.env.MOYKLASS_CF_GROUP_ID),
-                value: group,
-            });
+        if (group) {
+            if (fieldIds.group) {
+                customFieldsValues.push({ customFieldId: fieldIds.group, value: group });
+            } else {
+                missingFields.push(FIELD_NAMES.group);
+            }
+        }
+        if (privilege) {
+            if (fieldIds.privilege) {
+                customFieldsValues.push({ customFieldId: fieldIds.privilege, value: privilege });
+            } else {
+                missingFields.push(FIELD_NAMES.privilege);
+            }
+        }
+
+        const descriptionLines = [`Источник: ${source}`];
+        if (missingFields.length) {
+            descriptionLines.push(
+                `⚠ Поля не нашлись в CRM (создайте их с такими именами): ${missingFields.join(', ')}.`,
+            );
+            // Inline the values so they're not lost.
+            if (kindergarten && missingFields.includes(FIELD_NAMES.kindergarten)) {
+                descriptionLines.push(`Сад: ${kindergarten}`);
+            }
+            if (group && missingFields.includes(FIELD_NAMES.group)) {
+                descriptionLines.push(`Группа: ${group}`);
+            }
+            if (privilege && missingFields.includes(FIELD_NAMES.privilege)) {
+                descriptionLines.push(`Льгота: ${privilege}`);
+            }
         }
 
         const leadPayload = {
@@ -117,7 +190,7 @@ module.exports = async function leadsRoute(req, res) {
                 ? { statusId: Number(process.env.MOYKLASS_STATUS_ID) }
                 : {}),
             ...(customFieldsValues.length ? { customFieldsValues } : {}),
-            ...(source ? { description: `Источник: ${source}` } : {}),
+            description: descriptionLines.join('\n'),
         };
 
         const createResp = await fetch(`${MOYKLASS_BASE}/v1/company/leads`, {
@@ -139,7 +212,11 @@ module.exports = async function leadsRoute(req, res) {
         }
 
         const created = await createResp.json().catch(() => ({}));
-        return res.json({ ok: true, leadId: created?.id ?? null });
+        return res.json({
+            ok: true,
+            leadId: created?.id ?? null,
+            ...(missingFields.length ? { warning: `custom fields not found: ${missingFields.join(', ')}` } : {}),
+        });
     } catch (err) {
         return res.status(502).json({ error: err?.message || 'Unknown error' });
     }

@@ -26,6 +26,14 @@ function todayIso(): string {
     return new Date().toISOString().slice(0, 10);
 }
 
+const PRIVILEGE_OPTIONS = [
+    { value: '', label: 'Без льготы (обычный тариф 2760 ₽)' },
+    { value: 'Многодетная семья', label: 'Многодетная семья' },
+    { value: 'Опекун', label: 'Опекун' },
+    { value: 'Сотрудник ДОУ', label: 'Сотрудник детского сада' },
+    { value: '2+ детей в школе', label: '2+ детей в школе' },
+];
+
 export function Signup() {
     const navigate = useNavigate();
 
@@ -34,6 +42,7 @@ export function Signup() {
     const [dob, setDob] = useState('');
     const [kindergarten, setKindergarten] = useState('');
     const [group, setGroup] = useState('');
+    const [privilege, setPrivilege] = useState('');
     const [consent, setConsent] = useState(false);
 
     const [status, setStatus] = useState<Status>('idle');
@@ -68,6 +77,7 @@ export function Signup() {
                     dob,
                     kindergarten: kindergarten.trim() || null,
                     group: group.trim() || null,
+                    privilege: privilege || null,
                     source: 'champion-footboll.ru/signup',
                 }),
             });
@@ -211,8 +221,8 @@ export function Signup() {
                                         <button
                                             onClick={() => {
                                                 setChildName(''); setPhone('+7'); setDob('');
-                                                setKindergarten(''); setGroup(''); setConsent(false);
-                                                setTouched(false); setStatus('idle');
+                                                setKindergarten(''); setGroup(''); setPrivilege('');
+                                                setConsent(false); setTouched(false); setStatus('idle');
                                             }}
                                             className="mt-6 text-indigo-700 hover:text-indigo-900 text-sm font-semibold underline"
                                         >
@@ -316,6 +326,27 @@ export function Signup() {
                                                 className="w-full px-4 py-3 rounded-xl border-2 border-slate-200 focus:border-indigo-500 focus:outline-none transition text-slate-900 placeholder:text-slate-400"
                                                 disabled={status === 'submitting'}
                                             />
+                                        </div>
+
+                                        <div>
+                                            <label className="block text-xs font-bold uppercase tracking-wide text-slate-700 mb-1.5">
+                                                Льгота
+                                            </label>
+                                            <select
+                                                value={privilege}
+                                                onChange={(e) => setPrivilege(e.target.value)}
+                                                className="w-full px-4 py-3 rounded-xl border-2 border-slate-200 focus:border-indigo-500 focus:outline-none transition text-slate-900 bg-white"
+                                                disabled={status === 'submitting'}
+                                            >
+                                                {PRIVILEGE_OPTIONS.map(opt => (
+                                                    <option key={opt.value} value={opt.value}>{opt.label}</option>
+                                                ))}
+                                            </select>
+                                            {privilege && (
+                                                <p className="text-xs text-orange-600 font-semibold mt-1">
+                                                    Льготная стоимость: 1960 ₽/месяц
+                                                </p>
+                                            )}
                                         </div>
 
                                         <label className="flex items-start gap-3 cursor-pointer pt-1">
