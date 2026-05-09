@@ -19,10 +19,19 @@ Express handler для приёма заявок с публичной форм�
    ```
    Если у вас уже глобально включён `express.json()` — второй аргумент
    не нужен.
-3. Убедиться, что `MOYKLASS_API_KEY` уже есть в env. По вашему health
-   он точно есть (моуклас «online»). Если хочется направлять лиды в
-   конкретный филиал/статус, дополнительно: `MOYKLASS_FILIAL_ID`,
-   `MOYKLASS_STATUS_ID`.
+3. Env vars:
+   - `MOYKLASS_API_KEY` — уже есть (видно в `/api/health`).
+   - `MOYKLASS_CF_KINDERGARTEN_ID` — id кастомного поля «Детский сад»
+     в MoyKlass. Узнать: `GET /v1/company/customFields` с
+     accessToken'ом или открыть поле в админке MoyKlass и скопировать
+     id из URL.
+   - `MOYKLASS_CF_GROUP_ID` — id кастомного поля «Группа».
+   - (опционально) `MOYKLASS_FILIAL_ID`, `MOYKLASS_STATUS_ID` — если
+     лиды должны сразу попадать в конкретный филиал/статус.
+
+   Если id кастомных полей не выставлены — заявка всё равно создастся,
+   просто без этих полей. Имя ребёнка, телефон и дата рождения уйдут
+   в стандартные поля лида (`name`, `phone`, `dob`).
 4. CORS для домена `champion-footboll.ru` уже разрешён глобально на
    вашем сервере (`access-control-allow-origin: *`), отдельной правки
    не требуется.

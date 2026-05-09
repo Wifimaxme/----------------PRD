@@ -11,15 +11,29 @@
  * Mount example (in your existing app.js / server.js):
  *
  *   const leadsRoute = require('./routes/leads.route');
- *   app.post('/api/leads', leadsRoute);
+ *   app.post('/api/leads', express.json(), leadsRoute);
  *
- * Required env (already set on your server, since /api/health reports
- * MoyKlass online):
+ * Field mapping (frontend → MoyKlass POST /v1/company/leads):
+ *   childName      → name           (standard, required by MoyKlass)
+ *   phone          → phone          (standard)
+ *   dob            → dob            (standard, ISO YYYY-MM-DD)
+ *   kindergarten   → customFieldsValues[MOYKLASS_CF_KINDERGARTEN_ID]
+ *   group          → customFieldsValues[MOYKLASS_CF_GROUP_ID]
+ *   source         → description    (free-form comment)
+ *
+ * Required env:
  *   MOYKLASS_API_KEY  – API key from MoyKlass → Сотрудники → API.
  *
- * Optional env:
- *   MOYKLASS_FILIAL_ID, MOYKLASS_STATUS_ID  – numeric ids attached to
- *                                             every created lead.
+ * Optional env (fill in once and the corresponding form fields will land
+ * in the right CRM card sections):
+ *   MOYKLASS_FILIAL_ID            – default filial id for new leads.
+ *   MOYKLASS_STATUS_ID            – default status id (e.g. "новая заявка").
+ *   MOYKLASS_CF_KINDERGARTEN_ID   – numeric id of the "детский сад" custom field.
+ *   MOYKLASS_CF_GROUP_ID          – numeric id of the "группа" custom field.
+ *
+ * To find a custom field id: GET /v1/company/customFields with your
+ * accessToken and look for the field by name. Or open the field in
+ * MoyKlass admin and copy the id from the URL.
  */
 
 const MOYKLASS_BASE = 'https://api.moyklass.com';
@@ -54,18 +68,21 @@ module.exports = async function leadsRoute(req, res) {
     try {
         const body = req.body || {};
 
-        const parentName = String(body.parentName || '').trim();
+        const childName = String(body.childName || '').trim();
         const phone = String(body.phone || '').trim();
-        const childName = body.childName ? String(body.childName).trim() : '';
-        const childAge = body.childAge ? String(body.childAge).trim() : '';
+        const dob = String(body.dob || '').trim();
         const kindergarten = body.kindergarten ? String(body.kindergarten).trim() : '';
+        const group = body.group ? String(body.group).trim() : '';
         const source = body.source ? String(body.source).trim() : 'champion-footboll.ru';
 
-        if (parentName.length < 2) {
-            return res.status(400).json({ error: 'parentName is required' });
+        if (childName.length < 2) {
+            return res.status(400).json({ error: 'childName is required' });
         }
         if (!/^\+7\d{10}$/.test(phone)) {
             return res.status(400).json({ error: 'phone must match +7XXXXXXXXXX' });
+        }
+        if (!/^\d{4}-\d{2}-\d{2}$/.test(dob)) {
+            return res.status(400).json({ error: 'dob must be ISO YYYY-MM-DD' });
         }
 
         const apiKey = process.env.MOYKLASS_API_KEY;
@@ -75,25 +92,32 @@ module.exports = async function leadsRoute(req, res) {
 
         const accessToken = await getAccessToken(apiKey);
 
-        const description = [
-            childName && `Имя ребёнка: ${childName}`,
-            childAge && `Возраст: ${childAge}`,
-            kindergarten && `Сад/адрес: ${kindergarten}`,
-            source && `Источник: ${source}`,
-        ]
-            .filter(Boolean)
-            .join('\n');
+        const customFieldsValues = [];
+        if (kindergarten && process.env.MOYKLASS_CF_KINDERGARTEN_ID) {
+            customFieldsValues.push({
+                customFieldId: Number(process.env.MOYKLASS_CF_KINDERGARTEN_ID),
+                value: kindergarten,
+            });
+        }
+        if (group && process.env.MOYKLASS_CF_GROUP_ID) {
+            customFieldsValues.push({
+                customFieldId: Number(process.env.MOYKLASS_CF_GROUP_ID),
+                value: group,
+            });
+        }
 
         const leadPayload = {
-            name: parentName,
+            name: childName,
             phone,
+            dob,
             ...(process.env.MOYKLASS_FILIAL_ID
                 ? { filialId: Number(process.env.MOYKLASS_FILIAL_ID) }
                 : {}),
             ...(process.env.MOYKLASS_STATUS_ID
                 ? { statusId: Number(process.env.MOYKLASS_STATUS_ID) }
                 : {}),
-            ...(description ? { description } : {}),
+            ...(customFieldsValues.length ? { customFieldsValues } : {}),
+            ...(source ? { description: `Источник: ${source}` } : {}),
         };
 
         const createResp = await fetch(`${MOYKLASS_BASE}/v1/company/leads`, {
