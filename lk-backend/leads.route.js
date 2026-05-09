@@ -1,42 +1,32 @@
-/**
- * Express route to drop into the LK backend (lk.champion-footboll.ru).
- *
- * Accepts JSON from the public signup form on champion-footboll.ru/#/signup
- * and creates an "ученик" (он же лид) in MoyKlass.
- *
- * Verified against the actual CRM (May 2026) — see fields summary below.
- *
- * Endpoint: POST /v1/company/users  (no /leads endpoint; lead and client
- *                                    are the same "user", differ only by
- *                                    clientStateId)
- *
- * Top-level user fields used:
- *   name   – string (имя ребёнка)
- *   phone  – string (контактный телефон родителя, формат +7XXXXXXXXXX)
- *
- * Custom attributes used (returned as array on GET, sent as array on POST):
- *   alias=birthday        id=1     type=date         → дата рождения
- *   alias=nomer_sada      id=9160  type=number       → номер сада
- *   alias=gruppa_v_sadu   id=9158  type=string       → группа в саду
- *   alias=client_type     id=4     type=multiselect  → льготы (массив id вариантов)
- *
- * client_type variants (id → name):
- *   26942 Многодетный
- *   26943 СВО
- *   40101 Сотрудник
- *   40102 2 детей
- *   40103 Опекун
- *
- * Mount example:
- *   const leads = require('./routes/leads.route');
- *   app.post('/api/leads',       express.json(), leads);
- *   app.get ('/api/leads/probe',                 leads.probe);
- *
- * Required env: MOYKLASS_API_KEY.
- */
+// POST /api/leads — приём заявок с публичной формы champion-footboll.ru/#/signup.
+// Создаёт ученика (он же лид) в MoyKlass через существующий services/moyklass.js.
+//
+// Схема запроса от формы:
+//   { childName, phone, dob, kindergarten?, group?, privilege?, source? }
+//
+// Маппинг в MoyKlass POST /v1/company/users (схема проверена живым API):
+//   name           ← childName
+//   phone          ← цифры phone, без "+" (^[0-9]{10,15}$)
+//   attributes[]   ← массив { attributeId, value | valueIds }:
+//     id=1     birthday        date,         value: "YYYY-MM-DD"
+//     id=9160  nomer_sada      number,       value: <number>
+//     id=9158  gruppa_v_sadu   string,       value: "<строка>"
+//     id=4     client_type     multiselect,  valueIds: [<id>]
 
-const MOYKLASS_BASE = 'https://api.moyklass.com';
+const express = require('express');
+const moyKlass = require('../services/moyklass');
 
+const router = express.Router();
+
+// ID признаков ученика в CRM (alias → id), проверено через GET /userAttributes.
+const ATTR_IDS = {
+    birthday: 1,
+    nomer_sada: 9160,
+    gruppa_v_sadu: 9158,
+    client_type: 4,
+};
+
+// Названия вариантов client_type → их id в CRM (проверено по API).
 const CLIENT_TYPE_VARIANT_IDS = {
     'Многодетный': 26942,
     'СВО': 26943,
@@ -45,44 +35,7 @@ const CLIENT_TYPE_VARIANT_IDS = {
     'Опекун': 40103,
 };
 
-let cachedToken = null;
-let cachedTokenExpiresAt = 0;
-
-async function getAccessToken(apiKey) {
-    const now = Date.now();
-    if (cachedToken && now < cachedTokenExpiresAt - 60_000) {
-        return cachedToken;
-    }
-    const resp = await fetch(`${MOYKLASS_BASE}/v1/company/auth/getToken`, {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ apiKey }),
-    });
-    if (!resp.ok) {
-        const text = await resp.text().catch(() => '');
-        throw new Error(`MoyKlass auth failed: ${resp.status} ${text.slice(0, 200)}`);
-    }
-    const data = await resp.json();
-    if (!data?.accessToken) {
-        throw new Error('MoyKlass auth response missing accessToken');
-    }
-    cachedToken = data.accessToken;
-    cachedTokenExpiresAt = now + 23 * 60 * 60 * 1000;
-    return cachedToken;
-}
-
-async function moyklassFetch(path, accessToken, init = {}) {
-    return fetch(`${MOYKLASS_BASE}${path}`, {
-        ...init,
-        headers: {
-            'Content-Type': 'application/json',
-            'x-access-token': accessToken,
-            ...(init.headers || {}),
-        },
-    });
-}
-
-async function create(req, res) {
+router.post('/', async (req, res) => {
     try {
         const body = req.body || {};
 
@@ -104,114 +57,83 @@ async function create(req, res) {
             return res.status(400).json({ error: 'dob must be ISO YYYY-MM-DD' });
         }
 
-        const apiKey = process.env.MOYKLASS_API_KEY;
-        if (!apiKey) {
-            return res.status(500).json({ error: 'MOYKLASS_API_KEY is not configured' });
-        }
-
-        const accessToken = await getAccessToken(apiKey);
-
         const attributes = [
-            { attributeAlias: 'birthday', value: dob },
+            { attributeId: ATTR_IDS.birthday, value: dob },
         ];
 
         if (kindergartenRaw) {
             const n = Number(kindergartenRaw.replace(/\D/g, ''));
             if (Number.isFinite(n) && n > 0) {
-                attributes.push({ attributeAlias: 'nomer_sada', value: n });
+                attributes.push({ attributeId: ATTR_IDS.nomer_sada, value: n });
             }
         }
         if (group) {
-            attributes.push({ attributeAlias: 'gruppa_v_sadu', value: group });
+            attributes.push({ attributeId: ATTR_IDS.gruppa_v_sadu, value: group });
         }
         if (privilege) {
             const variantId = CLIENT_TYPE_VARIANT_IDS[privilege];
             if (variantId) {
-                attributes.push({ attributeAlias: 'client_type', value: [variantId] });
+                // multiselect ждёт valueIds, не value
+                attributes.push({ attributeId: ATTR_IDS.client_type, valueIds: [variantId] });
             } else {
-                console.warn('[leads] unknown privilege variant:', privilege);
+                console.warn('[leads] неизвестный вариант льготы:', privilege);
             }
         }
 
+        // MoyKlass принимает phone без "+", только цифры (^[0-9]{10,15}$)
+        const phoneDigits = phone.replace(/\D/g, '');
+
         const payload = {
             name: childName,
-            phone,
+            phone: phoneDigits,
             attributes,
-            ...(process.env.MOYKLASS_FILIAL_ID
-                ? { filials: [Number(process.env.MOYKLASS_FILIAL_ID)] }
-                : {}),
-            ...(process.env.MOYKLASS_CLIENT_STATE_ID
-                ? { clientStateId: Number(process.env.MOYKLASS_CLIENT_STATE_ID) }
-                : {}),
             comment: `Источник: ${source}`,
         };
 
-        const createResp = await moyklassFetch('/v1/company/users', accessToken, {
-            method: 'POST',
-            body: JSON.stringify(payload),
-        });
-
-        if (!createResp.ok) {
-            const errorBody = await createResp.text().catch(() => '');
-            console.error('[leads] MoyKlass POST /v1/company/users failed', {
-                status: createResp.status,
-                body: errorBody.slice(0, 1000),
-                payload,
-            });
-            return res.status(502).json({
-                error: 'MoyKlass rejected the request',
-                status: createResp.status,
-                body: errorBody.slice(0, 500),
-            });
-        }
-
-        const created = await createResp.json().catch(() => ({}));
+        const created = await moyKlass.createUser(payload);
         return res.json({ ok: true, userId: created?.id ?? null });
     } catch (err) {
-        console.error('[leads] unexpected error', err);
-        return res.status(502).json({ error: err?.message || 'Unknown error' });
+        const status = err?.response?.status;
+        const responseBody = err?.response?.data;
+        console.error('[leads] ошибка создания заявки', { status, responseBody, message: err?.message });
+        return res.status(502).json({
+            error: 'MoyKlass rejected the request',
+            status: status ?? null,
+            body: responseBody ?? err?.message ?? 'unknown',
+        });
     }
-}
+});
 
-/**
- * GET /api/leads/probe — диагностика, возвращает сводку по признакам
- * ученика и вариантам client_type, чтобы можно было сверить.
- */
-async function probe(_req, res) {
+// GET /api/leads/probe — диагностика, возвращает фактический список
+// признаков ученика, чтобы можно было сверить алиасы и id вариантов
+// client_type. Должен срабатывать через MoyKlassService, чтобы
+// использовать тот же accessToken.
+router.get('/probe', async (_req, res) => {
     try {
-        const apiKey = process.env.MOYKLASS_API_KEY;
-        if (!apiKey) {
-            return res.status(500).json({ error: 'MOYKLASS_API_KEY is not configured' });
-        }
-        const accessToken = await getAccessToken(apiKey);
-        const resp = await moyklassFetch('/v1/company/userAttributes', accessToken);
-        if (!resp.ok) {
-            const text = await resp.text().catch(() => '');
-            return res.status(502).json({ error: 'GET /userAttributes failed', status: resp.status, body: text.slice(0, 500) });
-        }
-        const list = await resp.json();
+        if (!moyKlass.accessToken) await moyKlass.getToken();
+        const axios = require('axios');
+        const resp = await axios.get(`${moyKlass.baseUrl}/userAttributes`, {
+            headers: { 'x-access-token': moyKlass.accessToken },
+        });
+        const list = Array.isArray(resp.data) ? resp.data : [];
         const usedAliases = ['birthday', 'nomer_sada', 'gruppa_v_sadu', 'client_type'];
-        const summary = Array.isArray(list)
-            ? list
-                .filter((f) => usedAliases.includes(f.alias))
-                .map((f) => ({
-                    id: f.id,
-                    alias: f.alias,
-                    name: f.name,
-                    type: f.type,
-                    ...(f.variants ? { variants: f.variants.map((v) => ({ id: v.id, name: v.name })) } : {}),
-                }))
-            : list;
+        const summary = list
+            .filter((f) => usedAliases.includes(f.alias))
+            .map((f) => ({
+                id: f.id,
+                alias: f.alias,
+                name: f.name,
+                type: f.type,
+                ...(f.variants ? { variants: f.variants.map((v) => ({ id: v.id, name: v.name })) } : {}),
+            }));
         return res.json({
             usedAliases,
             knownPrivilegeVariants: CLIENT_TYPE_VARIANT_IDS,
             attributes: summary,
         });
     } catch (err) {
-        return res.status(502).json({ error: err?.message || 'Unknown error' });
+        return res.status(502).json({ error: err?.message || 'unknown error' });
     }
-}
+});
 
-module.exports = create;
-module.exports.create = create;
-module.exports.probe = probe;
+module.exports = router;
