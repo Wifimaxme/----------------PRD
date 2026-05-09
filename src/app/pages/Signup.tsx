@@ -11,8 +11,6 @@ const LEADS_ENDPOINT =
 
 type Status = 'idle' | 'submitting' | 'success' | 'error';
 
-const AGE_OPTIONS = ['3-4 года', '4-5 лет', '5-6 лет', '6-7 лет'];
-
 function normalizePhone(input: string): string {
     let digits = input.replace(/\D/g, '');
     if (digits.startsWith('8')) digits = '7' + digits.slice(1);
@@ -24,14 +22,18 @@ function isValidPhone(value: string): boolean {
     return /^\+7\d{10}$/.test(value);
 }
 
+function todayIso(): string {
+    return new Date().toISOString().slice(0, 10);
+}
+
 export function Signup() {
     const navigate = useNavigate();
 
-    const [parentName, setParentName] = useState('');
-    const [phone, setPhone] = useState('+7');
     const [childName, setChildName] = useState('');
-    const [childAge, setChildAge] = useState('');
+    const [phone, setPhone] = useState('+7');
+    const [dob, setDob] = useState('');
     const [kindergarten, setKindergarten] = useState('');
+    const [group, setGroup] = useState('');
     const [consent, setConsent] = useState(false);
 
     const [status, setStatus] = useState<Status>('idle');
@@ -39,7 +41,8 @@ export function Signup() {
     const [touched, setTouched] = useState(false);
 
     const phoneValid = isValidPhone(phone);
-    const formValid = parentName.trim().length >= 2 && phoneValid && childAge && consent;
+    const dobValid = !!dob && dob <= todayIso();
+    const formValid = childName.trim().length >= 2 && phoneValid && dobValid && consent;
 
     async function handleSubmit(event: { preventDefault: () => void }) {
         event.preventDefault();
@@ -60,11 +63,11 @@ export function Signup() {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify({
-                    parentName: parentName.trim(),
+                    childName: childName.trim(),
                     phone,
-                    childName: childName.trim() || null,
-                    childAge,
+                    dob,
                     kindergarten: kindergarten.trim() || null,
+                    group: group.trim() || null,
                     source: 'champion-footboll.ru/signup',
                 }),
             });
@@ -207,8 +210,8 @@ export function Signup() {
                                         </p>
                                         <button
                                             onClick={() => {
-                                                setParentName(''); setPhone('+7'); setChildName('');
-                                                setChildAge(''); setKindergarten(''); setConsent(false);
+                                                setChildName(''); setPhone('+7'); setDob('');
+                                                setKindergarten(''); setGroup(''); setConsent(false);
                                                 setTouched(false); setStatus('idle');
                                             }}
                                             className="mt-6 text-indigo-700 hover:text-indigo-900 text-sm font-semibold underline"
@@ -220,25 +223,25 @@ export function Signup() {
                                     <form onSubmit={handleSubmit} className="space-y-4" noValidate>
                                         <div>
                                             <label className="block text-xs font-bold uppercase tracking-wide text-slate-700 mb-1.5">
-                                                Ваше имя <span className="text-orange-500">*</span>
+                                                Имя ребёнка <span className="text-orange-500">*</span>
                                             </label>
                                             <input
                                                 type="text"
-                                                value={parentName}
-                                                onChange={(e) => setParentName(e.target.value)}
-                                                placeholder="Например, Анна"
-                                                autoComplete="name"
+                                                value={childName}
+                                                onChange={(e) => setChildName(e.target.value)}
+                                                placeholder="Например, Михаил"
+                                                autoComplete="off"
                                                 className="w-full px-4 py-3 rounded-xl border-2 border-slate-200 focus:border-indigo-500 focus:outline-none transition text-slate-900 placeholder:text-slate-400"
                                                 disabled={status === 'submitting'}
                                             />
-                                            {touched && parentName.trim().length < 2 && (
-                                                <p className="text-xs text-red-600 mt-1">Введите имя</p>
+                                            {touched && childName.trim().length < 2 && (
+                                                <p className="text-xs text-red-600 mt-1">Введите имя ребёнка</p>
                                             )}
                                         </div>
 
                                         <div>
                                             <label className="block text-xs font-bold uppercase tracking-wide text-slate-700 mb-1.5">
-                                                Телефон <span className="text-orange-500">*</span>
+                                                Телефон родителя <span className="text-orange-500">*</span>
                                             </label>
                                             <input
                                                 type="tel"
@@ -272,39 +275,30 @@ export function Signup() {
 
                                         <div>
                                             <label className="block text-xs font-bold uppercase tracking-wide text-slate-700 mb-1.5">
-                                                Возраст ребёнка <span className="text-orange-500">*</span>
+                                                Дата рождения ребёнка <span className="text-orange-500">*</span>
                                             </label>
-                                            <div className="grid grid-cols-2 gap-2">
-                                                {AGE_OPTIONS.map(age => (
-                                                    <button
-                                                        type="button"
-                                                        key={age}
-                                                        onClick={() => setChildAge(age)}
-                                                        disabled={status === 'submitting'}
-                                                        className={`py-2.5 px-3 rounded-xl border-2 text-sm font-semibold transition ${
-                                                            childAge === age
-                                                                ? 'bg-indigo-900 text-white border-indigo-900'
-                                                                : 'bg-white text-slate-700 border-slate-200 hover:border-indigo-400'
-                                                        }`}
-                                                    >
-                                                        {age}
-                                                    </button>
-                                                ))}
-                                            </div>
-                                            {touched && !childAge && (
-                                                <p className="text-xs text-red-600 mt-1">Выберите возраст</p>
+                                            <input
+                                                type="date"
+                                                value={dob}
+                                                onChange={(e) => setDob(e.target.value)}
+                                                max={todayIso()}
+                                                className="w-full px-4 py-3 rounded-xl border-2 border-slate-200 focus:border-indigo-500 focus:outline-none transition text-slate-900 placeholder:text-slate-400"
+                                                disabled={status === 'submitting'}
+                                            />
+                                            {touched && !dobValid && (
+                                                <p className="text-xs text-red-600 mt-1">Укажите дату рождения</p>
                                             )}
                                         </div>
 
                                         <div>
                                             <label className="block text-xs font-bold uppercase tracking-wide text-slate-700 mb-1.5">
-                                                Имя ребёнка
+                                                Детский сад
                                             </label>
                                             <input
                                                 type="text"
-                                                value={childName}
-                                                onChange={(e) => setChildName(e.target.value)}
-                                                placeholder="Например, Михаил"
+                                                value={kindergarten}
+                                                onChange={(e) => setKindergarten(e.target.value)}
+                                                placeholder="Номер сада или район Новосибирска"
                                                 className="w-full px-4 py-3 rounded-xl border-2 border-slate-200 focus:border-indigo-500 focus:outline-none transition text-slate-900 placeholder:text-slate-400"
                                                 disabled={status === 'submitting'}
                                             />
@@ -312,13 +306,13 @@ export function Signup() {
 
                                         <div>
                                             <label className="block text-xs font-bold uppercase tracking-wide text-slate-700 mb-1.5">
-                                                Детский сад / адрес
+                                                Группа
                                             </label>
                                             <input
                                                 type="text"
-                                                value={kindergarten}
-                                                onChange={(e) => setKindergarten(e.target.value)}
-                                                placeholder="Номер сада или район Новосибирска"
+                                                value={group}
+                                                onChange={(e) => setGroup(e.target.value)}
+                                                placeholder="Например, средняя или 5-6 лет"
                                                 className="w-full px-4 py-3 rounded-xl border-2 border-slate-200 focus:border-indigo-500 focus:outline-none transition text-slate-900 placeholder:text-slate-400"
                                                 disabled={status === 'submitting'}
                                             />
