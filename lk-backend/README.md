@@ -1,79 +1,88 @@
 # lk-backend / leads route
 
 Express-обработчик для приёма заявок с публичной формы записи
-(`champion-footboll.ru/#/signup`) и создания лида в MoyKlass.
+(`champion-footboll.ru/#/signup`) и создания ученика (он же лид) в
+MoyKlass.
 
-Файл лежит здесь, чтобы был под рукой и в основном репо. Запускаться он
-должен **на бэкенде ЛК** (`lk.champion-footboll.ru`), у которого уже
-есть рабочая интеграция с MoyKlass (видно из `/api/health`:
-`"moyklass":"online"`).
+## Главное про модель данных MoyKlass
+
+Это критично, потому что в первой версии я промахнулся. В MoyKlass API
+**нет сущности «лид»** — лиды и клиенты это один и тот же «ученик»
+(`user`), различаются только `clientStateId` (статус). Запись создаётся
+через **`POST /v1/company/users`**, а не через `/leads`.
+
+Кастомные поля в MoyKlass называются **«признаки ученика»**
+(`UserAttribute`). У каждого признака есть числовой `id` и строковый
+`alias`, и значения можно слать любым из двух способов:
+
+```json
+{ "attributes": { "birthday": "2020-05-15" } }   // по alias
+{ "attributes": { "1": "2020-05-15" } }          // по id
+```
+
+Алиасы для этой CRM (по словам оператора):
+
+- `birthday` — день рождения ребёнка
+- `nomer_sada` — номер детского сада
+- `gruppa_v_sadu` — группа в саду
+- `lgota` — льготная категория
 
 ## Что сделать
 
-### 1. В админке MoyKlass
-
-Должны существовать три кастомных поля у сущности «Лид» с такими именами:
-
-- `Детский сад` — текстовое
-- `Группа` — текстовое
-- `Льгота` — текстовое или select со значениями
-  «Многодетная семья», «Опекун», «Сотрудник ДОУ», «2+ детей в школе»
-
-Если каких-то полей нет — заведите их в Настройках MoyKlass. Если
-названия отличаются — пропишите фактические в env (см. ниже).
-
-### 2. На бэкенде ЛК
+### 1. На бэкенде ЛК
 
 1. Скопировать [`leads.route.js`](./leads.route.js) в репо ЛК
    (например, `routes/leads.route.js`).
 2. Подключить:
    ```js
-   const leadsRoute = require('./routes/leads.route');
-   app.post('/api/leads', express.json(), leadsRoute);
+   const leads = require('./routes/leads.route');
+   app.post('/api/leads',       express.json(), leads);          // создание
+   app.get ('/api/leads/probe',                 leads.probe);    // диагностика
    ```
    Если `express.json()` уже подключён глобально — второй аргумент
    не нужен.
-3. Env vars:
-   - `MOYKLASS_API_KEY` — уже есть.
-   - (опц.) `MOYKLASS_FILIAL_ID`, `MOYKLASS_STATUS_ID` — куда сразу
-     класть лид.
-   - (опц.) `MOYKLASS_CF_KINDERGARTEN_NAME`, `MOYKLASS_CF_GROUP_NAME`,
-     `MOYKLASS_CF_PRIVILEGE_NAME` — если в MoyKlass поля называются
-     иначе, пропишите фактические имена.
+3. Env vars (фактически нужен только первый):
+   - `MOYKLASS_API_KEY` — уже есть на сервере.
+   - (опц.) `MOYKLASS_FILIAL_ID` — если все заявки должны падать в
+     конкретный филиал.
+   - (опц.) `MOYKLASS_CLIENT_STATE_ID` — если нужно сразу присваивать
+     статус (например, «новая заявка»).
+   - (опц.) `MOYKLASS_ATTR_BIRTHDAY`, `MOYKLASS_ATTR_KINDERGARTEN`,
+     `MOYKLASS_ATTR_GROUP`, `MOYKLASS_ATTR_PRIVILEGE` — переопределить
+     алиасы признаков, если в CRM они называются иначе.
 4. Передеплойте ЛК.
 
-CORS для `champion-footboll.ru` уже разрешён глобально на вашем сервере
-(`access-control-allow-origin: *`), отдельной правки не требуется.
+### 2. Проверка алиасов
 
-### Как работает discovery
-
-При первом запросе бэкенд дёргает `GET /v1/company/customFields`
-(или `leadCustomFields`) с accessToken'ом, ищет поля по имени и кеширует
-их id на час. Если каких-то полей не нашлось — лид всё равно создастся
-со стандартными `name`/`phone`/`dob`, а значения «потерянных» полей
-запишутся в `description` лида с пометкой о том, что поле нужно завести
-в CRM. В ответе вернётся `warning`.
-
-## Frontend конфиг
-
-URL `https://lk.champion-footboll.ru/api/leads` уже захардкожен как
-дефолт в [`src/app/pages/Signup.tsx`](../src/app/pages/Signup.tsx).
-Если URL меняется — переопределите через env:
+Сразу после деплоя дёрните диагностический эндпоинт:
 
 ```bash
-# .env.local в корне репозитория (gitignored)
-VITE_LEADS_ENDPOINT=https://example.com/leads
+curl https://lk.champion-footboll.ru/api/leads/probe
 ```
 
-После любого изменения формы или endpoint'а:
+Ответ — список признаков ученика из CRM плюс алиасы, которые ждёт код:
 
-```bash
-npm run deploy
+```json
+{
+  "expectedAliases": {
+    "birthday": "birthday",
+    "kindergarten": "nomer_sada",
+    "group": "gruppa_v_sadu",
+    "privilege": "lgota"
+  },
+  "attributes": [
+    { "id": 1, "alias": "birthday", "name": "День рождения", "type": "date" },
+    { "id": 5, "alias": "nomer_sada", "name": "Номер сада", "type": "string" },
+    ...
+  ]
+}
 ```
 
-## Проверка
+Сверьте `expectedAliases` с фактическими `alias` в `attributes`. Если
+расходятся — пропишите фактические значения в env-переменных
+`MOYKLASS_ATTR_*`.
 
-После деплоя роута на ЛК:
+### 3. Тестовая заявка
 
 ```bash
 curl -X POST https://lk.champion-footboll.ru/api/leads \
@@ -88,16 +97,33 @@ curl -X POST https://lk.champion-footboll.ru/api/leads \
   }'
 ```
 
-Ожидается `{"ok":true,"leadId":<число>}` (или с полем `warning`, если
-какое-то кастомное поле в MoyKlass не нашлось). В CRM появится лид с
-именем «Тестик», ДР 2020-05-15, телефоном и заполненными кастомными
-полями.
+Ожидается `{"ok":true,"userId":<число>}`. В MoyKlass появится ученик с
+именем «Тестик», телефоном и заполненными признаками.
+
+Если что-то пойдёт не так, сервер вернёт `502` с телом ошибки от
+MoyKlass — там будет видно, какое именно поле не нравится. Лог в
+консоли сервера покажет полный отправленный payload.
+
+## Frontend конфиг
+
+URL `https://lk.champion-footboll.ru/api/leads` уже захардкожен как
+дефолт в [`src/app/pages/Signup.tsx`](../src/app/pages/Signup.tsx).
+Переопределить можно через `.env.local`:
+
+```bash
+VITE_LEADS_ENDPOINT=https://example.com/leads
+```
+
+После любого изменения формы:
+
+```bash
+npm run deploy
+```
 
 ## Если на ЛК уже есть свой MoyKlass-клиент
 
-`leads.route.js` написан как самодостаточный — он сам делает auth и
-кеширует токен на 23 часа, а field id'шники — на час. Если у вас уже
-есть свой `MoyKlassService` / `MoyKlassClient` в кодовой базе ЛК, лучше
-вызывать его, а не дублировать auth-логику. Подмените блоки
-`getAccessToken` + `fetch /v1/company/leads` на ваш существующий метод
-вроде `await moyklass.createLead({...})`.
+Файл написан как самодостаточный — он сам делает auth и кеширует токен
+на 23 часа. Если у вас уже есть готовый `MoyKlassService` /
+`MoyKlassClient`, лучше вызвать его внутри `create`, а не дублировать
+auth-логику. Строки `getAccessToken` + `moyklassFetch` смело меняйте на
+`await moyklass.createUser({ name, phone, attributes, ... })`.
