@@ -28,7 +28,7 @@ export function Signup() {
     const navigate = useNavigate();
 
     const [parentName, setParentName] = useState('');
-    const [phone, setPhone] = useState('');
+    const [phone, setPhone] = useState('+7');
     const [childName, setChildName] = useState('');
     const [childAge, setChildAge] = useState('');
     const [kindergarten, setKindergarten] = useState('');
@@ -207,7 +207,7 @@ export function Signup() {
                                         </p>
                                         <button
                                             onClick={() => {
-                                                setParentName(''); setPhone(''); setChildName('');
+                                                setParentName(''); setPhone('+7'); setChildName('');
                                                 setChildAge(''); setKindergarten(''); setConsent(false);
                                                 setTouched(false); setStatus('idle');
                                             }}
@@ -245,6 +245,20 @@ export function Signup() {
                                                 value={phone}
                                                 onChange={(e) => setPhone(normalizePhone(e.target.value))}
                                                 onBlur={() => setPhone(p => normalizePhone(p))}
+                                                onFocus={(e) => {
+                                                    const el = e.currentTarget;
+                                                    requestAnimationFrame(() => {
+                                                        if (el.selectionStart !== null && el.selectionStart < 2) {
+                                                            el.setSelectionRange(el.value.length, el.value.length);
+                                                        }
+                                                    });
+                                                }}
+                                                onClick={(e) => {
+                                                    const el = e.currentTarget;
+                                                    if (el.selectionStart !== null && el.selectionStart < 2) {
+                                                        el.setSelectionRange(el.value.length, el.value.length);
+                                                    }
+                                                }}
                                                 placeholder="+7 999 123 45 67"
                                                 autoComplete="tel"
                                                 inputMode="tel"
