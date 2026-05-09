@@ -6,7 +6,8 @@ import {
 } from 'lucide-react';
 
 const LEADS_ENDPOINT =
-    ((import.meta as unknown as { env?: Record<string, string> }).env?.VITE_LEADS_ENDPOINT) || '';
+    ((import.meta as unknown as { env?: Record<string, string> }).env?.VITE_LEADS_ENDPOINT)
+    || 'https://lk.champion-footboll.ru/api/leads';
 
 type Status = 'idle' | 'submitting' | 'success' | 'error';
 
@@ -40,7 +41,7 @@ export function Signup() {
     const phoneValid = isValidPhone(phone);
     const formValid = parentName.trim().length >= 2 && phoneValid && childAge && consent;
 
-    async function handleSubmit(event: React.FormEvent) {
+    async function handleSubmit(event: { preventDefault: () => void }) {
         event.preventDefault();
         setTouched(true);
         if (!formValid || status === 'submitting') return;
