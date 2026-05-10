@@ -592,10 +592,21 @@ export function Home() {
                   {coaches.slice(0, 5).map((coach) => (
                     <div
                       key={coach.name}
-                      className={`w-9 h-9 rounded-full ${coach.bgClass} text-white text-xs font-bold flex items-center justify-center border-2 border-white shadow-sm`}
+                      className={`w-10 h-10 rounded-full overflow-hidden border-2 border-white shadow-sm ${coach.bgClass}`}
                       title={coach.name}
                     >
-                      {getCoachInitials(coach.name)}
+                      {coach.photo ? (
+                        <img
+                          src={`${coach.photo}?v=4`}
+                          alt={coach.name}
+                          loading="lazy"
+                          className="w-full h-full object-cover object-top"
+                        />
+                      ) : (
+                        <div className="w-full h-full flex items-center justify-center text-white text-xs font-bold">
+                          {getCoachInitials(coach.name)}
+                        </div>
+                      )}
                     </div>
                   ))}
                 </div>
