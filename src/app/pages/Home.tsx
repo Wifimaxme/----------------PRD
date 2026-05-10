@@ -9,9 +9,8 @@ import {
   Users, 
   Trophy, 
   Shield, 
-  Smartphone, 
+  Smartphone,
   Award,
-  Play,
   CheckCircle2,
   Star,
   MessageCircle,
@@ -206,31 +205,6 @@ const funinoBenefits = [
   },
 ];
 
-const blogPosts = [
-  {
-    title: "Как выбрать футбольные бутсы для малыша?",
-    excerpt: "Полное руководство по выбору первой спортивной обуви для вашего ребенка.",
-    category: "Экипировка",
-    image: "https://images.unsplash.com/photo-1622659097509-4d56de14539e?auto=format&fit=crop&q=80&w=1080",
-    href: "#",
-  },
-  {
-    title: "Питание юного спортсмена: основы",
-    excerpt: "Что должно быть в рационе ребенка, который занимается спортом.",
-    category: "Питание",
-    featured: true,
-    image: "https://images.unsplash.com/photo-1627747776910-6d7e50f57c7e?auto=format&fit=crop&q=80&w=1080",
-    href: "#",
-  },
-  {
-    title: "Мотивация без давления: как заинтересовать ребёнка?",
-    excerpt: "Психологические приёмы для развития любви к спорту.",
-    category: "Психология",
-    image: "https://images.unsplash.com/photo-1701872324421-f537bc8f61de?auto=format&fit=crop&q=80&w=1080",
-    href: "#",
-  },
-];
-
 const pricingPlans = [
   {
     name: "Базовый",
@@ -394,9 +368,6 @@ export function Home() {
     };
   }, []);
 
-  const featuredPost = blogPosts.find((post) => post.featured) ?? blogPosts[0];
-  const secondaryPosts = blogPosts.filter((post) => post !== featuredPost);
-
   return (
     <div className="min-h-screen">
       <Header />
@@ -424,29 +395,10 @@ export function Home() {
                 ребёнок приходит в спорт мягко, с интересом и без лишней логистики для семьи.
               </p>
 
-              <div className="mt-8 flex flex-col gap-4 sm:flex-row">
-                <Link
-                  to="/signup"
-                  className={primaryButtonClass}
-                >
-                  Записаться на пробное занятие
-                </Link>
-                <button
-                  onClick={() => {
-                    document.getElementById('hero-video')?.scrollIntoView({ behavior: 'smooth', block: 'center' });
-                    requestHeroVideoPlayback();
-                  }}
-                  className={`${secondaryButtonClass} group bg-transparent text-gray-800`}
-                >
-                  <Play className="w-5 h-5 group-hover:scale-110 transition-transform" />
-                  Смотреть видео
-                </button>
-              </div>
-
-              {/* Inline phone-capture mini form */}
+              {/* Inline phone-capture form — primary hero CTA */}
               <form
                 onSubmit={handleHeroSubmit}
-                className="mt-5 flex flex-col sm:flex-row gap-2 max-w-lg"
+                className="mt-8 flex flex-col sm:flex-row gap-2 max-w-lg"
               >
                 <input
                   type="tel"
@@ -462,14 +414,14 @@ export function Home() {
                     });
                   }}
                   placeholder="+7 (___) ___-__-__"
-                  className="flex-1 px-4 py-3 rounded-xl border border-slate-200 bg-white focus:border-indigo-500 focus:ring-2 focus:ring-indigo-100 focus:outline-none transition text-slate-900 placeholder:text-slate-400"
-                  aria-label="Телефон для обратного звонка"
+                  className="flex-1 px-5 py-4 rounded-xl border border-slate-200 bg-white focus:border-indigo-500 focus:ring-2 focus:ring-indigo-100 focus:outline-none transition text-slate-900 placeholder:text-slate-400 text-base"
+                  aria-label="Телефон для записи на пробное"
                 />
                 <button
                   type="submit"
-                  className="px-5 py-3 rounded-xl bg-indigo-900 text-white font-semibold hover:bg-indigo-800 active:scale-[0.98] transition shadow-md whitespace-nowrap"
+                  className={`${primaryButtonClass} whitespace-nowrap`}
                 >
-                  Перезвоните мне
+                  Записаться
                 </button>
               </form>
 
@@ -989,106 +941,6 @@ export function Home() {
 
           <div className="mt-12">
             <Quiz />
-          </div>
-        </div>
-      </section>
-
-      {/* Blog Section */}
-      <section id="blog" className="py-24">
-        <div className="container mx-auto px-4">
-          <div className="grid gap-6 lg:grid-cols-[0.74fr_1.26fr] lg:items-end">
-            <div className="max-w-xl">
-              <div className="ui-eyebrow">
-                <Sparkles className="h-4 w-4" />
-                База знаний
-              </div>
-              <h2 className={sectionTitleClass}>
-                Материалы для родителей
-              </h2>
-            </div>
-          </div>
-
-          <div className="mt-12 grid gap-6 lg:grid-cols-[1.08fr_0.92fr]">
-            <article className="ui-card ui-hover-lift overflow-hidden rounded-[1.7rem]">
-              <div className="grid lg:grid-cols-[1.02fr_0.98fr]">
-                <img
-                  src={featuredPost.image}
-                  alt={featuredPost.title}
-                  className="h-72 w-full object-cover lg:h-full"
-                />
-                <div className="flex flex-col justify-between p-7 sm:p-8">
-                  <div>
-                    <div className="inline-flex rounded-full bg-[#f5f0ff] px-3 py-1 text-[11px] font-semibold uppercase tracking-[0.16em] text-purple-700">
-                      {featuredPost.category}
-                    </div>
-                    <h3 className="mt-5 text-2xl font-bold tracking-tight text-gray-900 sm:text-3xl">
-                      {featuredPost.title}
-                    </h3>
-                    <p className="mt-4 text-base leading-relaxed text-gray-600">
-                      {featuredPost.excerpt}
-                    </p>
-                  </div>
-
-                  <div className="mt-8 flex flex-col items-start gap-4 border-t border-black/8 pt-5">
-                    <p className="text-sm leading-relaxed text-gray-500">
-                      Инструмент помогает быстро получить рекомендации по детскому рациону прямо на сайте.
-                    </p>
-                    {featuredPost.href.startsWith("/") ? (
-                      <Link
-                        to={featuredPost.href}
-                        className={`${primaryButtonClass} w-full sm:w-auto mt-2 px-6 py-3 font-bold`}
-                      >
-                        Читать далее →
-                      </Link>
-                    ) : (
-                      <a
-                        href={featuredPost.href}
-                        className={`${primaryButtonClass} w-full sm:w-auto mt-2 px-6 py-3 font-bold`}
-                      >
-                        Читать далее →
-                      </a>
-                    )}
-                  </div>
-                </div>
-              </div>
-            </article>
-
-            <div className="space-y-6">
-              {secondaryPosts.map((post) => (
-                <article
-                  key={post.title}
-                  className="ui-card-soft ui-hover-lift overflow-hidden rounded-[1.45rem]"
-                >
-                  <div className="grid grid-cols-[7rem_1fr] gap-0 sm:grid-cols-[8.5rem_1fr]">
-                    <img
-                      src={post.image}
-                      alt={post.title}
-                      className="h-full min-h-[10.5rem] w-full object-cover"
-                    />
-                    <div className="p-5">
-                      <div className="inline-flex rounded-full bg-[#f8f6f2] px-3 py-1 text-[11px] font-semibold uppercase tracking-[0.16em] text-gray-600">
-                        {post.category}
-                      </div>
-                      <h3 className="mt-4 text-xl font-bold tracking-tight text-gray-900">
-                        {post.title}
-                      </h3>
-                      <p className="mt-3 text-sm leading-relaxed text-gray-600">{post.excerpt}</p>
-                      <div className="mt-5 border-t border-black/8 pt-4">
-                        {post.href.startsWith("/") ? (
-                          <Link to={post.href} className="text-sm font-semibold text-purple-700 hover:underline">
-                            Читать далее →
-                          </Link>
-                        ) : (
-                          <a href={post.href} className="text-sm font-semibold text-purple-700 hover:underline">
-                            Читать далее →
-                          </a>
-                        )}
-                      </div>
-                    </div>
-                  </div>
-                </article>
-              ))}
-            </div>
           </div>
         </div>
       </section>
