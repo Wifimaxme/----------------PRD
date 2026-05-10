@@ -49,7 +49,7 @@ const coaches: Coach[] = [
   },
   {
     name: "Мензоров Максим",
-    photo: "/images/coaches/menzorov.jpg",
+    photo: "/images/coaches/menzorov.png",
     experience: "6 лет тренерского стажа",
     focus: "Собирает доверие через спокойную коммуникацию и превращает тренировку в понятный детям ритуал успеха.",
     bgClass: "bg-orange-600",
@@ -58,7 +58,7 @@ const coaches: Coach[] = [
   },
   {
     name: "Юсупов Константин",
-    photo: "/images/coaches/yusupov.jpg",
+    photo: "/images/coaches/yusupov.png",
     experience: "3 года тренерского стажа, 10 лет игрового",
     focus: "Держит высокий темп занятия и помогает детям быстрее почувствовать уверенность в игре один в один.",
     bgClass: "bg-amber-600",
@@ -72,7 +72,7 @@ const coaches: Coach[] = [
   },
   {
     name: "Кулаков Максим",
-    photo: "/images/coaches/kulakov.jpg",
+    photo: "/images/coaches/kulakov.png",
     experience: "5 лет тренерского стажа",
     focus: "Соединяет европейскую методику с понятной ребёнку игровой подачей и вниманием к деталям техники.",
     bgClass: "bg-orange-500",
@@ -85,6 +85,7 @@ const coaches: Coach[] = [
   },
   {
     name: "Свитницкий Родион",
+    photo: "/images/coaches/svitnitsky.png",
     experience: "5 лет тренерского стажа",
     focus: "Сильная сторона — мотивация и настрой детей на постепенный рост через маленькие победы.",
     bgClass: "bg-orange-600",
@@ -612,13 +613,13 @@ export function Home() {
                 className="group w-[270px] sm:w-[290px] shrink-0 snap-start flex flex-col overflow-hidden rounded-[1.25rem] bg-white border border-black/6 shadow-[0_2px_12px_-6px_rgba(15,23,42,0.12)] hover:shadow-[0_24px_40px_-24px_rgba(15,23,42,0.25)] hover:-translate-y-1 transition-all duration-300"
               >
                 {/* Photo / fallback */}
-                <div className={`relative aspect-square overflow-hidden ${coach.photo ? "" : coach.bgClass}`}>
+                <div className={`relative aspect-square overflow-hidden ${coach.photo ? "bg-gradient-to-b from-orange-50 via-white to-indigo-50" : coach.bgClass}`}>
                   {coach.photo ? (
                     <img
                       src={coach.photo}
                       alt={coach.name}
                       loading="lazy"
-                      className="h-full w-full object-cover transition-transform duration-500 group-hover:scale-105"
+                      className="absolute inset-x-0 top-0 h-[120%] w-full object-cover object-top transition-transform duration-500 group-hover:scale-105"
                     />
                   ) : (
                     <div className="flex h-full w-full items-center justify-center text-white">
