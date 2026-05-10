@@ -600,18 +600,19 @@ export function Home() {
             </p>
           </div>
 
-          <div className="mt-12 grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
+          <div className="mt-10 -mx-4 px-4 snap-x snap-mandatory overflow-x-auto pb-5 [scrollbar-width:thin] [scrollbar-color:rgba(147,51,234,0.45)_transparent]">
+            <div className="flex w-max gap-4">
             {coaches.map((coach, index) => (
               <motion.article
                 key={coach.name}
-                initial={{ opacity: 0, y: 28 }}
+                initial={{ opacity: 0, y: 24 }}
                 whileInView={{ opacity: 1, y: 0 }}
                 viewport={{ once: true, margin: "-60px" }}
-                transition={{ delay: index * 0.07, duration: 0.45, ease: "easeOut" }}
-                className="group flex flex-col overflow-hidden rounded-[1.35rem] bg-white border border-black/6 shadow-[0_2px_12px_-6px_rgba(15,23,42,0.12)] hover:shadow-[0_24px_40px_-24px_rgba(15,23,42,0.25)] hover:-translate-y-1 transition-all duration-300"
+                transition={{ delay: index * 0.06, duration: 0.4, ease: "easeOut" }}
+                className="group w-[270px] sm:w-[290px] shrink-0 snap-start flex flex-col overflow-hidden rounded-[1.25rem] bg-white border border-black/6 shadow-[0_2px_12px_-6px_rgba(15,23,42,0.12)] hover:shadow-[0_24px_40px_-24px_rgba(15,23,42,0.25)] hover:-translate-y-1 transition-all duration-300"
               >
                 {/* Photo / fallback */}
-                <div className={`relative aspect-[4/5] overflow-hidden ${coach.photo ? "" : coach.bgClass}`}>
+                <div className={`relative aspect-square overflow-hidden ${coach.photo ? "" : coach.bgClass}`}>
                   {coach.photo ? (
                     <img
                       src={coach.photo}
@@ -686,6 +687,7 @@ export function Home() {
                 </div>
               </motion.article>
             ))}
+            </div>
           </div>
         </div>
       </section>
