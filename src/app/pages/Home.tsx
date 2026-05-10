@@ -312,43 +312,52 @@ const developmentPyramidLevels = [
   },
 ];
 
-// School-in-numbers headline stats (rendered with a count-up animation
-// when the section enters the viewport).
-const schoolStats = [
+// School-in-numbers headline stats. Three numeric cards animate with a
+// count-up when the section enters the viewport; the fourth is a
+// badge-style card surfacing the Минобр licence.
+type SchoolStat =
+  | {
+      kind: "number";
+      value: number;
+      suffix: string;
+      label: string;
+      accentClass: string;
+    }
+  | {
+      kind: "badge";
+      valueLines: string[];
+      label: string;
+      accentClass: string;
+    };
+
+const schoolStats: SchoolStat[] = [
   {
+    kind: "number",
     value: 2000,
     suffix: "+",
     label: "учеников за всё время",
     accentClass: "from-orange-500 to-orange-600",
   },
   {
+    kind: "number",
     value: 20,
     suffix: "",
     label: "филиалов в Новосибирске",
     accentClass: "from-indigo-700 to-purple-700",
   },
   {
+    kind: "number",
     value: 10,
     suffix: " лет",
     label: "работы с 2016 года",
     accentClass: "from-purple-600 to-fuchsia-500",
   },
   {
-    value: 40,
-    suffix: "+",
-    label: "лет суммарного тренерского опыта",
+    kind: "badge",
+    valueLines: ["Лицензия", "Минобра"],
+    label: "Программа аккредитована Министерством образования",
     accentClass: "from-amber-500 to-orange-500",
   },
-];
-
-// Clubs and academies our coaches went through — pulled from the coach
-// data above, summarized for a single trust strip.
-const trainedAt = [
-  { name: "Manchester United Coaching Clinic", flag: "🏴󠁧󠁢󠁥󠁮󠁧󠁿" },
-  { name: "Локомотив", flag: "🇷🇺" },
-  { name: "Црвена Звезда", flag: "🇷🇸" },
-  { name: "ФК Динамо (Барнаул)", flag: "🇷🇺" },
-  { name: "ДЮСШ Новосибирск", flag: "🇷🇺" },
 ];
 
 // Lightweight count-up: animates an integer from 0 to `to` once the
@@ -803,26 +812,21 @@ export function Home() {
                 className="relative overflow-hidden rounded-[1.4rem] bg-white border border-black/6 p-6 shadow-[0_2px_14px_-6px_rgba(15,23,42,0.12)]"
               >
                 <div className={`absolute inset-x-0 top-0 h-1.5 bg-gradient-to-r ${stat.accentClass}`} />
-                <div className={`text-5xl md:text-6xl font-black tracking-tight bg-gradient-to-br ${stat.accentClass} bg-clip-text text-transparent leading-none`}>
-                  <CountUp to={stat.value} suffix={stat.suffix} />
-                </div>
+                {stat.kind === "number" ? (
+                  <div className={`text-5xl md:text-6xl font-black tracking-tight bg-gradient-to-br ${stat.accentClass} bg-clip-text text-transparent leading-none`}>
+                    <CountUp to={stat.value} suffix={stat.suffix} />
+                  </div>
+                ) : (
+                  <div className={`text-3xl md:text-4xl font-black tracking-tight bg-gradient-to-br ${stat.accentClass} bg-clip-text text-transparent leading-tight`}>
+                    {stat.valueLines.map((line, idx) => (
+                      <div key={idx}>{line}</div>
+                    ))}
+                  </div>
+                )}
                 <p className="mt-3 text-sm leading-relaxed text-gray-600">
                   {stat.label}
                 </p>
               </motion.div>
-            ))}
-          </div>
-
-          {/* Coach internships — logo-style chips, no descriptive heading */}
-          <div className="mt-10 flex flex-wrap items-center justify-center gap-3">
-            {trainedAt.map((club) => (
-              <span
-                key={club.name}
-                className="inline-flex items-center gap-2 rounded-full bg-white border border-indigo-200 px-5 py-2.5 text-sm font-bold text-indigo-900 shadow-[0_2px_10px_-6px_rgba(15,23,42,0.18)]"
-              >
-                <span className="text-lg leading-none">{club.flag}</span>
-                {club.name}
-              </span>
             ))}
           </div>
 
@@ -834,7 +838,7 @@ export function Home() {
                 <CheckCircle2 className="h-5 w-5 text-emerald-600" />
               </div>
               <p className="text-sm leading-relaxed text-gray-700">
-                Программа лицензирована Рособрнадзором, режим занятий соответствует{" "}
+                Режим занятий соответствует{" "}
                 <span className="font-semibold">СанПиН 1.2.3685-21</span>. Поддерживаем
                 инклюзивный футбол вместе с фондом{" "}
                 <span className="font-semibold">СБФ «Только вместе»</span>.
