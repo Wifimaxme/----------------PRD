@@ -6,11 +6,11 @@ import { Quiz } from "../components/Quiz";
 import StickyMobileCTA from "../../components/StickyMobileCTA";
 import HeroFloatingShapes, { LkFloatingShapes } from "../../components/HeroFloatingShapes";
 import { Link, useNavigate } from "react-router";
-import { 
-  Heart, 
-  Users, 
-  Trophy, 
-  Shield, 
+import {
+  Heart,
+  Users,
+  Trophy,
+  Shield,
   Smartphone,
   Award,
   CheckCircle2,
@@ -20,7 +20,8 @@ import {
   Send,
   Sparkles,
   QrCode,
-  LogIn
+  LogIn,
+  CircleDot,
 } from "lucide-react";
 
 interface Coach {
@@ -274,48 +275,91 @@ const primaryButtonClass = "ui-button-primary";
 const secondaryButtonClass = "ui-button-secondary";
 const secondaryButtonCompactClass = "ui-button-secondary px-5 py-3 text-sm";
 
-// Reads top-to-bottom (Level 5 → Level 1). Progression for the kid
-// goes the other way — bottom up — so the bottom layer is the
-// "foundation" and what every kid starts with. Age ranges per СанПиН +
-// PRD: занятия 15-30 мин в зависимости от группы.
-const developmentPyramidLevels = [
-  {
-    level: "Уровень 5",
-    title: "Игра в команде",
-    age: "6-7 лет",
-    icon: Trophy,
-    widthClass: "w-full sm:w-[56%]",
-    gradientClass: "from-amber-400 via-orange-400 to-orange-500",
-    borderClass: "border-amber-200",
-  },
-  {
-    level: "Уровень 4",
-    title: "Точные передачи",
-    age: "5-6 лет",
-    icon: Users,
-    widthClass: "w-full sm:w-[68%]",
-    gradientClass: "from-orange-500 via-orange-500 to-rose-500",
-    borderClass: "border-orange-200",
-  },
-  {
-    level: "Уровень 3",
-    title: "Сложные финты",
-    age: "4-5 лет",
-    icon: Star,
-    widthClass: "w-full sm:w-[80%]",
-    gradientClass: "from-fuchsia-500 via-purple-500 to-purple-600",
-    borderClass: "border-fuchsia-200",
-  },
-  {
-    level: "Уровень 2",
-    title: "Игра 1×1",
-    age: "4-5 лет",
-    icon: Shield,
-    widthClass: "w-full sm:w-[92%]",
-    gradientClass: "from-violet-600 via-purple-600 to-indigo-600",
-    borderClass: "border-violet-200",
-  },
+// Path of champions — gamified visualization of the development
+// progression. 5 levels + a starting ball at the bottom, drawn as a
+// zig-zag dotted path with circular gradient nodes (Duolingo-style).
+const championPathNodes = [
+    {
+        kind: "start" as const,
+        label: "Старт",
+        sub: "Сюда приходит ребёнок",
+        icon: CircleDot,
+        x: 14, // % of container
+        y: 92,
+        gradient: "from-emerald-400 to-emerald-600",
+    },
+    {
+        kind: "level" as const,
+        n: 1,
+        title: "Контроль мяча",
+        sub: "Чувство мяча, базовый контроль",
+        icon: Shield,
+        x: 72,
+        y: 80,
+        gradient: "from-indigo-700 via-purple-700 to-purple-900",
+    },
+    {
+        kind: "level" as const,
+        n: 2,
+        title: "Игра 1×1",
+        sub: "Уверенность в дуэли с соперником",
+        icon: Award,
+        x: 16,
+        y: 64,
+        gradient: "from-violet-600 via-purple-600 to-indigo-600",
+    },
+    {
+        kind: "level" as const,
+        n: 3,
+        title: "Сложные финты",
+        sub: "Обводка, изменение направления",
+        icon: Star,
+        x: 74,
+        y: 48,
+        gradient: "from-fuchsia-500 via-purple-500 to-purple-600",
+    },
+    {
+        kind: "level" as const,
+        n: 4,
+        title: "Точные передачи",
+        sub: "Работа в паре и тройке",
+        icon: Users,
+        x: 20,
+        y: 30,
+        gradient: "from-orange-500 via-orange-500 to-rose-500",
+    },
+    {
+        kind: "level" as const,
+        n: 5,
+        title: "Игра в команде",
+        sub: "Финал — настоящий матч",
+        icon: Trophy,
+        x: 72,
+        y: 12,
+        gradient: "from-amber-400 via-orange-400 to-orange-500",
+    },
 ];
+
+// SVG path through the nodes, with symmetric S-curves between
+// alternating-side stops so the line snakes naturally.
+function buildChampionPath(nodes: typeof championPathNodes): string {
+    const VB = 300;
+    const VBh = 400;
+    const sx = (p: number) => (p / 100) * VB;
+    const sy = (p: number) => (p / 100) * VBh;
+
+    let d = `M ${sx(nodes[0].x)} ${sy(nodes[0].y)}`;
+    for (let i = 1; i < nodes.length; i++) {
+        const a = nodes[i - 1];
+        const b = nodes[i];
+        const c1x = sx(a.x);
+        const c1y = sy((a.y + b.y) / 2);
+        const c2x = sx(b.x);
+        const c2y = sy((a.y + b.y) / 2);
+        d += ` C ${c1x} ${c1y}, ${c2x} ${c2y}, ${sx(b.x)} ${sy(b.y)}`;
+    }
+    return d;
+}
 
 const RUTUBE_ORIGIN = "https://rutube.ru";
 const HERO_VIDEO_SRC =
@@ -782,82 +826,121 @@ export function Home() {
                   </div>
                 </div>
 
-                <div className="rounded-[1rem] border border-black/6 bg-white/38 p-4 sm:p-5">
-                  <div className="flex items-center justify-between">
+                {/* Path of champions — gamified development map */}
+                <div className="rounded-[1.4rem] border border-black/6 bg-gradient-to-br from-indigo-50/80 via-white to-orange-50/60 p-4 sm:p-5 overflow-hidden">
+                  <div className="flex items-center justify-between mb-3">
                     <p className="text-[10px] font-semibold uppercase tracking-[0.18em] text-gray-400">
-                      Пирамида развития
+                      Путь чемпиона
                     </p>
                     <p className="text-[10px] font-semibold uppercase tracking-[0.16em] text-purple-500">
-                      ↑ путь развития
+                      ↑ прокачка навыков
                     </p>
                   </div>
-                  <div className="mt-4 flex flex-col items-center gap-2">
-                    {developmentPyramidLevels.map((layer, idx) => {
-                      const Icon = layer.icon;
-                      // Reverse stagger so the bottom (Уровень 1) appears first,
-                      // matching the actual learning progression. The data is
-                      // top-to-bottom (Уровень 5 → 2), so bottom = highest idx.
-                      const bottomIdx = developmentPyramidLevels.length - idx; // 1-based from bottom
-                      // Levels 5..2 → delays after the foundation appears.
-                      const delay = (bottomIdx + 1) * 0.12; // foundation gets 0.12, then up
+
+                  <div className="relative mx-auto w-full max-w-[420px] aspect-[3/4]">
+                    {/* Decorative dotted path */}
+                    <svg
+                      viewBox="0 0 300 400"
+                      preserveAspectRatio="xMidYMid meet"
+                      className="absolute inset-0 h-full w-full"
+                      aria-hidden="true"
+                    >
+                      <defs>
+                        <linearGradient id="champPathGrad" x1="0" y1="1" x2="1" y2="0">
+                          <stop offset="0%" stopColor="#10b981" />
+                          <stop offset="50%" stopColor="#a855f7" />
+                          <stop offset="100%" stopColor="#f97316" />
+                        </linearGradient>
+                      </defs>
+                      <motion.path
+                        d={buildChampionPath(championPathNodes)}
+                        fill="none"
+                        stroke="url(#champPathGrad)"
+                        strokeWidth="3"
+                        strokeLinecap="round"
+                        strokeDasharray="2 8"
+                        initial={{ pathLength: 0, opacity: 0 }}
+                        whileInView={{ pathLength: 1, opacity: 1 }}
+                        viewport={{ once: true, margin: "-40px" }}
+                        transition={{ duration: 1.6, ease: "easeInOut" }}
+                      />
+                    </svg>
+
+                    {/* Nodes */}
+                    {championPathNodes.map((node, i) => {
+                      const Icon = node.icon;
+                      const isStart = node.kind === "start";
+                      const labelOnLeft = node.x > 50;
 
                       return (
                         <motion.div
-                          key={layer.level}
-                          initial={{ opacity: 0, y: 14 }}
-                          whileInView={{ opacity: 1, y: 0 }}
+                          key={i}
+                          initial={{ opacity: 0, scale: 0.4 }}
+                          whileInView={{ opacity: 1, scale: 1 }}
                           viewport={{ once: true, margin: "-40px" }}
-                          transition={{ delay, duration: 0.4, ease: "easeOut" }}
-                          className={layer.widthClass}
+                          transition={{
+                            delay: 0.18 + i * 0.16,
+                            duration: 0.45,
+                            ease: [0.34, 1.56, 0.64, 1],
+                          }}
+                          className="absolute"
+                          style={{
+                            left: `${node.x}%`,
+                            top: `${node.y}%`,
+                            transform: "translate(-50%, -50%)",
+                          }}
                         >
-                          <div
-                            className={`relative overflow-hidden rounded-[0.9rem] bg-gradient-to-r ${layer.gradientClass} px-3 py-2.5 text-white shadow-[0_12px_24px_-16px_rgba(15,23,42,0.48)]`}
-                          >
-                            <div className="absolute inset-0 bg-[linear-gradient(135deg,rgba(255,255,255,0.2),transparent_58%)]"></div>
-                            <div className="relative flex items-center gap-2.5">
-                              <div className="flex h-8 w-8 shrink-0 items-center justify-center rounded-xl bg-white/15 backdrop-blur-sm">
-                                <Icon className="h-4 w-4" />
+                          <div className="flex items-center gap-2" style={{ flexDirection: labelOnLeft ? "row-reverse" : "row" }}>
+                            {/* Circle node */}
+                            <div className="relative shrink-0">
+                              <div
+                                className={`relative flex h-14 w-14 items-center justify-center rounded-full bg-gradient-to-br ${node.gradient} text-white shadow-[0_10px_20px_-10px_rgba(15,23,42,0.55)]`}
+                              >
+                                <div className="absolute inset-0 rounded-full bg-[linear-gradient(135deg,rgba(255,255,255,0.32),transparent_58%)]" />
+                                <Icon className="relative h-6 w-6" />
+                                {!isStart && (
+                                  <span className="absolute -right-1 -top-1 inline-flex h-5 w-5 items-center justify-center rounded-full bg-white text-[10px] font-black text-indigo-900 shadow-[0_2px_6px_-1px_rgba(15,23,42,0.35)] ring-2 ring-white">
+                                    {node.n}
+                                  </span>
+                                )}
                               </div>
-                              <div className="flex-1 text-left">
-                                <p className="text-[10px] font-semibold uppercase tracking-[0.16em] text-white/80">
-                                  {layer.level}
+                              {isStart && (
+                                <span className="absolute -bottom-1 left-1/2 -translate-x-1/2 inline-flex h-4 items-center rounded-full bg-emerald-500 px-1.5 text-[8px] font-bold uppercase tracking-wider text-white shadow-sm">
+                                  Старт
+                                </span>
+                              )}
+                            </div>
+
+                            {/* Label card */}
+                            <div className={`max-w-[120px] rounded-lg bg-white/95 backdrop-blur-sm px-2 py-1 shadow-[0_2px_8px_-3px_rgba(15,23,42,0.18)] border border-black/5 ${labelOnLeft ? "text-right" : "text-left"}`}>
+                              {!isStart && (
+                                <p className="text-[9px] font-bold uppercase tracking-[0.14em] text-purple-500">
+                                  Уровень {node.n}
                                 </p>
-                                <p className="text-sm font-bold leading-tight text-white">
-                                  {layer.title}
-                                </p>
-                              </div>
-                              <span className="text-[10px] font-semibold uppercase tracking-[0.12em] text-white/82 whitespace-nowrap">
-                                {layer.age}
-                              </span>
+                              )}
+                              <p className="text-[12px] font-bold leading-tight text-gray-900">
+                                {isStart ? node.label : node.title}
+                              </p>
+                              <p className="text-[10px] leading-snug text-gray-500 mt-0.5">
+                                {node.sub}
+                              </p>
                             </div>
                           </div>
                         </motion.div>
                       );
                     })}
 
+                    {/* Sparkle behind top trophy */}
                     <motion.div
-                      initial={{ opacity: 0, y: 14 }}
-                      whileInView={{ opacity: 1, y: 0 }}
-                      viewport={{ once: true, margin: "-40px" }}
-                      transition={{ delay: 0.12, duration: 0.4, ease: "easeOut" }}
-                      className="w-full"
+                      initial={{ opacity: 0, scale: 0 }}
+                      whileInView={{ opacity: 1, scale: 1 }}
+                      viewport={{ once: true }}
+                      transition={{ delay: 1.5, duration: 0.6 }}
+                      className="absolute"
+                      style={{ left: `${championPathNodes[championPathNodes.length - 1].x}%`, top: `${championPathNodes[championPathNodes.length - 1].y}%`, transform: "translate(-50%, -50%)" }}
+                      aria-hidden="true"
                     >
-                      <div className="rounded-[1rem] bg-gradient-to-r from-slate-900 via-indigo-900 to-purple-900 px-4 py-3.5 text-white shadow-[0_12px_24px_-16px_rgba(15,23,42,0.62)]">
-                        <div className="flex items-center justify-between gap-3">
-                          <div className="text-left">
-                            <p className="text-[10px] font-semibold uppercase tracking-[0.18em] text-indigo-100">
-                              Уровень 1 · фундамент
-                            </p>
-                            <p className="mt-1 text-base font-black tracking-wide">Контроль мяча</p>
-                          </div>
-                          <span className="text-[10px] font-semibold uppercase tracking-[0.12em] text-indigo-100 whitespace-nowrap shrink-0">
-                            3-4 года
-                          </span>
-                        </div>
-                        <p className="mt-1 text-xs font-medium text-indigo-100">
-                          Чувство мяча и уверенный базовый контроль
-                        </p>
-                      </div>
+                      <div className="absolute -inset-6 rounded-full bg-gradient-to-r from-amber-300/60 to-orange-400/60 blur-2xl" />
                     </motion.div>
                   </div>
                 </div>
