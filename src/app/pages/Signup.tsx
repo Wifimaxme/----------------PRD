@@ -1,5 +1,5 @@
-import { useState } from 'react';
-import { useNavigate, Link } from 'react-router';
+import { useEffect, useState } from 'react';
+import { useNavigate, Link, useLocation } from 'react-router';
 import {
     Trophy, MapPin, Calendar, UserCheck, Users, RussianRuble, CircleDot,
     ArrowLeft, CheckCircle2, Loader2, AlertCircle
@@ -38,9 +38,23 @@ const PRIVILEGE_OPTIONS = [
 
 export function Signup() {
     const navigate = useNavigate();
+    const location = useLocation();
+    const prefillPhone =
+        typeof (location.state as { phone?: unknown } | null)?.phone === 'string'
+            ? (location.state as { phone: string }).phone
+            : '+7';
 
     const [childName, setChildName] = useState('');
-    const [phone, setPhone] = useState('+7');
+    const [phone, setPhone] = useState(prefillPhone);
+
+    useEffect(() => {
+        // Если пользователь пришёл с главной с заранее набранным телефоном —
+        // фокусируемся сразу на следующем поле (имя), а телефон уже заполнен.
+        if (prefillPhone !== '+7') {
+            const nameInput = document.querySelector<HTMLInputElement>('input[type="text"]');
+            nameInput?.focus();
+        }
+    }, [prefillPhone]);
     const [dob, setDob] = useState('');
     const [kindergarten, setKindergarten] = useState('');
     const [group, setGroup] = useState('');
