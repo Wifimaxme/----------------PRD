@@ -760,7 +760,7 @@ export function Home() {
 
           <div className="mt-12 grid gap-4 lg:grid-cols-2">
             {/* "Как обычно" — muted card */}
-            <div className="rounded-[1.6rem] border border-slate-200 bg-slate-50 p-6 sm:p-8 relative">
+            <div className="rounded-[1.3rem] border border-slate-200 bg-slate-50 p-5 sm:p-6 relative">
               <p className="text-[11px] font-semibold uppercase tracking-[0.16em] text-slate-500 mb-2">
                 Как обычно
               </p>
@@ -787,7 +787,7 @@ export function Home() {
             </div>
 
             {/* ФШ «Чемпион» — brand card */}
-            <div className="rounded-[1.6rem] bg-gradient-to-br from-indigo-900 via-purple-700 to-orange-500 p-6 sm:p-8 text-white relative overflow-hidden shadow-[0_24px_60px_-30px_rgba(124,58,237,0.55)]">
+            <div className="rounded-[1.3rem] bg-gradient-to-br from-indigo-900 via-purple-700 to-orange-500 p-5 sm:p-6 text-white relative overflow-hidden shadow-[0_24px_60px_-30px_rgba(124,58,237,0.55)]">
               <div className="absolute -right-12 -top-12 h-56 w-56 rounded-full bg-orange-400/30 blur-3xl pointer-events-none" />
               <div className="absolute -left-10 bottom-0 h-40 w-40 rounded-full bg-purple-400/30 blur-3xl pointer-events-none" />
               <div className="relative">
