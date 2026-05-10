@@ -342,12 +342,11 @@ const championPathNodes = [
 
 // SVG path through the nodes, with symmetric S-curves between
 // alternating-side stops so the line snakes naturally.
-const CHAMP_VB_W = 300;
-const CHAMP_VB_H = 400;
-
 function buildChampionPath(nodes: typeof championPathNodes): string {
-    const sx = (p: number) => (p / 100) * CHAMP_VB_W;
-    const sy = (p: number) => (p / 100) * CHAMP_VB_H;
+    const VB = 300;
+    const VBh = 400;
+    const sx = (p: number) => (p / 100) * VB;
+    const sy = (p: number) => (p / 100) * VBh;
 
     let d = `M ${sx(nodes[0].x)} ${sy(nodes[0].y)}`;
     for (let i = 1; i < nodes.length; i++) {
@@ -360,37 +359,6 @@ function buildChampionPath(nodes: typeof championPathNodes): string {
         d += ` C ${c1x} ${c1y}, ${c2x} ${c2y}, ${sx(b.x)} ${sy(b.y)}`;
     }
     return d;
-}
-
-// Sample points along the same cubic-bezier path so we can drop little
-// soccer balls every ~"step" along the trail.
-function buildChampionTrailPoints(
-    nodes: typeof championPathNodes,
-    perSegment = 3,
-): { x: number; y: number }[] {
-    const sx = (p: number) => (p / 100) * CHAMP_VB_W;
-    const sy = (p: number) => (p / 100) * CHAMP_VB_H;
-    const pts: { x: number; y: number }[] = [];
-
-    for (let i = 1; i < nodes.length; i++) {
-        const a = nodes[i - 1];
-        const b = nodes[i];
-        const p0 = { x: sx(a.x), y: sy(a.y) };
-        const p1 = { x: sx(b.x), y: sy(b.y) };
-        const c1 = { x: sx(a.x), y: sy((a.y + b.y) / 2) };
-        const c2 = { x: sx(b.x), y: sy((a.y + b.y) / 2) };
-
-        for (let j = 1; j <= perSegment; j++) {
-            const t = j / (perSegment + 1);
-            const u = 1 - t;
-            const x =
-                u * u * u * p0.x + 3 * u * u * t * c1.x + 3 * u * t * t * c2.x + t * t * t * p1.x;
-            const y =
-                u * u * u * p0.y + 3 * u * u * t * c1.y + 3 * u * t * t * c2.y + t * t * t * p1.y;
-            pts.push({ x, y });
-        }
-    }
-    return pts;
 }
 
 const RUTUBE_ORIGIN = "https://rutube.ru";
@@ -870,9 +838,9 @@ export function Home() {
                   </div>
 
                   <div className="relative mx-auto w-full max-w-[420px] aspect-[3/4]">
-                    {/* Path with two-layer magistral + chain of soccer balls */}
+                    {/* Decorative dotted path */}
                     <svg
-                      viewBox={`0 0 ${CHAMP_VB_W} ${CHAMP_VB_H}`}
+                      viewBox="0 0 300 400"
                       preserveAspectRatio="xMidYMid meet"
                       className="absolute inset-0 h-full w-full"
                       aria-hidden="true"
@@ -884,62 +852,18 @@ export function Home() {
                           <stop offset="100%" stopColor="#f97316" />
                         </linearGradient>
                       </defs>
-
-                      {/* Soft wide underlay for the "highway" feel */}
-                      <motion.path
-                        d={buildChampionPath(championPathNodes)}
-                        fill="none"
-                        stroke="rgba(168, 85, 247, 0.18)"
-                        strokeWidth="14"
-                        strokeLinecap="round"
-                        strokeLinejoin="round"
-                        initial={{ pathLength: 0, opacity: 0 }}
-                        whileInView={{ pathLength: 1, opacity: 1 }}
-                        viewport={{ once: true, margin: "-40px" }}
-                        transition={{ duration: 1.6, ease: "easeInOut" }}
-                      />
-                      {/* Solid colored line on top */}
                       <motion.path
                         d={buildChampionPath(championPathNodes)}
                         fill="none"
                         stroke="url(#champPathGrad)"
-                        strokeWidth="5"
+                        strokeWidth="3"
                         strokeLinecap="round"
-                        strokeLinejoin="round"
+                        strokeDasharray="2 8"
                         initial={{ pathLength: 0, opacity: 0 }}
                         whileInView={{ pathLength: 1, opacity: 1 }}
                         viewport={{ once: true, margin: "-40px" }}
                         transition={{ duration: 1.6, ease: "easeInOut" }}
                       />
-
-                      {/* Trail of mini soccer balls along the path */}
-                      {buildChampionTrailPoints(championPathNodes, 3).map((pt, i, arr) => (
-                        <motion.g
-                          key={i}
-                          initial={{ opacity: 0, scale: 0 }}
-                          whileInView={{ opacity: 1, scale: 1 }}
-                          viewport={{ once: true, margin: "-40px" }}
-                          transition={{
-                            delay: 1.4 + (i / arr.length) * 0.6,
-                            duration: 0.3,
-                            ease: "backOut",
-                          }}
-                          style={{ transformOrigin: `${pt.x}px ${pt.y}px` }}
-                        >
-                          <circle
-                            cx={pt.x}
-                            cy={pt.y}
-                            r="5"
-                            fill="white"
-                            stroke="#1f2937"
-                            strokeWidth="1"
-                          />
-                          <polygon
-                            points={`${pt.x},${pt.y - 1.8} ${pt.x + 1.7},${pt.y - 0.5} ${pt.x + 1.05},${pt.y + 1.5} ${pt.x - 1.05},${pt.y + 1.5} ${pt.x - 1.7},${pt.y - 0.5}`}
-                            fill="#1f2937"
-                          />
-                        </motion.g>
-                      ))}
                     </svg>
 
                     {/* Nodes */}
