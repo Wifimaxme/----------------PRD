@@ -398,7 +398,7 @@ export function Home() {
               {/* Inline phone-capture form — primary hero CTA */}
               <form
                 onSubmit={handleHeroSubmit}
-                className="mt-8 flex flex-col sm:flex-row gap-2 max-w-lg"
+                className="mt-8 grid grid-cols-1 sm:grid-cols-[1fr_auto] gap-3 max-w-xl"
               >
                 <input
                   type="tel"
@@ -414,12 +414,12 @@ export function Home() {
                     });
                   }}
                   placeholder="+7 (___) ___-__-__"
-                  className="flex-1 px-5 py-4 rounded-xl border border-slate-200 bg-white focus:border-indigo-500 focus:ring-2 focus:ring-indigo-100 focus:outline-none transition text-slate-900 placeholder:text-slate-400 text-base"
+                  className="px-5 py-4 rounded-xl border border-slate-200 bg-white focus:border-indigo-500 focus:ring-2 focus:ring-indigo-100 focus:outline-none transition text-slate-900 placeholder:text-slate-400 text-base"
                   aria-label="Телефон для записи на пробное"
                 />
                 <button
                   type="submit"
-                  className={`${primaryButtonClass} whitespace-nowrap`}
+                  className={`${primaryButtonClass} whitespace-nowrap px-10 py-4 text-base`}
                 >
                   Записаться
                 </button>
@@ -436,7 +436,19 @@ export function Home() {
                 </span>
               </div>
 
-              {/* Coaches trust strip */}
+              <div className="mt-10 grid gap-5 border-t border-black/8 pt-6 sm:grid-cols-3">
+                {heroHighlights.map((item, index) => (
+                  <div
+                    key={item.value}
+                    className={`min-w-0 ${index > 0 ? "sm:border-l sm:border-black/8 sm:pl-5" : ""}`}
+                  >
+                    <div className="text-base font-bold text-gray-900">{item.value}</div>
+                    <div className="mt-1 text-sm leading-relaxed text-gray-500">{item.label}</div>
+                  </div>
+                ))}
+              </div>
+
+              {/* Coaches trust strip — moved below stats per design feedback */}
               <div className="mt-6 flex items-center gap-3">
                 <div className="flex -space-x-2">
                   {coaches.slice(0, 5).map((coach) => (
@@ -454,18 +466,6 @@ export function Home() {
                   с лицензиями <span className="font-semibold">C-UEFA</span>, КМС
                   и опытом в&nbsp;Манчестер Юнайтед, Локомотиве, Динамо
                 </p>
-              </div>
-
-              <div className="mt-10 grid gap-5 border-t border-black/8 pt-6 sm:grid-cols-3">
-                {heroHighlights.map((item, index) => (
-                  <div
-                    key={item.value}
-                    className={`min-w-0 ${index > 0 ? "sm:border-l sm:border-black/8 sm:pl-5" : ""}`}
-                  >
-                    <div className="text-base font-bold text-gray-900">{item.value}</div>
-                    <div className="mt-1 text-sm leading-relaxed text-gray-500">{item.label}</div>
-                  </div>
-                ))}
               </div>
             </div>
 
