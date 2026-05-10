@@ -17,7 +17,7 @@ export default function FloatingLkButton() {
       target={newTab ? '_blank' : '_self'}
       rel={newTab ? 'noopener noreferrer' : undefined}
       style={{ textDecoration: 'none' }}
-      className="fixed bottom-6 right-6 z-50 flex items-center gap-3 rounded-full bg-blue-600 px-5 py-3 text-white shadow-2xl transition-all duration-300 hover:scale-105 hover:bg-blue-700 hover:shadow-[0_15px_30px_-5px_rgba(37,99,235,0.4)] active:scale-95 sm:bottom-8 sm:right-8"
+      className="hidden md:flex fixed bottom-6 right-6 z-50 items-center gap-3 rounded-full bg-blue-600 px-5 py-3 text-white shadow-2xl transition-all duration-300 hover:scale-105 hover:bg-blue-700 hover:shadow-[0_15px_30px_-5px_rgba(37,99,235,0.4)] active:scale-95 sm:bottom-8 sm:right-8"
     >
       <div className="flex h-8 w-8 items-center justify-center rounded-full bg-white/20 backdrop-blur-sm">
         <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" className="h-5 w-5">

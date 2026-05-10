@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react';
 import { Link, useLocation } from 'react-router';
-import { Phone } from 'lucide-react';
+import { User } from 'lucide-react';
 
 /**
  * Mobile-only sticky CTA bar that appears after the hero is scrolled
@@ -39,19 +39,20 @@ export default function StickyMobileCTA() {
             aria-hidden={!visible}
         >
             <div className="bg-white/95 backdrop-blur-md border-t border-slate-200 shadow-[0_-8px_24px_-12px_rgba(15,23,42,0.18)] px-3 py-2.5 pb-[max(0.625rem,env(safe-area-inset-bottom))]">
-                <div className="flex items-center gap-2">
+                <div className="grid grid-cols-2 gap-2">
                     <a
-                        href="tel:+79138927059"
-                        className="shrink-0 w-11 h-11 rounded-full bg-indigo-50 text-indigo-700 flex items-center justify-center active:scale-95 transition"
-                        aria-label="Позвонить"
+                        href="https://lk.champion-footboll.ru/"
+                        target="_self"
+                        className="flex items-center justify-center gap-2 bg-indigo-900 hover:bg-indigo-800 text-white font-bold py-3.5 rounded-xl shadow-md active:scale-[0.98] transition text-sm"
                     >
-                        <Phone className="w-5 h-5" />
+                        <User className="w-4 h-4" />
+                        Личный кабинет
                     </a>
                     <Link
                         to="/signup"
-                        className="flex-1 text-center bg-orange-500 hover:bg-orange-600 text-white font-black uppercase tracking-wider py-3.5 rounded-xl shadow-md shadow-orange-500/30 active:scale-[0.98] transition text-sm"
+                        className="text-center bg-orange-500 hover:bg-orange-600 text-white font-black uppercase tracking-wider py-3.5 rounded-xl shadow-md shadow-orange-500/30 active:scale-[0.98] transition text-sm"
                     >
-                        Записаться на пробное
+                        Записаться
                     </Link>
                 </div>
             </div>
