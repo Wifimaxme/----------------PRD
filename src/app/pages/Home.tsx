@@ -400,7 +400,7 @@ export function Home() {
               {/* Inline phone-capture form — primary hero CTA */}
               <form
                 onSubmit={handleHeroSubmit}
-                className="mt-8 grid grid-cols-1 sm:grid-cols-[230px_1fr] gap-3 max-w-md"
+                className="mt-8 grid grid-cols-1 sm:grid-cols-[305px_1fr] gap-3 max-w-lg"
               >
                 <input
                   type="tel"
