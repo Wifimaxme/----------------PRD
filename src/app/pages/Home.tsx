@@ -655,7 +655,13 @@ export function Home() {
               <div className="pointer-events-none absolute -inset-6 bg-[radial-gradient(circle,rgba(124,58,237,0.18),transparent_62%)] blur-3xl"></div>
               <div
                 id="hero-video"
-                className="relative isolate aspect-video overflow-hidden rounded-[1.6rem] border border-black/8 bg-gray-900 shadow-[0_40px_80px_-30px_rgba(15,23,42,0.45)]"
+                className="relative isolate aspect-video overflow-hidden rounded-[1.6rem] bg-gray-900 shadow-[0_40px_80px_-30px_rgba(15,23,42,0.45)]"
+                style={{
+                  WebkitMaskImage:
+                    "linear-gradient(to right, transparent 0%, black 34%, black 100%)",
+                  maskImage:
+                    "linear-gradient(to right, transparent 0%, black 34%, black 100%)",
+                }}
               >
                 <div
                   className={`absolute inset-0 bg-gradient-to-br from-purple-600 via-purple-700 to-orange-500 transition-opacity duration-700 ${
