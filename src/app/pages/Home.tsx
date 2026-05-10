@@ -3,7 +3,7 @@ import { Header } from "../components/Header";
 import { Footer } from "../components/Footer";
 import { Quiz } from "../components/Quiz";
 import StickyMobileCTA from "../../components/StickyMobileCTA";
-import HeroFloatingShapes from "../../components/HeroFloatingShapes";
+import HeroFloatingShapes, { LkFloatingShapes } from "../../components/HeroFloatingShapes";
 import { Link, useNavigate } from "react-router";
 import { 
   Heart, 
@@ -376,8 +376,8 @@ export function Home() {
       {/* Hero Section */}
       <section className="relative overflow-hidden pb-20 pt-16 sm:pt-20">
         <div className="absolute inset-0">
-          <div className="absolute left-0 top-0 h-80 w-80 rounded-full bg-purple-100/70 blur-3xl hero-blob hero-blob-a"></div>
-          <div className="absolute right-0 top-16 h-96 w-96 rounded-full bg-orange-100/80 blur-3xl hero-blob hero-blob-b"></div>
+          <div className="absolute -left-16 -top-16 h-[28rem] w-[28rem] rounded-full bg-purple-300/55 blur-3xl hero-blob hero-blob-a"></div>
+          <div className="absolute -right-24 top-8 h-[32rem] w-[32rem] rounded-full bg-orange-300/55 blur-3xl hero-blob hero-blob-b"></div>
           <div className="absolute inset-x-0 bottom-0 h-24 bg-gradient-to-b from-transparent to-white/70"></div>
         </div>
         <HeroFloatingShapes />
@@ -897,8 +897,10 @@ export function Home() {
             </div>
 
             <div className="relative flex items-center justify-center">
-              <div className="absolute -left-12 -top-12 h-64 w-64 rounded-full bg-orange-100/40 blur-3xl"></div>
-              <div className="absolute -bottom-16 -right-16 h-80 w-80 rounded-full bg-purple-100/50 blur-3xl"></div>
+              <div className="absolute -left-12 -top-12 h-64 w-64 rounded-full bg-orange-200/55 blur-3xl hero-blob hero-blob-a"></div>
+              <div className="absolute -bottom-16 -right-16 h-80 w-80 rounded-full bg-purple-200/55 blur-3xl hero-blob hero-blob-b"></div>
+
+              <LkFloatingShapes />
 
               <div className="relative z-10 mx-auto w-full max-w-[320px]">
                 {/* iPhone Mockup Container */}
