@@ -615,6 +615,43 @@ export function Home() {
         </div>
       </section>
 
+      {/* School in numbers — compact trust strip right under the hero */}
+      <section className="py-10 sm:py-14 bg-gradient-to-br from-indigo-50/50 via-white to-orange-50/40 relative overflow-hidden">
+        <div className="absolute -left-20 -top-10 h-64 w-64 rounded-full bg-purple-200/25 blur-3xl pointer-events-none" />
+        <div className="absolute -right-20 -bottom-10 h-72 w-72 rounded-full bg-orange-200/25 blur-3xl pointer-events-none" />
+
+        <div className="container mx-auto px-4 relative">
+          <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
+            {schoolStats.map((stat, i) => (
+              <motion.div
+                key={stat.label}
+                initial={{ opacity: 0, y: 22 }}
+                whileInView={{ opacity: 1, y: 0 }}
+                viewport={{ once: true, margin: "-40px" }}
+                transition={{ delay: i * 0.08, duration: 0.45, ease: "easeOut" }}
+                className="relative overflow-hidden rounded-[1.4rem] bg-white border border-black/6 p-6 shadow-[0_2px_14px_-6px_rgba(15,23,42,0.12)]"
+              >
+                <div className={`absolute inset-x-0 top-0 h-1.5 bg-gradient-to-r ${stat.accentClass}`} />
+                {stat.kind === "number" ? (
+                  <div className={`text-5xl md:text-6xl font-black tracking-tight bg-gradient-to-br ${stat.accentClass} bg-clip-text text-transparent leading-none`}>
+                    <CountUp to={stat.value} suffix={stat.suffix} />
+                  </div>
+                ) : (
+                  <div className={`text-3xl md:text-4xl font-black tracking-tight bg-gradient-to-br ${stat.accentClass} bg-clip-text text-transparent leading-tight`}>
+                    {stat.valueLines.map((line, idx) => (
+                      <div key={idx}>{line}</div>
+                    ))}
+                  </div>
+                )}
+                <p className="mt-3 text-sm leading-relaxed text-gray-600">
+                  {stat.label}
+                </p>
+              </motion.div>
+            ))}
+          </div>
+        </div>
+      </section>
+
       {/* About School Section */}
       <section id="about" className="py-24">
         <div className="container mx-auto px-4">
@@ -774,75 +811,6 @@ export function Home() {
                 </div>
               </motion.article>
             ))}
-            </div>
-          </div>
-        </div>
-      </section>
-
-      {/* School in numbers — social proof */}
-      <section className="py-24 bg-gradient-to-br from-indigo-50/60 via-white to-orange-50/50 relative overflow-hidden">
-        <div className="absolute -left-20 top-10 h-72 w-72 rounded-full bg-purple-200/30 blur-3xl pointer-events-none" />
-        <div className="absolute -right-20 bottom-10 h-80 w-80 rounded-full bg-orange-200/30 blur-3xl pointer-events-none" />
-
-        <div className="container mx-auto px-4 relative">
-          <div className="max-w-3xl">
-            <div className="ui-eyebrow">
-              <Sparkles className="h-4 w-4" />
-              Школа в цифрах
-            </div>
-            <h2 className={sectionTitleClass}>
-              Тренируем чемпионов с&nbsp;2016 года
-            </h2>
-            <p className="mt-5 text-lg leading-relaxed text-gray-600">
-              За 10 лет работы выпустили тысячи детей, открыли филиалы в&nbsp;двадцати
-              садах Новосибирска и собрали тренерский состав с международными
-              стажировками и игровыми регалиями.
-            </p>
-          </div>
-
-          {/* Big stat cards */}
-          <div className="mt-12 grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
-            {schoolStats.map((stat, i) => (
-              <motion.div
-                key={stat.label}
-                initial={{ opacity: 0, y: 22 }}
-                whileInView={{ opacity: 1, y: 0 }}
-                viewport={{ once: true, margin: "-40px" }}
-                transition={{ delay: i * 0.08, duration: 0.45, ease: "easeOut" }}
-                className="relative overflow-hidden rounded-[1.4rem] bg-white border border-black/6 p-6 shadow-[0_2px_14px_-6px_rgba(15,23,42,0.12)]"
-              >
-                <div className={`absolute inset-x-0 top-0 h-1.5 bg-gradient-to-r ${stat.accentClass}`} />
-                {stat.kind === "number" ? (
-                  <div className={`text-5xl md:text-6xl font-black tracking-tight bg-gradient-to-br ${stat.accentClass} bg-clip-text text-transparent leading-none`}>
-                    <CountUp to={stat.value} suffix={stat.suffix} />
-                  </div>
-                ) : (
-                  <div className={`text-3xl md:text-4xl font-black tracking-tight bg-gradient-to-br ${stat.accentClass} bg-clip-text text-transparent leading-tight`}>
-                    {stat.valueLines.map((line, idx) => (
-                      <div key={idx}>{line}</div>
-                    ))}
-                  </div>
-                )}
-                <p className="mt-3 text-sm leading-relaxed text-gray-600">
-                  {stat.label}
-                </p>
-              </motion.div>
-            ))}
-          </div>
-
-          {/* Compliance + CSR plate */}
-          <div className="mt-10 rounded-[1.4rem] border border-purple-200 bg-gradient-to-r from-purple-50/70 via-white to-orange-50/70 p-5 sm:p-6">
-            <div className="flex flex-col sm:flex-row sm:items-center gap-3 sm:gap-4">
-              <div className="flex items-center gap-2 shrink-0">
-                <Shield className="h-5 w-5 text-purple-700" />
-                <CheckCircle2 className="h-5 w-5 text-emerald-600" />
-              </div>
-              <p className="text-sm leading-relaxed text-gray-700">
-                Режим занятий соответствует{" "}
-                <span className="font-semibold">СанПиН 1.2.3685-21</span>. Поддерживаем
-                инклюзивный футбол вместе с фондом{" "}
-                <span className="font-semibold">СБФ «Только вместе»</span>.
-              </p>
             </div>
           </div>
         </div>
