@@ -547,7 +547,7 @@ export function Home() {
         <HeroFloatingShapes />
 
         <div className="container mx-auto px-4 relative z-10">
-          <div className="grid items-center gap-12 lg:grid-cols-[1.02fr_0.98fr] lg:gap-16">
+          <div className="grid items-center gap-12 lg:grid-cols-[0.82fr_1.18fr] lg:gap-14">
             <div className="max-w-2xl">
               <div className="ui-eyebrow">
                 <Sparkles className="h-4 w-4" />
@@ -646,11 +646,16 @@ export function Home() {
               </div>
             </div>
 
-            <div className="relative">
-              <div className="pointer-events-none absolute -inset-4 bg-[radial-gradient(circle,rgba(124,58,237,0.14),transparent_62%)] blur-2xl"></div>
+            <motion.div
+              className="relative lg:-mr-4 xl:-mr-8"
+              initial={{ opacity: 0, scale: 0.95, filter: "blur(12px)" }}
+              animate={{ opacity: 1, scale: 1, filter: "blur(0px)" }}
+              transition={{ duration: 1.6, ease: "easeOut", delay: 0.25 }}
+            >
+              <div className="pointer-events-none absolute -inset-6 bg-[radial-gradient(circle,rgba(124,58,237,0.18),transparent_62%)] blur-3xl"></div>
               <div
                 id="hero-video"
-                className="relative isolate aspect-video overflow-hidden rounded-[1.35rem] border border-black/8 bg-gray-900 shadow-[0_24px_48px_-32px_rgba(15,23,42,0.38)]"
+                className="relative isolate aspect-video overflow-hidden rounded-[1.6rem] border border-black/8 bg-gray-900 shadow-[0_40px_80px_-30px_rgba(15,23,42,0.45)]"
               >
                 <div
                   className={`absolute inset-0 bg-gradient-to-br from-purple-600 via-purple-700 to-orange-500 transition-opacity duration-700 ${
@@ -674,18 +679,15 @@ export function Home() {
                   allowFullScreen
                 ></iframe>
 
+                {/* Light overlay only — keeps the video clearly visible */}
                 <div className="absolute inset-0 z-10 pointer-events-none">
-                  <div className="absolute inset-0 bg-gradient-to-br from-purple-900/38 via-transparent to-orange-500/28"></div>
-                  <div className="absolute inset-x-0 bottom-0 h-1/2 bg-gradient-to-t from-[#14031f]/80 via-[#14031f]/20 to-transparent"></div>
-                  <div className="absolute inset-y-0 left-0 w-24 bg-gradient-to-r from-[#14031f]/45 to-transparent"></div>
-                  <div className="absolute inset-y-0 right-0 w-24 bg-gradient-to-l from-orange-400/20 to-transparent"></div>
-                  <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[150%] h-[150%] bg-[radial-gradient(circle,rgba(255,255,255,0.1)_0%,transparent_70%)] animate-pulse"></div>
-                  <div className="absolute left-6 bottom-6 rounded-lg bg-black/28 px-3 py-1.5 text-[11px] font-medium uppercase tracking-[0.18em] text-white/82">
+                  <div className="absolute inset-x-0 bottom-0 h-1/3 bg-gradient-to-t from-[#14031f]/40 to-transparent"></div>
+                  <div className="absolute left-5 bottom-5 rounded-lg bg-black/35 backdrop-blur-sm px-3 py-1.5 text-[11px] font-medium uppercase tracking-[0.18em] text-white/90">
                     Видео запускается без звука
                   </div>
                 </div>
               </div>
-            </div>
+            </motion.div>
           </div>
         </div>
       </section>
