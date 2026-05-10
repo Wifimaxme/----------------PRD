@@ -2,7 +2,8 @@ import { useEffect, useRef, useState } from "react";
 import { Header } from "../components/Header";
 import { Footer } from "../components/Footer";
 import { Quiz } from "../components/Quiz";
-import { Link } from "react-router";
+import StickyMobileCTA from "../../components/StickyMobileCTA";
+import { Link, useNavigate } from "react-router";
 import { 
   Heart, 
   Users, 
@@ -323,9 +324,23 @@ const RUTUBE_ORIGIN = "https://rutube.ru";
 const HERO_VIDEO_SRC =
   "https://rutube.ru/play/embed/721b945fc4c0e87084fcbdf80a690335?p=8wZJQPDWMe-wnxvAsbgzFg&autoplay=true";
 
+function normalizeHeroPhone(input: string): string {
+  let digits = input.replace(/\D/g, '');
+  if (digits.startsWith('8')) digits = '7' + digits.slice(1);
+  if (!digits.startsWith('7') && digits.length <= 10) digits = '7' + digits;
+  return '+' + digits.slice(0, 11);
+}
+
 export function Home() {
   const [isHeroVideoReady, setIsHeroVideoReady] = useState(false);
   const heroVideoRef = useRef<HTMLIFrameElement | null>(null);
+  const navigate = useNavigate();
+  const [heroPhone, setHeroPhone] = useState('+7');
+
+  const handleHeroSubmit = (e: { preventDefault: () => void }) => {
+    e.preventDefault();
+    navigate('/signup', { state: { phone: heroPhone } });
+  };
 
   const requestHeroVideoPlayback = () => {
     const playerWindow = heroVideoRef.current?.contentWindow;
@@ -428,9 +443,65 @@ export function Home() {
                 </button>
               </div>
 
-              <div className="mt-5 flex items-center gap-2 text-sm text-gray-500">
-                <CheckCircle2 className="h-4 w-4 text-emerald-500" />
-                Первое пробное занятие бесплатно
+              {/* Inline phone-capture mini form */}
+              <form
+                onSubmit={handleHeroSubmit}
+                className="mt-5 flex flex-col sm:flex-row gap-2 max-w-lg"
+              >
+                <input
+                  type="tel"
+                  inputMode="tel"
+                  value={heroPhone}
+                  onChange={(e) => setHeroPhone(normalizeHeroPhone(e.target.value))}
+                  onFocus={(e) => {
+                    const el = e.currentTarget;
+                    requestAnimationFrame(() => {
+                      if (el.selectionStart !== null && el.selectionStart < 2) {
+                        el.setSelectionRange(el.value.length, el.value.length);
+                      }
+                    });
+                  }}
+                  placeholder="+7 (___) ___-__-__"
+                  className="flex-1 px-4 py-3 rounded-xl border border-slate-200 bg-white focus:border-indigo-500 focus:ring-2 focus:ring-indigo-100 focus:outline-none transition text-slate-900 placeholder:text-slate-400"
+                  aria-label="Телефон для обратного звонка"
+                />
+                <button
+                  type="submit"
+                  className="px-5 py-3 rounded-xl bg-indigo-900 text-white font-semibold hover:bg-indigo-800 active:scale-[0.98] transition shadow-md whitespace-nowrap"
+                >
+                  Перезвоните мне
+                </button>
+              </form>
+
+              <div className="mt-3 flex flex-wrap items-center gap-x-5 gap-y-1.5 text-sm text-gray-500">
+                <span className="flex items-center gap-1.5">
+                  <CheckCircle2 className="h-4 w-4 text-emerald-500" />
+                  Первое занятие бесплатно
+                </span>
+                <span className="flex items-center gap-1.5">
+                  <CheckCircle2 className="h-4 w-4 text-emerald-500" />
+                  Без обязательств
+                </span>
+              </div>
+
+              {/* Coaches trust strip */}
+              <div className="mt-6 flex items-center gap-3">
+                <div className="flex -space-x-2">
+                  {coaches.slice(0, 5).map((coach) => (
+                    <div
+                      key={coach.name}
+                      className={`w-9 h-9 rounded-full ${coach.bgClass} text-white text-xs font-bold flex items-center justify-center border-2 border-white shadow-sm`}
+                      title={coach.name}
+                    >
+                      {getCoachInitials(coach.name)}
+                    </div>
+                  ))}
+                </div>
+                <p className="text-sm text-gray-600 leading-snug">
+                  <span className="font-semibold text-gray-900">{coaches.length} тренеров</span>{' '}
+                  с лицензиями <span className="font-semibold">C-UEFA</span>, КМС
+                  и опытом в&nbsp;Манчестер Юнайтед, Локомотиве, Динамо
+                </p>
               </div>
 
               <div className="mt-10 grid gap-5 border-t border-black/8 pt-6 sm:grid-cols-3">
@@ -545,7 +616,7 @@ export function Home() {
       </section>
 
       {/* Coaches Section */}
-      <section className="py-24">
+      <section className="py-24 bg-slate-50/60">
         <div className="container mx-auto px-4">
           <div className="max-w-3xl">
             <div className="ui-eyebrow">
@@ -758,7 +829,7 @@ export function Home() {
       </section>
 
       {/* Pricing Section */}
-      <section id="prices" className="py-24">
+      <section id="prices" className="py-24 bg-amber-50/40">
         <div className="container mx-auto px-4">
           <div className="grid gap-10 lg:grid-cols-[0.76fr_1.24fr] lg:gap-14">
             <div className="max-w-xl">
@@ -900,7 +971,7 @@ export function Home() {
       </section>
 
       {/* Quiz Section */}
-      <section className="py-24">
+      <section className="py-24 bg-indigo-50/40">
         <div className="container mx-auto px-4">
           <div className="mx-auto max-w-3xl text-center">
             <div className="ui-eyebrow">
@@ -1066,6 +1137,7 @@ export function Home() {
       </section>
 
       <Footer />
+      <StickyMobileCTA />
     </div>
   );
 }
