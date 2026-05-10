@@ -1,4 +1,5 @@
 import { useEffect, useRef, useState } from "react";
+import { motion } from "motion/react";
 import { Header } from "../components/Header";
 import { Footer } from "../components/Footer";
 import { Quiz } from "../components/Quiz";
@@ -22,81 +23,93 @@ import {
   LogIn
 } from "lucide-react";
 
-const coaches = [
+interface Coach {
+  name: string;
+  photo?: string;
+  experience: string;
+  focus: string;
+  bgClass: string;
+  badges: string[];
+  clubs?: { year: string; label: string; flag?: string }[];
+}
+
+const coaches: Coach[] = [
   {
     name: "Ильиных Александр",
-    education: "Колледж Олимпийского резерва, НГПУ (факультет физической культуры)",
+    photo: "/images/coaches/ilyinikh.png",
     experience: "10 лет тренерского стажа",
-    badge: "ОФП и футбол",
-    focus: "Системно выстраивает базу движения и помогает ребенку уверенно войти в спорт без перегруза.",
+    focus: "Системно выстраивает базу движения и помогает ребёнку уверенно войти в спорт без перегруза.",
     bgClass: "bg-orange-500",
-    internships: [
-      "2021г - Манчестер Юнайтед (Англия 🏴󠁧󠁢󠁥󠁮󠁧󠁿)",
-      "2023г - Локомотив (Россия 🇷🇺)",
-      "2024-2025г - Црвена Звезда (Сербия 🇷🇸)"
+    badges: ["10 лет стажа", "КМС", "НГПУ ФФК"],
+    clubs: [
+      { year: "2021", label: "Manchester United", flag: "🏴󠁧󠁢󠁥󠁮󠁧󠁿" },
+      { year: "2023", label: "Локомотив", flag: "🇷🇺" },
+      { year: "2024-25", label: "Црвена Звезда", flag: "🇷🇸" },
     ],
-    specialty: "Тренер по футболу ⚽️ и ОФП 🏃🏻‍♂️"
   },
   {
-    name: "Мензоров Максим Дмитриевич",
-    education: "Новосибирский Колледж Олимпийского Резерва, высшее НГПУ (ФФК)",
-    achievement: "1 взрослый разряд по футболу, игрок ДЮСШ Новосибирск",
+    name: "Мензоров Максим",
+    photo: "/images/coaches/menzorov.jpg",
     experience: "6 лет тренерского стажа",
-    badge: "Игровой опыт",
     focus: "Собирает доверие через спокойную коммуникацию и превращает тренировку в понятный детям ритуал успеха.",
     bgClass: "bg-orange-600",
-    quote: "Улыбки детей до и после тренировки, их честность и доброта",
-    hobby: "Катание на коньках, настольные игры"
+    badges: ["6 лет стажа", "1 разряд", "НГПУ ФФК"],
+    clubs: [{ year: "Игрок", label: "ДЮСШ Новосибирск", flag: "🇷🇺" }],
   },
   {
     name: "Юсупов Константин",
-    education: "Среднее-специальное (физическая культура)",
-    experience: "3 года тренерского стажа, 10 лет игрового стажа",
-    badge: "Техника и игра",
+    photo: "/images/coaches/yusupov.jpg",
+    experience: "3 года тренерского стажа, 10 лет игрового",
     focus: "Держит высокий темп занятия и помогает детям быстрее почувствовать уверенность в игре один в один.",
     bgClass: "bg-amber-600",
-    teams: "«Рубин» Славгород, «Юность» Славгород, «Семеновка» Славгород, «Сатурн» Новосибирск, «Скорпион» Новосибирск",
-    quote: "В работе с детьми нравятся их энергия и эмоции"
+    badges: ["3 года стажа", "10 лет игры"],
+    clubs: [
+      { year: "Рубин", label: "Славгород" },
+      { year: "Юность", label: "Славгород" },
+      { year: "Сатурн", label: "Новосибирск" },
+      { year: "Скорпион", label: "Новосибирск" },
+    ],
   },
   {
-    name: "Кулаков Максим Станиславович",
-    education: "Высшее (СГУГиТ)",
-    license: "Лицензия C-UEFA",
-    experience: "5 лет тренерского стажа, 7 лет игрового стажа",
-    badge: "UEFA C",
-    focus: "Соединяет европейскую методику с понятной ребенку игровой подачей и вниманием к деталям техники.",
+    name: "Кулаков Максим",
+    photo: "/images/coaches/kulakov.jpg",
+    experience: "5 лет тренерского стажа",
+    focus: "Соединяет европейскую методику с понятной ребёнку игровой подачей и вниманием к деталям техники.",
     bgClass: "bg-orange-500",
-    quote: "Горящие глаза детей, которые пришли заниматься любимым делом. Приятно наблюдать когда ребенок старается и доказывает что он все может"
+    badges: ["C-UEFA", "5 лет стажа", "СГУГиТ"],
+    clubs: [
+      { year: "2022", label: "Kimberly Cup, 1 место" },
+      { year: "2023", label: "Лига Чемпионов Сибири, 1 место" },
+      { year: "2023", label: "Кубок дружбы, 2 место" },
+    ],
   },
   {
     name: "Свитницкий Родион",
-    education: "ООО МУЦД (Физическая культура и спорт)",
     experience: "5 лет тренерского стажа",
-    badge: "Соревновательный дух",
-    focus: "Сильная сторона - мотивация и настрой детей на постепенный рост через маленькие победы.",
+    focus: "Сильная сторона — мотивация и настрой детей на постепенный рост через маленькие победы.",
     bgClass: "bg-orange-600",
-    achievements: "Победители и призеры COPA JUNIOR г.Красноярск",
-    credo: "Футбол - жизнь",
-    hobby: "Футбол и активный отдых"
+    badges: ["5 лет стажа", "ФКиС"],
+    clubs: [{ year: "COPA JUNIOR", label: "Красноярск, призёр" }],
   },
   {
     name: "Дмитрий Бобин",
-    education: "СГУПС (Новосибирск)",
-    license: "Тренерская лицензия РФС категории C",
-    achievement: "КМС по футболу, бывший игрок ФК Динамо (Барнаул)",
-    badge: "РФС C и КМС",
+    photo: "/images/coaches/bobin.png",
+    experience: "Тренерская и игровая практика",
     focus: "Добавляет в занятия соревновательный нерв и дисциплину, не ломая детскую мотивацию.",
     bgClass: "bg-amber-600",
-    achievements: "Победители соревнований на призы ФК Джуниор. Призеры международных турниров в составе ФК \"Спартак\". Призеры турниров ЕФЛ"
+    badges: ["РФС C", "КМС", "СГУПС"],
+    clubs: [
+      { year: "Игрок", label: "Динамо Барнаул", flag: "🇷🇺" },
+      { year: "Тренер", label: "ФК Спартак, ЕФЛ" },
+    ],
   },
   {
     name: "Пирогов Глеб",
-    education: "Славгородский педагогический колледж (тренер по физической культуре)",
-    achievement: "Игрок команды СФЛ",
-    badge: "Педагогический подход",
-    focus: "Внимательно ведет ребенка через первые этапы адаптации и регулярно усиливает практику новыми стажировками.",
+    photo: "/images/coaches/pirogov.png",
+    experience: "Педагог-тренер по физической культуре",
+    focus: "Внимательно ведёт ребёнка через первые этапы адаптации и регулярно усиливает практику новыми стажировками.",
     bgClass: "bg-orange-500",
-    note: "Регулярно проходит обучения и стажировки по категориям и программам"
+    badges: ["Педагогика", "Игрок СФЛ"],
   },
 ];
 
@@ -587,77 +600,92 @@ export function Home() {
             </p>
           </div>
 
-          <div className="mt-8 snap-x snap-mandatory overflow-x-auto pb-4 [scrollbar-width:thin] [scrollbar-color:rgba(147,51,234,0.45)_transparent]">
-            <div className="flex w-max gap-5 pr-4">
-              {coaches.map((coach, index) => {
-                const coachHighlights = [
-                  { label: "Опыт", value: coach.experience },
-                  {
-                    label: "Квалификация",
-                    value: coach.license ?? coach.achievement ?? coach.specialty ?? coach.education,
-                  },
-                  {
-                    label: "Фокус",
-                    value: coach.achievements ?? coach.teams ?? coach.note ?? coach.education,
-                  },
-                ].filter((item): item is { label: string; value: string } => Boolean(item.value));
-
-                return (
-                  <article
-                    key={coach.name}
-                    className="group w-[18.5rem] shrink-0 snap-start md:w-[20rem]"
-                  >
-                    <div
-                      className="relative isolate overflow-hidden rounded-[1.35rem] bg-orange-600 px-5 pb-6 pt-5 text-white"
-                    >
-
-
-                      <div className="relative z-10 flex min-h-[7rem] flex-col">
-                        <div className="flex items-start justify-between gap-3">
-                          <div className="text-[11px] font-semibold uppercase tracking-[0.16em] text-white/82">
-                            {String(index + 1).padStart(2, "0")} • {coach.badge}
-                          </div>
-                          <span className="text-[11px] font-semibold uppercase tracking-[0.16em] text-white/58">
-                            Наставник
-                          </span>
-                        </div>
-
-                        <div className="mt-4 flex items-end gap-4">
-                          <div className="pb-1">
-                            <h3 className="text-2xl font-black leading-tight">{coach.name}</h3>
-                            <p className="mt-3 text-sm leading-relaxed text-white/82">
-                              {coach.focus}
-                            </p>
-                          </div>
-                        </div>
-                      </div>
+          <div className="mt-12 grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
+            {coaches.map((coach, index) => (
+              <motion.article
+                key={coach.name}
+                initial={{ opacity: 0, y: 28 }}
+                whileInView={{ opacity: 1, y: 0 }}
+                viewport={{ once: true, margin: "-60px" }}
+                transition={{ delay: index * 0.07, duration: 0.45, ease: "easeOut" }}
+                className="group flex flex-col overflow-hidden rounded-[1.35rem] bg-white border border-black/6 shadow-[0_2px_12px_-6px_rgba(15,23,42,0.12)] hover:shadow-[0_24px_40px_-24px_rgba(15,23,42,0.25)] hover:-translate-y-1 transition-all duration-300"
+              >
+                {/* Photo / fallback */}
+                <div className={`relative aspect-[4/5] overflow-hidden ${coach.photo ? "" : coach.bgClass}`}>
+                  {coach.photo ? (
+                    <img
+                      src={coach.photo}
+                      alt={coach.name}
+                      loading="lazy"
+                      className="h-full w-full object-cover transition-transform duration-500 group-hover:scale-105"
+                    />
+                  ) : (
+                    <div className="flex h-full w-full items-center justify-center text-white">
+                      <span className="text-7xl font-black tracking-tight">
+                        {getCoachInitials(coach.name)}
+                      </span>
                     </div>
+                  )}
+                  <div className="absolute inset-x-0 bottom-0 h-24 bg-gradient-to-t from-black/55 via-black/20 to-transparent pointer-events-none" />
+                  <div className="absolute left-4 top-4 inline-flex rounded-full bg-white/90 backdrop-blur px-2.5 py-1 text-[10px] font-bold uppercase tracking-[0.12em] text-indigo-900">
+                    №{String(index + 1).padStart(2, "0")}
+                  </div>
+                  <div className="absolute inset-x-4 bottom-3">
+                    <h3 className="text-xl font-black text-white leading-tight drop-shadow-sm">
+                      {coach.name}
+                    </h3>
+                  </div>
+                </div>
 
-                    <div className="mt-5 space-y-4">
-                        {coachHighlights.map((item) => (
-                          <div
-                            key={`${coach.name}-${item.label}`}
-                            className="border-t border-black/8 pt-4"
-                          >
-                            <p className="text-[11px] font-semibold uppercase tracking-[0.16em] text-gray-400">
-                              {item.label}
-                            </p>
-                            <p className="mt-1 text-sm leading-relaxed text-gray-700">{item.value}</p>
-                          </div>
+                {/* Body */}
+                <div className="flex flex-col flex-1 p-5">
+                  <p className="text-[11px] font-semibold uppercase tracking-[0.16em] text-gray-400">
+                    Опыт
+                  </p>
+                  <p className="mt-1 text-sm font-medium text-gray-700">
+                    {coach.experience}
+                  </p>
+
+                  {/* Credential pills */}
+                  <div className="mt-3 flex flex-wrap gap-1.5">
+                    {coach.badges.map((b) => (
+                      <span
+                        key={b}
+                        className="inline-flex items-center rounded-full bg-orange-50 border border-orange-200 px-2.5 py-0.5 text-[11px] font-semibold text-orange-700"
+                      >
+                        {b}
+                      </span>
+                    ))}
+                  </div>
+
+                  <p className="mt-4 text-sm leading-relaxed text-gray-600 flex-1">
+                    {coach.focus}
+                  </p>
+
+                  {/* Clubs / internships timeline */}
+                  {coach.clubs && coach.clubs.length > 0 && (
+                    <div className="mt-5 border-t border-black/6 pt-4">
+                      <p className="text-[11px] font-semibold uppercase tracking-[0.16em] text-purple-500 mb-2">
+                        Стажировки и клубы
+                      </p>
+                      <ul className="space-y-1.5">
+                        {coach.clubs.map((c, i) => (
+                          <li key={i} className="flex items-baseline gap-2.5 text-sm">
+                            <span className="shrink-0 inline-flex items-center justify-center min-w-[3.5rem] rounded-md bg-indigo-900/95 text-white text-[11px] font-bold px-1.5 py-0.5 tracking-wide">
+                              {c.year}
+                            </span>
+                            <span className="text-gray-700 leading-snug">
+                              {c.label}
+                              {c.flag && <span className="ml-1.5">{c.flag}</span>}
+                            </span>
+                          </li>
                         ))}
-
-                      {coach.quote && (
-                        <div className="border-t border-black/8 pt-4">
-                          <p className="text-sm italic leading-relaxed text-gray-600">
-                            "{coach.quote}"
-                          </p>
-                        </div>
-                      )}
+                      </ul>
                     </div>
-                  </article>
-                );
-              })}
-            </div>
+                  )}
+                </div>
+              </motion.article>
+            ))}
           </div>
         </div>
       </section>
