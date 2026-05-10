@@ -20,7 +20,8 @@ import {
   Send,
   Sparkles,
   QrCode,
-  LogIn
+  LogIn,
+  X,
 } from "lucide-react";
 
 interface Coach {
@@ -333,30 +334,65 @@ type SchoolStat =
 const schoolStats: SchoolStat[] = [
   {
     kind: "number",
-    value: 2000,
-    suffix: "+",
-    label: "учеников за всё время",
-    accentClass: "from-orange-500 to-orange-600",
+    value: 10,
+    suffix: " лет",
+    label: "на рынке",
+    accentClass: "from-purple-600 to-fuchsia-500",
   },
   {
     kind: "number",
-    value: 20,
-    suffix: "",
-    label: "филиалов в Новосибирске",
+    value: 30,
+    suffix: "+",
+    label: "детских садов-партнёров",
     accentClass: "from-indigo-700 to-purple-700",
   },
   {
     kind: "number",
-    value: 10,
-    suffix: " лет",
-    label: "работы с 2016 года",
-    accentClass: "from-purple-600 to-fuchsia-500",
+    value: 2000,
+    suffix: "+",
+    label: "детей прошли обучение",
+    accentClass: "from-orange-500 to-orange-600",
+  },
+  {
+    kind: "number",
+    value: 2,
+    suffix: " раза",
+    label: "в год — праздничные турниры",
+    accentClass: "from-rose-500 to-orange-400",
+  },
+  {
+    kind: "badge",
+    valueLines: ["Круглый", "год"],
+    label: "тренировки в зале и на улице",
+    accentClass: "from-emerald-500 to-teal-500",
   },
   {
     kind: "badge",
     valueLines: ["Лицензия", "Минобра"],
-    label: "Программа аккредитована Министерством образования",
+    label: "программа аккредитована",
     accentClass: "from-amber-500 to-orange-500",
+  },
+];
+
+// "Us vs them" comparison rows — drives the convenience value
+// proposition by contrasting the typical kids-section experience with
+// what we do in-садике.
+const comparisonRows = [
+  {
+    usual: "Нужно везти ребёнка после сада",
+    us: "Занятия проходят прямо в саду",
+  },
+  {
+    usual: "Тренировки часто вечером",
+    us: "Ребёнок занимается в привычной среде",
+  },
+  {
+    usual: "Не всегда удобно родителям",
+    us: "Не нужно менять семейный график",
+  },
+  {
+    usual: "Группы могут быть разного возраста",
+    us: "Программа адаптирована под дошкольников",
   },
 ];
 
@@ -621,29 +657,29 @@ export function Home() {
         <div className="absolute -right-20 -bottom-10 h-72 w-72 rounded-full bg-orange-200/25 blur-3xl pointer-events-none" />
 
         <div className="container mx-auto px-4 relative">
-          <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
+          <div className="grid gap-3 grid-cols-2 sm:grid-cols-3 lg:grid-cols-6">
             {schoolStats.map((stat, i) => (
               <motion.div
                 key={stat.label}
                 initial={{ opacity: 0, y: 22 }}
                 whileInView={{ opacity: 1, y: 0 }}
                 viewport={{ once: true, margin: "-40px" }}
-                transition={{ delay: i * 0.08, duration: 0.45, ease: "easeOut" }}
-                className="relative overflow-hidden rounded-[1.4rem] bg-white border border-black/6 p-6 shadow-[0_2px_14px_-6px_rgba(15,23,42,0.12)]"
+                transition={{ delay: i * 0.06, duration: 0.45, ease: "easeOut" }}
+                className="relative overflow-hidden rounded-[1.1rem] bg-white border border-black/6 p-4 shadow-[0_2px_14px_-6px_rgba(15,23,42,0.12)]"
               >
-                <div className={`absolute inset-x-0 top-0 h-1.5 bg-gradient-to-r ${stat.accentClass}`} />
+                <div className={`absolute inset-x-0 top-0 h-1 bg-gradient-to-r ${stat.accentClass}`} />
                 {stat.kind === "number" ? (
-                  <div className={`text-5xl md:text-6xl font-black tracking-tight bg-gradient-to-br ${stat.accentClass} bg-clip-text text-transparent leading-none`}>
+                  <div className={`text-3xl md:text-4xl font-black tracking-tight bg-gradient-to-br ${stat.accentClass} bg-clip-text text-transparent leading-none`}>
                     <CountUp to={stat.value} suffix={stat.suffix} />
                   </div>
                 ) : (
-                  <div className={`text-3xl md:text-4xl font-black tracking-tight bg-gradient-to-br ${stat.accentClass} bg-clip-text text-transparent leading-tight`}>
+                  <div className={`text-xl md:text-2xl font-black tracking-tight bg-gradient-to-br ${stat.accentClass} bg-clip-text text-transparent leading-tight`}>
                     {stat.valueLines.map((line, idx) => (
                       <div key={idx}>{line}</div>
                     ))}
                   </div>
                 )}
-                <p className="mt-3 text-sm leading-relaxed text-gray-600">
+                <p className="mt-2 text-xs leading-snug text-gray-600">
                   {stat.label}
                 </p>
               </motion.div>
@@ -701,6 +737,84 @@ export function Home() {
                   </p>
                 </article>
               ))}
+            </div>
+          </div>
+        </div>
+      </section>
+
+      {/* Comparison: typical section vs ФШ «Чемпион» */}
+      <section className="py-24">
+        <div className="container mx-auto px-4">
+          <div className="max-w-3xl">
+            <div className="ui-eyebrow">
+              <Sparkles className="h-4 w-4" />
+              Почему именно мы
+            </div>
+            <h2 className={sectionTitleClass}>
+              Удобно для семьи, серьёзно для ребёнка
+            </h2>
+            <p className="mt-5 text-lg leading-relaxed text-gray-600">
+              Сравните, как обычно устроены детские секции — и как у&nbsp;нас.
+            </p>
+          </div>
+
+          <div className="mt-12 grid gap-4 lg:grid-cols-2">
+            {/* "Как обычно" — muted card */}
+            <div className="rounded-[1.6rem] border border-slate-200 bg-slate-50 p-6 sm:p-8 relative">
+              <p className="text-[11px] font-semibold uppercase tracking-[0.16em] text-slate-500 mb-2">
+                Как обычно
+              </p>
+              <h3 className="text-2xl font-bold tracking-tight text-slate-700">
+                Обычная секция
+              </h3>
+              <ul className="mt-6 space-y-3.5">
+                {comparisonRows.map((row, i) => (
+                  <motion.li
+                    key={`u-${i}`}
+                    initial={{ opacity: 0, x: -16 }}
+                    whileInView={{ opacity: 1, x: 0 }}
+                    viewport={{ once: true, margin: "-40px" }}
+                    transition={{ delay: i * 0.08, duration: 0.4, ease: "easeOut" }}
+                    className="flex items-start gap-3 text-slate-600"
+                  >
+                    <span className="shrink-0 mt-0.5 inline-flex items-center justify-center w-6 h-6 rounded-full bg-slate-300 text-white">
+                      <X className="h-3.5 w-3.5" />
+                    </span>
+                    <span className="leading-snug">{row.usual}</span>
+                  </motion.li>
+                ))}
+              </ul>
+            </div>
+
+            {/* ФШ «Чемпион» — brand card */}
+            <div className="rounded-[1.6rem] bg-gradient-to-br from-indigo-900 via-purple-700 to-orange-500 p-6 sm:p-8 text-white relative overflow-hidden shadow-[0_24px_60px_-30px_rgba(124,58,237,0.55)]">
+              <div className="absolute -right-12 -top-12 h-56 w-56 rounded-full bg-orange-400/30 blur-3xl pointer-events-none" />
+              <div className="absolute -left-10 bottom-0 h-40 w-40 rounded-full bg-purple-400/30 blur-3xl pointer-events-none" />
+              <div className="relative">
+                <p className="text-[11px] font-semibold uppercase tracking-[0.18em] text-orange-200 mb-2">
+                  Наш подход
+                </p>
+                <h3 className="text-2xl font-bold tracking-tight text-white">
+                  ФШ «Чемпион»
+                </h3>
+                <ul className="mt-6 space-y-3.5">
+                  {comparisonRows.map((row, i) => (
+                    <motion.li
+                      key={`m-${i}`}
+                      initial={{ opacity: 0, x: 16 }}
+                      whileInView={{ opacity: 1, x: 0 }}
+                      viewport={{ once: true, margin: "-40px" }}
+                      transition={{ delay: i * 0.08 + 0.05, duration: 0.4, ease: "easeOut" }}
+                      className="flex items-start gap-3 text-white/95 font-medium"
+                    >
+                      <span className="shrink-0 mt-0.5 inline-flex items-center justify-center w-6 h-6 rounded-full bg-white text-emerald-600">
+                        <CheckCircle2 className="h-4 w-4" />
+                      </span>
+                      <span className="leading-snug">{row.us}</span>
+                    </motion.li>
+                  ))}
+                </ul>
+              </div>
             </div>
           </div>
         </div>
