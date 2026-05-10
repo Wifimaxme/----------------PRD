@@ -276,13 +276,11 @@ const secondaryButtonCompactClass = "ui-button-secondary px-5 py-3 text-sm";
 
 // Reads top-to-bottom (Level 5 → Level 1). Progression for the kid
 // goes the other way — bottom up — so the bottom layer is the
-// "foundation" and what every kid starts with. Age ranges per СанПиН +
-// PRD: занятия 15-30 мин в зависимости от группы.
+// "foundation" and what every kid starts with.
 const developmentPyramidLevels = [
   {
     level: "Уровень 5",
     title: "Игра в команде",
-    age: "6-7 лет",
     icon: Trophy,
     widthClass: "w-full sm:w-[56%]",
     gradientClass: "from-amber-400 via-orange-400 to-orange-500",
@@ -291,7 +289,6 @@ const developmentPyramidLevels = [
   {
     level: "Уровень 4",
     title: "Точные передачи",
-    age: "5-6 лет",
     icon: Users,
     widthClass: "w-full sm:w-[68%]",
     gradientClass: "from-orange-500 via-orange-500 to-rose-500",
@@ -300,7 +297,6 @@ const developmentPyramidLevels = [
   {
     level: "Уровень 3",
     title: "Сложные финты",
-    age: "4-5 лет",
     icon: Star,
     widthClass: "w-full sm:w-[80%]",
     gradientClass: "from-fuchsia-500 via-purple-500 to-purple-600",
@@ -309,7 +305,6 @@ const developmentPyramidLevels = [
   {
     level: "Уровень 2",
     title: "Игра 1×1",
-    age: "4-5 лет",
     icon: Shield,
     widthClass: "w-full sm:w-[92%]",
     gradientClass: "from-violet-600 via-purple-600 to-indigo-600",
@@ -826,9 +821,6 @@ export function Home() {
                                   {layer.title}
                                 </p>
                               </div>
-                              <span className="text-[10px] font-semibold uppercase tracking-[0.12em] text-white/82 whitespace-nowrap">
-                                {layer.age}
-                              </span>
                             </div>
                           </div>
                         </motion.div>
@@ -843,17 +835,10 @@ export function Home() {
                       className="w-full"
                     >
                       <div className="rounded-[1rem] bg-gradient-to-r from-slate-900 via-indigo-900 to-purple-900 px-4 py-3.5 text-white shadow-[0_12px_24px_-16px_rgba(15,23,42,0.62)]">
-                        <div className="flex items-center justify-between gap-3">
-                          <div className="text-left">
-                            <p className="text-[10px] font-semibold uppercase tracking-[0.18em] text-indigo-100">
-                              Уровень 1 · фундамент
-                            </p>
-                            <p className="mt-1 text-base font-black tracking-wide">Контроль мяча</p>
-                          </div>
-                          <span className="text-[10px] font-semibold uppercase tracking-[0.12em] text-indigo-100 whitespace-nowrap shrink-0">
-                            3-4 года
-                          </span>
-                        </div>
+                        <p className="text-[10px] font-semibold uppercase tracking-[0.18em] text-indigo-100">
+                          Уровень 1 · фундамент
+                        </p>
+                        <p className="mt-1 text-base font-black tracking-wide">Контроль мяча</p>
                         <p className="mt-1 text-xs font-medium text-indigo-100">
                           Чувство мяча и уверенный базовый контроль
                         </p>
