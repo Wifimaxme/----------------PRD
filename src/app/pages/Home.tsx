@@ -334,9 +334,9 @@ const schoolStats = [
     accentClass: "from-purple-600 to-fuchsia-500",
   },
   {
-    value: 7,
-    suffix: "",
-    label: "тренеров с лицензиями",
+    value: 40,
+    suffix: "+",
+    label: "лет суммарного тренерского опыта",
     accentClass: "from-amber-500 to-orange-500",
   },
 ];
@@ -349,19 +349,6 @@ const trainedAt = [
   { name: "Црвена Звезда", flag: "🇷🇸" },
   { name: "ФК Динамо (Барнаул)", flag: "🇷🇺" },
   { name: "ДЮСШ Новосибирск", flag: "🇷🇺" },
-];
-
-// Подборка призовых мест выпускников / групп тренеров — берём самые
-// заметные результаты из тренерских профилей.
-const tournamentWins = [
-  { rank: "1", label: "Лига Чемпионов Сибири", year: "2023", city: "Новосибирск" },
-  { rank: "1", label: "Kimberly Cup", year: "2022", city: "Новосибирск" },
-  { rank: "1", label: "Городской турнир", year: "2023", city: "Бердск" },
-  { rank: "2", label: "Кубок дружбы", year: "2023", city: "Томск" },
-  { rank: "2", label: "Турнир «Пас в будущее»", year: "2022", city: "Томск" },
-  { rank: "2", label: "Турнир «Pioneer»", year: "2023", city: "Омск" },
-  { rank: "приз", label: "COPA JUNIOR", year: "—", city: "Красноярск" },
-  { rank: "приз", label: "Турниры ФК Спартак, ЕФЛ", year: "—", city: "—" },
 ];
 
 // Lightweight count-up: animates an integer from 0 to `to` once the
@@ -826,72 +813,17 @@ export function Home() {
             ))}
           </div>
 
-          {/* Coach internships strip */}
-          <div className="mt-10 rounded-[1.4rem] bg-white border border-black/6 p-6 shadow-[0_2px_14px_-6px_rgba(15,23,42,0.08)]">
-            <p className="text-[11px] font-semibold uppercase tracking-[0.16em] text-purple-500">
-              Наши тренеры стажировались в&nbsp;академиях и&nbsp;клубах
-            </p>
-            <div className="mt-4 flex flex-wrap gap-2">
-              {trainedAt.map((club) => (
-                <span
-                  key={club.name}
-                  className="inline-flex items-center gap-2 rounded-full bg-indigo-50 border border-indigo-200 px-4 py-2 text-sm font-semibold text-indigo-900"
-                >
-                  <span className="text-base leading-none">{club.flag}</span>
-                  {club.name}
-                </span>
-              ))}
-            </div>
-          </div>
-
-          {/* Tournament wins */}
-          <div className="mt-6 grid gap-4 lg:grid-cols-[0.9fr_1.1fr]">
-            <div className="lg:sticky lg:top-24">
-              <div className="ui-eyebrow">
-                <Trophy className="h-4 w-4" />
-                Призовые места воспитанников
-              </div>
-              <h3 className="mt-4 text-2xl md:text-3xl font-bold tracking-tight text-gray-900">
-                Кубки, медали и&nbsp;признание на&nbsp;турнирах региона
-              </h3>
-              <p className="mt-3 text-sm leading-relaxed text-gray-600">
-                Группы наших тренеров регулярно выходят в призёры городских и
-                межрегиональных турниров, начиная с возраста 6&nbsp;лет.
-              </p>
-            </div>
-
-            <ul className="grid gap-2 sm:grid-cols-2">
-              {tournamentWins.map((w, i) => {
-                const isFirst = w.rank === "1";
-                const isSecond = w.rank === "2";
-                const medal = isFirst ? "🥇" : isSecond ? "🥈" : "🏅";
-                const tone = isFirst
-                  ? "border-amber-300 bg-amber-50/60"
-                  : isSecond
-                  ? "border-slate-300 bg-slate-50/60"
-                  : "border-orange-200 bg-orange-50/40";
-                return (
-                  <motion.li
-                    key={`${w.label}-${w.year}-${i}`}
-                    initial={{ opacity: 0, x: 16 }}
-                    whileInView={{ opacity: 1, x: 0 }}
-                    viewport={{ once: true, margin: "-40px" }}
-                    transition={{ delay: i * 0.05, duration: 0.35 }}
-                    className={`flex items-start gap-3 rounded-[1rem] border ${tone} px-4 py-3`}
-                  >
-                    <span className="text-xl shrink-0 leading-none">{medal}</span>
-                    <div className="flex-1">
-                      <p className="text-sm font-bold text-gray-900 leading-snug">{w.label}</p>
-                      <p className="text-xs text-gray-500 mt-0.5">
-                        {w.city !== "—" ? w.city : ""}
-                        {w.city !== "—" && w.year !== "—" ? " · " : ""}
-                        {w.year !== "—" ? w.year : ""}
-                      </p>
-                    </div>
-                  </motion.li>
-                );
-              })}
-            </ul>
+          {/* Coach internships — logo-style chips, no descriptive heading */}
+          <div className="mt-10 flex flex-wrap items-center justify-center gap-3">
+            {trainedAt.map((club) => (
+              <span
+                key={club.name}
+                className="inline-flex items-center gap-2 rounded-full bg-white border border-indigo-200 px-5 py-2.5 text-sm font-bold text-indigo-900 shadow-[0_2px_10px_-6px_rgba(15,23,42,0.18)]"
+              >
+                <span className="text-lg leading-none">{club.flag}</span>
+                {club.name}
+              </span>
+            ))}
           </div>
 
           {/* Compliance + CSR plate */}
