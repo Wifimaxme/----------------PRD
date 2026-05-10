@@ -138,6 +138,31 @@ const heroHighlights = [
   },
 ];
 
+const blogPosts = [
+  {
+    title: "Как выбрать футбольные бутсы для малыша?",
+    excerpt: "Полное руководство по выбору первой спортивной обуви для вашего ребенка.",
+    category: "Экипировка",
+    image: "https://images.unsplash.com/photo-1622659097509-4d56de14539e?auto=format&fit=crop&q=80&w=1080",
+    href: "#",
+  },
+  {
+    title: "Питание юного спортсмена: основы",
+    excerpt: "Что должно быть в рационе ребенка, который занимается спортом.",
+    category: "Питание",
+    featured: true,
+    image: "https://images.unsplash.com/photo-1627747776910-6d7e50f57c7e?auto=format&fit=crop&q=80&w=1080",
+    href: "#",
+  },
+  {
+    title: "Мотивация без давления: как заинтересовать ребёнка?",
+    excerpt: "Психологические приёмы для развития любви к спорту.",
+    category: "Психология",
+    image: "https://images.unsplash.com/photo-1701872324421-f537bc8f61de?auto=format&fit=crop&q=80&w=1080",
+    href: "#",
+  },
+];
+
 const aboutHighlights = [
   {
     id: "01",
@@ -453,6 +478,9 @@ export function Home() {
     navigate('/signup', { state: { phone: heroPhone } });
   };
 
+  const featuredPost = blogPosts.find((post) => post.featured) ?? blogPosts[0];
+  const secondaryPosts = blogPosts.filter((post) => post !== featuredPost);
+
   const requestHeroVideoPlayback = () => {
     const playerWindow = heroVideoRef.current?.contentWindow;
 
@@ -611,7 +639,7 @@ export function Home() {
                   ))}
                 </div>
                 <p className="text-sm text-gray-600 leading-snug">
-                  <span className="font-semibold text-gray-900">{coaches.length} тренеров</span>{' '}
+                  <span className="font-semibold text-gray-900">Тренеры</span>{' '}
                   с лицензиями <span className="font-semibold">C-UEFA</span>, КМС
                   и опытом в&nbsp;Манчестер Юнайтед, Локомотиве, Динамо
                 </p>
@@ -832,7 +860,7 @@ export function Home() {
       </section>
 
       {/* Coaches Section */}
-      <section className="py-32 bg-slate-50/60">
+      <section id="coaches" className="py-32 bg-slate-50/60">
         <div className="container mx-auto px-4">
           <div className="max-w-3xl">
             <div className="ui-eyebrow">
@@ -1260,6 +1288,91 @@ export function Home() {
 
           <div className="mt-16">
             <Quiz />
+          </div>
+        </div>
+      </section>
+
+      {/* Blog Section */}
+      <section id="blog" className="py-32">
+        <div className="container mx-auto px-4">
+          <div className="grid gap-6 lg:grid-cols-[0.74fr_1.26fr] lg:items-end">
+            <div className="max-w-xl">
+              <div className="ui-eyebrow">
+                <Sparkles className="h-4 w-4" />
+                База знаний
+              </div>
+              <h2 className={sectionTitleClass}>
+                Материалы для родителей
+              </h2>
+            </div>
+          </div>
+
+          <div className="mt-14 grid gap-6 lg:grid-cols-[1.08fr_0.92fr]">
+            <article className="ui-card ui-hover-lift overflow-hidden rounded-[1.7rem]">
+              <div className="grid lg:grid-cols-[1.02fr_0.98fr]">
+                <img
+                  src={featuredPost.image}
+                  alt={featuredPost.title}
+                  className="h-72 w-full object-cover lg:h-full"
+                />
+                <div className="flex flex-col justify-between p-7 sm:p-8">
+                  <div>
+                    <div className="inline-flex rounded-full bg-[#f5f0ff] px-3 py-1 text-[11px] font-semibold uppercase tracking-[0.16em] text-purple-700">
+                      {featuredPost.category}
+                    </div>
+                    <h3 className="mt-5 text-2xl font-bold tracking-tight text-gray-900 sm:text-3xl">
+                      {featuredPost.title}
+                    </h3>
+                    <p className="mt-4 text-base leading-relaxed text-gray-600">
+                      {featuredPost.excerpt}
+                    </p>
+                  </div>
+
+                  <div className="mt-8 flex flex-col items-start gap-4 border-t border-black/8 pt-5">
+                    <p className="text-sm leading-relaxed text-gray-500">
+                      Инструмент помогает быстро получить рекомендации по детскому рациону прямо на сайте.
+                    </p>
+                    <a
+                      href={featuredPost.href}
+                      className={`${primaryButtonClass} w-full sm:w-auto mt-2 px-6 py-3 font-bold`}
+                    >
+                      Читать далее →
+                    </a>
+                  </div>
+                </div>
+              </div>
+            </article>
+
+            <div className="space-y-6">
+              {secondaryPosts.map((post) => (
+                <article
+                  key={post.title}
+                  className="ui-card-soft ui-hover-lift overflow-hidden rounded-[1.45rem]"
+                >
+                  <div className="grid grid-cols-[7rem_1fr] gap-0 sm:grid-cols-[8.5rem_1fr]">
+                    <img
+                      src={post.image}
+                      alt={post.title}
+                      className="h-full min-h-[10.5rem] w-full object-cover"
+                    />
+                    <div className="p-5">
+                      <div className="inline-flex rounded-full bg-[#f8f6f2] px-3 py-1 text-[11px] font-semibold uppercase tracking-[0.16em] text-gray-600">
+                        {post.category}
+                      </div>
+                      <h3 className="mt-4 text-xl font-bold tracking-tight text-gray-900">
+                        {post.title}
+                      </h3>
+                      <p className="mt-3 text-sm leading-relaxed text-gray-600">{post.excerpt}</p>
+                      <div className="mt-5 border-t border-black/8 pt-4">
+                        <a href={post.href} className="text-sm font-semibold text-purple-700 hover:underline">
+                          Читать далее →
+                        </a>
+                      </div>
+                    </div>
+                  </div>
+                </article>
+              ))}
+            </div>
           </div>
         </div>
       </section>

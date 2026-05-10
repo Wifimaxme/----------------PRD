@@ -1,9 +1,36 @@
-import { Link } from "react-router";
+import { Link, useLocation, useNavigate } from "react-router";
 import { Menu, Phone } from "lucide-react";
 import { useState } from "react";
 
+const NAV_ITEMS: { id: string; label: string }[] = [
+  { id: "philosophy", label: "Методика" },
+  { id: "coaches", label: "Тренеры" },
+  { id: "prices", label: "Тарифы" },
+  { id: "blog", label: "Блог" },
+];
+
 export function Header() {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
+  const location = useLocation();
+  const navigate = useNavigate();
+
+  // The app uses createHashRouter so anchor links can't just use href="#id"
+  // (that would clobber the hash router). Instead we look up the element
+  // and scroll, navigating home first if we're on a different route.
+  const goToSection = (id: string) => () => {
+    setMobileMenuOpen(false);
+    if (location.pathname !== "/") {
+      navigate("/");
+      // Wait for the home tree to mount, then scroll.
+      requestAnimationFrame(() => {
+        requestAnimationFrame(() => {
+          document.getElementById(id)?.scrollIntoView({ behavior: "smooth", block: "start" });
+        });
+      });
+      return;
+    }
+    document.getElementById(id)?.scrollIntoView({ behavior: "smooth", block: "start" });
+  };
 
   return (
     <header className="sticky top-0 z-50 border-b border-black/6 bg-[rgba(252,250,247,0.82)] backdrop-blur-md">
@@ -20,18 +47,16 @@ export function Header() {
           </Link>
 
           <nav className="hidden md:flex items-center gap-6">
-            <a href="#philosophy" className="text-sm font-medium text-gray-700 transition hover:text-purple-600">
-              Методика
-            </a>
-            <a href="#coaches" className="text-sm font-medium text-gray-700 transition hover:text-purple-600">
-              Тренеры
-            </a>
-            <a href="#prices" className="text-sm font-medium text-gray-700 transition hover:text-purple-600">
-              Тарифы
-            </a>
-            <a href="#blog" className="text-sm font-medium text-gray-700 transition hover:text-purple-600">
-              Блог
-            </a>
+            {NAV_ITEMS.map((item) => (
+              <button
+                key={item.id}
+                type="button"
+                onClick={goToSection(item.id)}
+                className="text-sm font-medium text-gray-700 transition hover:text-purple-600 cursor-pointer"
+              >
+                {item.label}
+              </button>
+            ))}
             <Link to="/education-info/basic" className="text-sm font-medium text-gray-700 transition hover:text-purple-600">
               Сведения об организации
             </Link>
@@ -58,19 +83,21 @@ export function Header() {
         {mobileMenuOpen && (
           <div className="mb-4 border-t border-black/6 py-3 md:hidden">
             <div className="space-y-2">
-              <a href="#philosophy" className="block py-2 text-sm font-medium text-gray-700">
-                Методика
-              </a>
-              <a href="#coaches" className="block py-2 text-sm font-medium text-gray-700">
-                Тренеры
-              </a>
-              <a href="#prices" className="block py-2 text-sm font-medium text-gray-700">
-                Тарифы
-              </a>
-              <a href="#blog" className="block py-2 text-sm font-medium text-gray-700">
-                Блог
-              </a>
-              <Link to="/education-info/basic" className="block py-2 text-sm font-medium text-gray-700">
+              {NAV_ITEMS.map((item) => (
+                <button
+                  key={item.id}
+                  type="button"
+                  onClick={goToSection(item.id)}
+                  className="block w-full text-left py-2 text-sm font-medium text-gray-700"
+                >
+                  {item.label}
+                </button>
+              ))}
+              <Link
+                to="/education-info/basic"
+                onClick={() => setMobileMenuOpen(false)}
+                className="block py-2 text-sm font-medium text-gray-700"
+              >
                 Сведения об организации
               </Link>
               <a href="tel:+79138927059" className="block py-2 text-sm font-medium text-gray-700">
