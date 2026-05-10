@@ -60,6 +60,65 @@ export default function HeroFloatingShapes() {
     );
 }
 
+/**
+ * Smaller, denser cluster of the same SVG shapes positioned to orbit
+ * the phone mockup in the "Управляйте обучением в один клик" section.
+ *
+ * Mounted inside the existing `relative` flex container around the
+ * phone, so positions are tuned to that column rather than the full
+ * viewport.
+ */
+export function LkFloatingShapes() {
+    return (
+        <div
+            className="absolute inset-0 pointer-events-none"
+            aria-hidden="true"
+        >
+            {/* Top-left of phone */}
+            <SoccerBall
+                className="absolute top-[6%] left-[2%] w-10 h-10 sm:w-12 sm:h-12 hero-shape hero-shape-a opacity-30"
+                color="#7c3aed"
+            />
+
+            {/* Top-right */}
+            <Trophy
+                className="absolute top-[2%] right-[4%] w-10 h-10 sm:w-12 sm:h-12 hero-shape hero-shape-d opacity-30"
+                color="#ea580c"
+            />
+
+            {/* Mid-right next to phone */}
+            <Star
+                className="absolute top-[42%] right-[1%] w-9 h-9 hero-shape hero-shape-b opacity-30"
+                color="#f97316"
+            />
+
+            {/* Bottom-left */}
+            <Cone
+                className="absolute bottom-[8%] left-[4%] w-9 h-9 hero-shape hero-shape-c opacity-30"
+                color="#ea580c"
+            />
+
+            {/* Bottom-right */}
+            <Whistle
+                className="absolute bottom-[14%] right-[6%] w-10 h-10 hero-shape hero-shape-e opacity-30"
+                color="#7c3aed"
+            />
+
+            {/* Mid-left small ball */}
+            <SoccerBall
+                className="absolute top-[55%] left-[0%] w-8 h-8 hero-shape hero-shape-b opacity-30"
+                color="#ea580c"
+            />
+
+            {/* Top-center hex */}
+            <Hexagon
+                className="absolute top-[18%] left-[42%] w-7 h-7 hero-shape hero-shape-a opacity-25"
+                color="#7c3aed"
+            />
+        </div>
+    );
+}
+
 interface ShapeProps {
     className?: string;
     color: string;
