@@ -3,6 +3,7 @@ import { Header } from "../components/Header";
 import { Footer } from "../components/Footer";
 import { Quiz } from "../components/Quiz";
 import StickyMobileCTA from "../../components/StickyMobileCTA";
+import HeroFloatingShapes from "../../components/HeroFloatingShapes";
 import { Link, useNavigate } from "react-router";
 import { 
   Heart, 
@@ -375,10 +376,11 @@ export function Home() {
       {/* Hero Section */}
       <section className="relative overflow-hidden pb-20 pt-16 sm:pt-20">
         <div className="absolute inset-0">
-          <div className="absolute left-0 top-0 h-80 w-80 rounded-full bg-purple-100/70 blur-3xl"></div>
-          <div className="absolute right-0 top-16 h-96 w-96 rounded-full bg-orange-100/80 blur-3xl"></div>
+          <div className="absolute left-0 top-0 h-80 w-80 rounded-full bg-purple-100/70 blur-3xl hero-blob hero-blob-a"></div>
+          <div className="absolute right-0 top-16 h-96 w-96 rounded-full bg-orange-100/80 blur-3xl hero-blob hero-blob-b"></div>
           <div className="absolute inset-x-0 bottom-0 h-24 bg-gradient-to-b from-transparent to-white/70"></div>
         </div>
+        <HeroFloatingShapes />
 
         <div className="container mx-auto px-4 relative z-10">
           <div className="grid items-center gap-12 lg:grid-cols-[1.02fr_0.98fr] lg:gap-16">
