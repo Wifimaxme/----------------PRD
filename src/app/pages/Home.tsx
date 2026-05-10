@@ -400,7 +400,7 @@ export function Home() {
               {/* Inline phone-capture form — primary hero CTA */}
               <form
                 onSubmit={handleHeroSubmit}
-                className="mt-8 grid grid-cols-1 sm:grid-cols-[1fr_auto] gap-3 max-w-xl"
+                className="mt-8 grid grid-cols-1 sm:grid-cols-[210px_1fr] gap-3 max-w-xl"
               >
                 <input
                   type="tel"
@@ -416,12 +416,12 @@ export function Home() {
                     });
                   }}
                   placeholder="+7 (___) ___-__-__"
-                  className="px-5 py-4 rounded-xl border border-slate-200 bg-white focus:border-indigo-500 focus:ring-2 focus:ring-indigo-100 focus:outline-none transition text-slate-900 placeholder:text-slate-400 text-base"
+                  className="px-4 py-4 rounded-xl border border-slate-200 bg-white focus:border-indigo-500 focus:ring-2 focus:ring-indigo-100 focus:outline-none transition text-slate-900 placeholder:text-slate-400 text-base"
                   aria-label="Телефон для записи на пробное"
                 />
                 <button
                   type="submit"
-                  className={`${primaryButtonClass} whitespace-nowrap px-10 py-4 text-base`}
+                  className={`${primaryButtonClass} whitespace-nowrap py-5 text-lg font-bold`}
                 >
                   Записаться
                 </button>
