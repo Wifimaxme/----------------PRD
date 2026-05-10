@@ -232,29 +232,25 @@ export function Signup() {
                                         </button>
                                     </div>
                                 ) : (
-                                    <form onSubmit={handleSubmit} className="space-y-4" noValidate>
+                                    <form onSubmit={handleSubmit} className="space-y-3" noValidate>
+                                        {/* Фамилия и Имя ребёнка */}
                                         <div>
-                                            <label className="block text-xs font-bold uppercase tracking-wide text-slate-700 mb-1.5">
-                                                Имя ребёнка <span className="text-orange-500">*</span>
-                                            </label>
                                             <input
                                                 type="text"
                                                 value={childName}
                                                 onChange={(e) => setChildName(e.target.value)}
-                                                placeholder="Например, Михаил"
+                                                placeholder="Фамилия и Имя ребёнка*"
                                                 autoComplete="off"
-                                                className="w-full px-4 py-3 rounded-xl border-2 border-slate-200 focus:border-indigo-500 focus:outline-none transition text-slate-900 placeholder:text-slate-400"
+                                                className="w-full px-5 py-4 rounded-xl border border-slate-200 bg-white focus:border-indigo-500 focus:ring-2 focus:ring-indigo-100 focus:outline-none transition text-slate-900 placeholder:text-slate-400"
                                                 disabled={status === 'submitting'}
                                             />
                                             {touched && childName.trim().length < 2 && (
-                                                <p className="text-xs text-red-600 mt-1">Введите имя ребёнка</p>
+                                                <p className="text-xs text-red-600 mt-1 ml-1">Введите имя ребёнка</p>
                                             )}
                                         </div>
 
+                                        {/* Телефон */}
                                         <div>
-                                            <label className="block text-xs font-bold uppercase tracking-wide text-slate-700 mb-1.5">
-                                                Телефон родителя <span className="text-orange-500">*</span>
-                                            </label>
                                             <input
                                                 type="tel"
                                                 value={phone}
@@ -274,102 +270,79 @@ export function Signup() {
                                                         el.setSelectionRange(el.value.length, el.value.length);
                                                     }
                                                 }}
-                                                placeholder="+7 999 123 45 67"
+                                                placeholder="+7 (___) ___-__-__"
                                                 autoComplete="tel"
                                                 inputMode="tel"
-                                                className="w-full px-4 py-3 rounded-xl border-2 border-slate-200 focus:border-indigo-500 focus:outline-none transition text-slate-900 placeholder:text-slate-400"
+                                                className="w-full px-5 py-4 rounded-xl border border-slate-200 bg-white focus:border-indigo-500 focus:ring-2 focus:ring-indigo-100 focus:outline-none transition text-slate-900 placeholder:text-slate-400"
                                                 disabled={status === 'submitting'}
                                             />
                                             {touched && !phoneValid && (
-                                                <p className="text-xs text-red-600 mt-1">Введите телефон в формате +7XXXXXXXXXX</p>
+                                                <p className="text-xs text-red-600 mt-1 ml-1">Введите телефон в формате +7XXXXXXXXXX</p>
                                             )}
                                         </div>
 
+                                        {/* Номер детского сада */}
                                         <div>
-                                            <label className="block text-xs font-bold uppercase tracking-wide text-slate-700 mb-1.5">
-                                                Дата рождения ребёнка <span className="text-orange-500">*</span>
+                                            <input
+                                                type="text"
+                                                value={kindergarten}
+                                                onChange={(e) => setKindergarten(e.target.value.replace(/\D/g, '').slice(0, 6))}
+                                                inputMode="numeric"
+                                                placeholder="Номер сада*"
+                                                className="w-full px-5 py-4 rounded-xl border border-slate-200 bg-white focus:border-indigo-500 focus:ring-2 focus:ring-indigo-100 focus:outline-none transition text-slate-900 placeholder:text-slate-400"
+                                                disabled={status === 'submitting'}
+                                            />
+                                        </div>
+
+                                        {/* Группа в саду */}
+                                        <div>
+                                            <input
+                                                type="text"
+                                                value={group}
+                                                onChange={(e) => setGroup(e.target.value)}
+                                                placeholder="Группа в саду*"
+                                                className="w-full px-5 py-4 rounded-xl border border-slate-200 bg-white focus:border-indigo-500 focus:ring-2 focus:ring-indigo-100 focus:outline-none transition text-slate-900 placeholder:text-slate-400"
+                                                disabled={status === 'submitting'}
+                                            />
+                                        </div>
+
+                                        {/* Дата рождения */}
+                                        <div>
+                                            <label className="block text-sm font-medium text-slate-600 mb-1.5 ml-1">
+                                                Дата рожд. уч-ка<span className="text-orange-500">*</span>
                                             </label>
                                             <input
                                                 type="date"
                                                 value={dob}
                                                 onChange={(e) => setDob(e.target.value)}
                                                 max={todayIso()}
-                                                className="w-full px-4 py-3 rounded-xl border-2 border-slate-200 focus:border-indigo-500 focus:outline-none transition text-slate-900 placeholder:text-slate-400"
+                                                className="w-full px-5 py-4 rounded-xl border border-slate-200 bg-white focus:border-indigo-500 focus:ring-2 focus:ring-indigo-100 focus:outline-none transition text-slate-900 placeholder:text-slate-400"
                                                 disabled={status === 'submitting'}
                                             />
                                             {touched && !dobValid && (
-                                                <p className="text-xs text-red-600 mt-1">Укажите дату рождения</p>
+                                                <p className="text-xs text-red-600 mt-1 ml-1">Укажите дату рождения</p>
                                             )}
                                         </div>
 
+                                        {/* Льгота */}
                                         <div>
-                                            <label className="block text-xs font-bold uppercase tracking-wide text-slate-700 mb-1.5">
-                                                Номер детского сада
-                                            </label>
-                                            <input
-                                                type="text"
-                                                value={kindergarten}
-                                                onChange={(e) => setKindergarten(e.target.value.replace(/\D/g, '').slice(0, 6))}
-                                                inputMode="numeric"
-                                                placeholder="Например, 123"
-                                                className="w-full px-4 py-3 rounded-xl border-2 border-slate-200 focus:border-indigo-500 focus:outline-none transition text-slate-900 placeholder:text-slate-400"
-                                                disabled={status === 'submitting'}
-                                            />
-                                        </div>
-
-                                        <div>
-                                            <label className="block text-xs font-bold uppercase tracking-wide text-slate-700 mb-1.5">
-                                                Группа
-                                            </label>
-                                            <input
-                                                type="text"
-                                                value={group}
-                                                onChange={(e) => setGroup(e.target.value)}
-                                                placeholder="Например, средняя или 5-6 лет"
-                                                className="w-full px-4 py-3 rounded-xl border-2 border-slate-200 focus:border-indigo-500 focus:outline-none transition text-slate-900 placeholder:text-slate-400"
-                                                disabled={status === 'submitting'}
-                                            />
-                                        </div>
-
-                                        <div>
-                                            <label className="block text-xs font-bold uppercase tracking-wide text-slate-700 mb-1.5">
-                                                Льгота
-                                            </label>
                                             <select
                                                 value={privilege}
                                                 onChange={(e) => setPrivilege(e.target.value)}
-                                                className="w-full px-4 py-3 rounded-xl border-2 border-slate-200 focus:border-indigo-500 focus:outline-none transition text-slate-900 bg-white"
+                                                className="w-full px-5 py-4 rounded-xl border border-slate-200 bg-white focus:border-indigo-500 focus:ring-2 focus:ring-indigo-100 focus:outline-none transition text-slate-900"
                                                 disabled={status === 'submitting'}
                                             >
-                                                {PRIVILEGE_OPTIONS.map(opt => (
+                                                <option value="">Льгота</option>
+                                                {PRIVILEGE_OPTIONS.filter(o => o.value).map(opt => (
                                                     <option key={opt.value} value={opt.value}>{opt.label}</option>
                                                 ))}
                                             </select>
                                             {privilege && (
-                                                <p className="text-xs text-orange-600 font-semibold mt-1">
+                                                <p className="text-xs text-orange-600 font-semibold mt-1 ml-1">
                                                     Льготная стоимость: 1960 ₽/месяц
                                                 </p>
                                             )}
                                         </div>
-
-                                        <label className="flex items-start gap-3 cursor-pointer pt-1">
-                                            <input
-                                                type="checkbox"
-                                                checked={consent}
-                                                onChange={(e) => setConsent(e.target.checked)}
-                                                disabled={status === 'submitting'}
-                                                className="mt-1 w-4 h-4 rounded border-2 border-slate-300 text-indigo-700 focus:ring-indigo-500 cursor-pointer"
-                                            />
-                                            <span className="text-xs text-slate-600 leading-relaxed">
-                                                Я согласен(на) на обработку персональных данных в соответствии с{' '}
-                                                <Link to="/privacy-policy" className="text-indigo-700 underline hover:text-indigo-900">Политикой</Link>{' '}
-                                                и принимаю условия{' '}
-                                                <Link to="/oferta" className="text-indigo-700 underline hover:text-indigo-900">Оферты</Link>
-                                            </span>
-                                        </label>
-                                        {touched && !consent && (
-                                            <p className="text-xs text-red-600 -mt-2">Подтвердите согласие</p>
-                                        )}
 
                                         {status === 'error' && errorMessage && (
                                             <div className="flex items-start gap-2 p-3 rounded-xl bg-red-50 border border-red-200">
@@ -378,10 +351,11 @@ export function Signup() {
                                             </div>
                                         )}
 
+                                        {/* Submit button */}
                                         <button
                                             type="submit"
                                             disabled={status === 'submitting'}
-                                            className="w-full bg-orange-500 hover:bg-orange-600 disabled:opacity-60 disabled:cursor-not-allowed text-white font-black uppercase tracking-wider py-3.5 rounded-xl transition shadow-lg shadow-orange-500/30 flex items-center justify-center gap-2"
+                                            className="w-full bg-orange-500 hover:bg-orange-600 disabled:opacity-60 disabled:cursor-not-allowed text-white font-black uppercase tracking-wider py-4 rounded-xl transition shadow-lg shadow-orange-500/30 flex items-center justify-center gap-2 mt-2"
                                         >
                                             {status === 'submitting' ? (
                                                 <>
@@ -389,12 +363,31 @@ export function Signup() {
                                                     Отправляем…
                                                 </>
                                             ) : (
-                                                'Записаться на пробное'
+                                                'Отправить заявку!'
                                             )}
                                         </button>
 
+                                        {/* Согласие на обработку ПДн — под кнопкой */}
+                                        <label className="flex items-start gap-3 cursor-pointer pt-2">
+                                            <input
+                                                type="checkbox"
+                                                checked={consent}
+                                                onChange={(e) => setConsent(e.target.checked)}
+                                                disabled={status === 'submitting'}
+                                                className="mt-0.5 w-4 h-4 rounded border-2 border-slate-300 text-indigo-700 focus:ring-indigo-500 cursor-pointer shrink-0"
+                                            />
+                                            <span className="text-xs text-slate-600 leading-relaxed">
+                                                Я согласен(на) на обработку своих персональных данных и соглашаюсь с{' '}
+                                                <Link to="/privacy-policy" className="text-indigo-700 underline hover:text-indigo-900">политикой конфиденциальности</Link>.{' '}
+                                                <Link to="/oferta" className="text-indigo-700 underline hover:text-indigo-900">Подробнее</Link>
+                                            </span>
+                                        </label>
+                                        {touched && !consent && (
+                                            <p className="text-xs text-red-600 -mt-2 ml-7">Подтвердите согласие</p>
+                                        )}
+
                                         <p className="text-[11px] text-slate-500 text-center leading-relaxed pt-1">
-                                            Или позвоните напрямую: <a href="tel:+79138927059" className="text-indigo-700 font-semibold">+7-913-892-70-59</a>
+                                            Или позвоните: <a href="tel:+79138927059" className="text-indigo-700 font-semibold">+7-913-892-70-59</a>
                                         </p>
                                     </form>
                                 )}
