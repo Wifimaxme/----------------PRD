@@ -400,7 +400,7 @@ export function Home() {
               {/* Inline phone-capture form — primary hero CTA */}
               <form
                 onSubmit={handleHeroSubmit}
-                className="mt-8 grid grid-cols-1 sm:grid-cols-[210px_1fr] gap-3 max-w-xl"
+                className="mt-8 grid grid-cols-1 sm:grid-cols-[230px_1fr] gap-3 max-w-md"
               >
                 <input
                   type="tel"
@@ -421,7 +421,7 @@ export function Home() {
                 />
                 <button
                   type="submit"
-                  className={`${primaryButtonClass} whitespace-nowrap py-5 text-lg font-bold`}
+                  className={`${primaryButtonClass} whitespace-nowrap py-4 text-base font-bold`}
                 >
                   Записаться
                 </button>
