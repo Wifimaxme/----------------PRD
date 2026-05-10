@@ -274,10 +274,15 @@ const primaryButtonClass = "ui-button-primary";
 const secondaryButtonClass = "ui-button-secondary";
 const secondaryButtonCompactClass = "ui-button-secondary px-5 py-3 text-sm";
 
+// Reads top-to-bottom (Level 5 → Level 1). Progression for the kid
+// goes the other way — bottom up — so the bottom layer is the
+// "foundation" and what every kid starts with. Age ranges per СанПиН +
+// PRD: занятия 15-30 мин в зависимости от группы.
 const developmentPyramidLevels = [
   {
     level: "Уровень 5",
     title: "Игра в команде",
+    age: "6-7 лет",
     icon: Trophy,
     widthClass: "w-full sm:w-[56%]",
     gradientClass: "from-amber-400 via-orange-400 to-orange-500",
@@ -286,6 +291,7 @@ const developmentPyramidLevels = [
   {
     level: "Уровень 4",
     title: "Точные передачи",
+    age: "5-6 лет",
     icon: Users,
     widthClass: "w-full sm:w-[68%]",
     gradientClass: "from-orange-500 via-orange-500 to-rose-500",
@@ -294,6 +300,7 @@ const developmentPyramidLevels = [
   {
     level: "Уровень 3",
     title: "Сложные финты",
+    age: "4-5 лет",
     icon: Star,
     widthClass: "w-full sm:w-[80%]",
     gradientClass: "from-fuchsia-500 via-purple-500 to-purple-600",
@@ -302,6 +309,7 @@ const developmentPyramidLevels = [
   {
     level: "Уровень 2",
     title: "Игра 1×1",
+    age: "4-5 лет",
     icon: Shield,
     widthClass: "w-full sm:w-[92%]",
     gradientClass: "from-violet-600 via-purple-600 to-indigo-600",
@@ -754,6 +762,18 @@ export function Home() {
                     базовый контроль, затем игра один в один, финты, передачи и командное действие.
                   </p>
 
+                  {/* Methodology badges */}
+                  <div className="mt-5 flex flex-wrap gap-2">
+                    <span className="inline-flex items-center gap-1.5 rounded-full bg-purple-50 border border-purple-200 px-3 py-1 text-xs font-semibold text-purple-700">
+                      <Award className="h-3.5 w-3.5" />
+                      По методике Coerver Coaching
+                    </span>
+                    <span className="inline-flex items-center gap-1.5 rounded-full bg-orange-50 border border-orange-200 px-3 py-1 text-xs font-semibold text-orange-700">
+                      <Users className="h-3.5 w-3.5" />
+                      Формат FUNino 3×3
+                    </span>
+                  </div>
+
                   <div className="mt-6 border-l-2 border-purple-200 pl-5">
                     <p className="ui-body-sm text-gray-700">
                       Главная идея: ребёнок не перескакивает через фундамент, поэтому прогресс
@@ -763,15 +783,33 @@ export function Home() {
                 </div>
 
                 <div className="rounded-[1rem] border border-black/6 bg-white/38 p-4 sm:p-5">
-                  <p className="text-[10px] font-semibold uppercase tracking-[0.18em] text-gray-400">
-                    Пирамида развития
-                  </p>
+                  <div className="flex items-center justify-between">
+                    <p className="text-[10px] font-semibold uppercase tracking-[0.18em] text-gray-400">
+                      Пирамида развития
+                    </p>
+                    <p className="text-[10px] font-semibold uppercase tracking-[0.16em] text-purple-500">
+                      ↑ путь развития
+                    </p>
+                  </div>
                   <div className="mt-4 flex flex-col items-center gap-2">
-                    {developmentPyramidLevels.map((layer) => {
+                    {developmentPyramidLevels.map((layer, idx) => {
                       const Icon = layer.icon;
+                      // Reverse stagger so the bottom (Уровень 1) appears first,
+                      // matching the actual learning progression. The data is
+                      // top-to-bottom (Уровень 5 → 2), so bottom = highest idx.
+                      const bottomIdx = developmentPyramidLevels.length - idx; // 1-based from bottom
+                      // Levels 5..2 → delays after the foundation appears.
+                      const delay = (bottomIdx + 1) * 0.12; // foundation gets 0.12, then up
 
                       return (
-                        <div key={layer.level} className={`${layer.widthClass}`}>
+                        <motion.div
+                          key={layer.level}
+                          initial={{ opacity: 0, y: 14 }}
+                          whileInView={{ opacity: 1, y: 0 }}
+                          viewport={{ once: true, margin: "-40px" }}
+                          transition={{ delay, duration: 0.4, ease: "easeOut" }}
+                          className={layer.widthClass}
+                        >
                           <div
                             className={`relative overflow-hidden rounded-[0.9rem] bg-gradient-to-r ${layer.gradientClass} px-3 py-2.5 text-white shadow-[0_12px_24px_-16px_rgba(15,23,42,0.48)]`}
                           >
@@ -780,7 +818,7 @@ export function Home() {
                               <div className="flex h-8 w-8 shrink-0 items-center justify-center rounded-xl bg-white/15 backdrop-blur-sm">
                                 <Icon className="h-4 w-4" />
                               </div>
-                              <div className="text-left">
+                              <div className="flex-1 text-left">
                                 <p className="text-[10px] font-semibold uppercase tracking-[0.16em] text-white/80">
                                   {layer.level}
                                 </p>
@@ -788,23 +826,39 @@ export function Home() {
                                   {layer.title}
                                 </p>
                               </div>
+                              <span className="text-[10px] font-semibold uppercase tracking-[0.12em] text-white/82 whitespace-nowrap">
+                                {layer.age}
+                              </span>
                             </div>
                           </div>
-                        </div>
+                        </motion.div>
                       );
                     })}
 
-                    <div className="w-full">
-                      <div className="rounded-[1rem] bg-gradient-to-r from-slate-900 via-indigo-900 to-purple-900 px-4 py-3.5 text-center text-white shadow-[0_12px_24px_-16px_rgba(15,23,42,0.62)]">
-                        <p className="text-[10px] font-semibold uppercase tracking-[0.18em] text-indigo-100">
-                          Фундамент
-                        </p>
-                        <p className="mt-1 text-base font-black tracking-wide">Контроль мяча</p>
+                    <motion.div
+                      initial={{ opacity: 0, y: 14 }}
+                      whileInView={{ opacity: 1, y: 0 }}
+                      viewport={{ once: true, margin: "-40px" }}
+                      transition={{ delay: 0.12, duration: 0.4, ease: "easeOut" }}
+                      className="w-full"
+                    >
+                      <div className="rounded-[1rem] bg-gradient-to-r from-slate-900 via-indigo-900 to-purple-900 px-4 py-3.5 text-white shadow-[0_12px_24px_-16px_rgba(15,23,42,0.62)]">
+                        <div className="flex items-center justify-between gap-3">
+                          <div className="text-left">
+                            <p className="text-[10px] font-semibold uppercase tracking-[0.18em] text-indigo-100">
+                              Уровень 1 · фундамент
+                            </p>
+                            <p className="mt-1 text-base font-black tracking-wide">Контроль мяча</p>
+                          </div>
+                          <span className="text-[10px] font-semibold uppercase tracking-[0.12em] text-indigo-100 whitespace-nowrap shrink-0">
+                            3-4 года
+                          </span>
+                        </div>
                         <p className="mt-1 text-xs font-medium text-indigo-100">
                           Чувство мяча и уверенный базовый контроль
                         </p>
                       </div>
-                    </div>
+                    </motion.div>
                   </div>
                 </div>
               </article>
