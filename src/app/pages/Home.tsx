@@ -510,7 +510,7 @@ export function Home() {
       <Header />
 
       {/* Hero Section */}
-      <section className="relative overflow-hidden pb-20 pt-16 sm:pt-20">
+      <section className="relative overflow-hidden pb-24 pt-20 sm:pt-24">
         <div className="absolute inset-0">
           <div className="absolute -left-16 -top-16 h-[28rem] w-[28rem] rounded-full bg-purple-300/55 blur-3xl hero-blob hero-blob-a"></div>
           <div className="absolute -right-24 top-8 h-[32rem] w-[32rem] rounded-full bg-orange-300/55 blur-3xl hero-blob hero-blob-b"></div>
@@ -574,7 +574,7 @@ export function Home() {
                 </span>
               </div>
 
-              <div className="mt-12 grid gap-5 border-t border-black/8 pt-6 sm:grid-cols-3">
+              <div className="mt-14 grid gap-5 border-t border-black/8 pt-6 sm:grid-cols-3">
                 {heroHighlights.map((item, index) => (
                   <div
                     key={item.value}
@@ -662,8 +662,8 @@ export function Home() {
         </div>
       </section>
 
-      {/* School in numbers — compact trust strip right under the hero */}
-      <section className="py-10 sm:py-14 bg-gradient-to-br from-indigo-50/50 via-white to-orange-50/40 relative overflow-hidden">
+      {/* School in numbers — trust strip right under the hero */}
+      <section className="py-14 sm:py-20 bg-gradient-to-br from-indigo-50/50 via-white to-orange-50/40 relative overflow-hidden">
         <div className="absolute -left-20 -top-10 h-64 w-64 rounded-full bg-purple-200/25 blur-3xl pointer-events-none" />
         <div className="absolute -right-20 -bottom-10 h-72 w-72 rounded-full bg-orange-200/25 blur-3xl pointer-events-none" />
 
@@ -700,7 +700,7 @@ export function Home() {
       </section>
 
       {/* About School Section */}
-      <section id="about" className="py-28">
+      <section id="about" className="py-32">
         <div className="container mx-auto px-4">
           <div className="grid gap-14 lg:grid-cols-[0.78fr_1.22fr] lg:gap-16">
             <div className="max-w-xl">
@@ -754,7 +754,7 @@ export function Home() {
       </section>
 
       {/* Comparison: typical section vs ФШ «Чемпион» */}
-      <section className="py-28">
+      <section className="py-32">
         <div className="container mx-auto px-4">
           <div className="max-w-3xl">
             <div className="ui-eyebrow">
@@ -769,7 +769,7 @@ export function Home() {
             </p>
           </div>
 
-          <div className="mt-14 grid gap-4 lg:grid-cols-2">
+          <div className="mt-16 grid gap-4 lg:grid-cols-2">
             {/* "Как обычно" — muted card */}
             <div className="rounded-[1.3rem] border border-slate-200 bg-slate-50 p-5 sm:p-6 relative">
               <p className="text-[11px] font-semibold uppercase tracking-[0.16em] text-slate-500 mb-2">
@@ -832,7 +832,7 @@ export function Home() {
       </section>
 
       {/* Coaches Section */}
-      <section className="py-28 bg-slate-50/60">
+      <section className="py-32 bg-slate-50/60">
         <div className="container mx-auto px-4">
           <div className="max-w-3xl">
             <div className="ui-eyebrow">
@@ -849,7 +849,7 @@ export function Home() {
             </p>
           </div>
 
-          <div className="mt-12 -mx-4 px-4 snap-x snap-mandatory overflow-x-auto pb-5 [scrollbar-width:thin] [scrollbar-color:rgba(147,51,234,0.45)_transparent]">
+          <div className="mt-14 -mx-4 px-4 snap-x snap-mandatory overflow-x-auto pb-5 [scrollbar-width:thin] [scrollbar-color:rgba(147,51,234,0.45)_transparent]">
             <div className="flex w-max gap-4">
             {coaches.map((coach, index) => (
               <motion.article
@@ -942,7 +942,7 @@ export function Home() {
       </section>
 
       {/* Philosophy Section */}
-      <section id="philosophy" className="py-28">
+      <section id="philosophy" className="py-32">
         <div className="container mx-auto px-4">
           <div className="grid gap-16 lg:grid-cols-[0.9fr_1.1fr] lg:items-start lg:gap-20">
             <div className="lg:sticky lg:top-24">
@@ -960,7 +960,7 @@ export function Home() {
                   него получается.
                 </p>
 
-                <div className="mt-14 border-t border-black/8 pt-5">
+                <div className="mt-16 border-t border-black/8 pt-5">
                   <p className="text-[11px] font-semibold uppercase tracking-[0.18em] text-purple-500">
                     Главный эффект
                   </p>
@@ -1098,7 +1098,7 @@ export function Home() {
       </section>
 
       {/* Pricing Section */}
-      <section id="prices" className="py-28 bg-amber-50/40">
+      <section id="prices" className="py-32 bg-amber-50/40">
         <div className="container mx-auto px-4">
           <div className="grid gap-10 lg:grid-cols-[0.76fr_1.24fr] lg:gap-14">
             <div className="max-w-xl">
@@ -1168,7 +1168,7 @@ export function Home() {
       </section>
 
       {/* Personal Account Section */}
-      <section id="personal-account" className="py-28 overflow-hidden bg-slate-50/50">
+      <section id="personal-account" className="py-32 overflow-hidden bg-slate-50/50">
         <div className="container mx-auto px-4">
           <div className="grid gap-10 lg:grid-cols-[0.82fr_1.18fr] lg:gap-14">
             <div className="max-w-xl">
@@ -1184,7 +1184,7 @@ export function Home() {
                 оплате и успехах ребёнка доступна в одном месте — с компьютера или смартфона.
               </p>
 
-              <div className="mt-12 space-y-6">
+              <div className="mt-14 space-y-6">
                 {personalAccountSteps.map((item) => (
                   <div key={item.step} className="group relative border-l-2 border-orange-100 pl-8 transition-colors hover:border-orange-500 pb-2">
                     <div className="absolute -left-3 top-0 flex h-6 w-6 items-center justify-center rounded-full bg-white border-2 border-orange-200 text-[10px] font-bold text-orange-600 shadow-sm group-hover:border-orange-500 group-hover:bg-orange-500 group-hover:text-white transition-all">
@@ -1198,7 +1198,7 @@ export function Home() {
                 ))}
               </div>
 
-              <div className="mt-12 flex flex-col gap-4 sm:flex-row">
+              <div className="mt-14 flex flex-col gap-4 sm:flex-row">
                 <a
                   href="https://lk.champion-footboll.ru/"
                   target="_blank"
@@ -1242,7 +1242,7 @@ export function Home() {
       </section>
 
       {/* Quiz Section */}
-      <section className="py-28 bg-indigo-50/40">
+      <section className="py-32 bg-indigo-50/40">
         <div className="container mx-auto px-4">
           <div className="mx-auto max-w-3xl text-center">
             <div className="ui-eyebrow">
@@ -1258,14 +1258,14 @@ export function Home() {
             </p>
           </div>
 
-          <div className="mt-14">
+          <div className="mt-16">
             <Quiz />
           </div>
         </div>
       </section>
 
       {/* CTA Section */}
-      <section className="py-28">
+      <section className="py-32">
         <div className="container mx-auto px-4">
           <div className="relative overflow-hidden border-t border-black/8 px-2 pt-10">
             <div className="absolute -left-10 top-0 h-40 w-40 rounded-full bg-purple-200/40 blur-3xl"></div>
