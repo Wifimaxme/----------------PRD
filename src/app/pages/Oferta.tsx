@@ -160,7 +160,7 @@ export function Oferta() {
             <p>Банк АО "ТБанк"</p>
             <p>Корр.счет. 30101810145250000974</p>
             <p>БИК 044525974</p>
-            <p>e-mail: wifimaxme@gmail.com</p>
+            <p>e-mail: income@champion-footboll.ru</p>
             <p>тел: 8-913-892-70-59</p>
             <p>Директор: Рублевская Юлия Владимировна</p>
           </div>

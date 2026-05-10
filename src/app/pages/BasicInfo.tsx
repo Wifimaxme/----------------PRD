@@ -61,8 +61,8 @@ const contactRows: InfoRow[] = [
   {
     label: "Электронная почта",
     value: (
-      <a href="mailto:wifimaxme@gmail.com" className="text-purple-700 hover:underline">
-        wifimaxme@gmail.com
+      <a href="mailto:income@champion-footboll.ru" className="text-purple-700 hover:underline">
+        income@champion-footboll.ru
       </a>
     ),
   },

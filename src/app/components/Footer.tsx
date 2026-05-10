@@ -27,9 +27,9 @@ export function Footer() {
                 <Phone className="w-4 h-4" />
                 8-913-892-70-59
               </a>
-              <a href="mailto:wifimaxme@gmail.com" className="flex items-center gap-2 text-gray-400 hover:text-white transition">
+              <a href="mailto:income@champion-footboll.ru" className="flex items-center gap-2 text-gray-400 hover:text-white transition">
                 <Mail className="w-4 h-4" />
-                wifimaxme@gmail.com
+                income@champion-footboll.ru
               </a>
               <div className="flex items-start gap-2 text-gray-400">
                 <MapPin className="w-4 h-4 mt-1" />

@@ -164,8 +164,8 @@ export function Documents() {
           <p className="text-sm text-gray-700">
             Для получения оригиналов документов или дополнительной информации обращайтесь 
             по адресу электронной почты{" "}
-            <a href="mailto:wifimaxme@gmail.com" className="text-purple-600 hover:underline">
-              wifimaxme@gmail.com
+            <a href="mailto:income@champion-footboll.ru" className="text-purple-600 hover:underline">
+              income@champion-footboll.ru
             </a>{" "}
             или по телефону{" "}
             <a href="tel:+79138927059" className="text-purple-600 hover:underline">
