@@ -616,7 +616,7 @@ export function Home() {
                 <div className={`relative aspect-square overflow-hidden ${coach.photo ? "bg-gradient-to-b from-orange-50 via-white to-indigo-50" : coach.bgClass}`}>
                   {coach.photo ? (
                     <img
-                      src={coach.photo}
+                      src={`${coach.photo}?v=2`}
                       alt={coach.name}
                       loading="lazy"
                       className="absolute inset-x-0 top-0 h-[120%] w-full object-cover object-top transition-transform duration-500 group-hover:scale-105"
