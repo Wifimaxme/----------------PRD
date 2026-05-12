@@ -5,6 +5,7 @@ import { Footer } from "../components/Footer";
 import { Quiz } from "../components/Quiz";
 import StickyMobileCTA from "../../components/StickyMobileCTA";
 import HeroFloatingShapes, { LkFloatingShapes } from "../../components/HeroFloatingShapes";
+import { blogPosts } from "../data/blogPosts";
 import { Link, useNavigate } from "react-router";
 import { 
   Heart, 
@@ -137,31 +138,6 @@ const heroHighlights = [
   {
     value: "3-7 лет",
     label: "программа под дошкольный возраст",
-  },
-];
-
-const blogPosts = [
-  {
-    title: "Как выбрать футбольные бутсы для малыша?",
-    excerpt: "Полное руководство по выбору первой спортивной обуви для вашего ребенка.",
-    category: "Экипировка",
-    image: "https://images.unsplash.com/photo-1622659097509-4d56de14539e?auto=format&fit=crop&q=80&w=1080",
-    href: "#",
-  },
-  {
-    title: "Питание юного спортсмена: основы",
-    excerpt: "Что должно быть в рационе ребенка, который занимается спортом.",
-    category: "Питание",
-    featured: true,
-    image: "https://images.unsplash.com/photo-1627747776910-6d7e50f57c7e?auto=format&fit=crop&q=80&w=1080",
-    href: "#",
-  },
-  {
-    title: "Мотивация без давления: как заинтересовать ребёнка?",
-    excerpt: "Психологические приёмы для развития любви к спорту.",
-    category: "Психология",
-    image: "https://images.unsplash.com/photo-1701872324421-f537bc8f61de?auto=format&fit=crop&q=80&w=1080",
-    href: "#",
   },
 ];
 
@@ -815,7 +791,7 @@ export function Home() {
             </p>
           </div>
 
-          <div className="mt-16 grid gap-4 lg:grid-cols-2">
+          <div className="mt-16 grid gap-4 lg:grid-cols-2 max-w-4xl">
             {/* "Как обычно" — muted card */}
             <div className="rounded-[1.3rem] border border-slate-200 bg-slate-50 p-5 sm:p-6 relative">
               <p className="text-[11px] font-semibold uppercase tracking-[0.16em] text-slate-500 mb-2">
@@ -1314,23 +1290,38 @@ export function Home() {
       </section>
 
       {/* Quiz Section */}
-      <section className="py-32 bg-indigo-50/40">
+      <section className="py-24 bg-indigo-50/40">
         <div className="container mx-auto px-4">
-          <div className="mx-auto max-w-3xl text-center">
+          <div className="mx-auto max-w-2xl text-center">
             <div className="ui-eyebrow">
               <Sparkles className="h-4 w-4" />
-              Персональный маршрут
+              Персональный гайд
             </div>
-            <h2 className={sectionTitleClass}>
-              Понять, как мягко начать именно вашему ребёнку
+            <h2 className="mt-5 text-3xl md:text-4xl font-bold tracking-tight text-gray-900 leading-tight">
+              Получите PDF-гайд по адаптации
+              <br className="hidden sm:inline" /> ребёнка к спорту — за&nbsp;30&nbsp;секунд
             </h2>
-            <p className="mt-5 text-lg leading-relaxed text-gray-600">
-              После знакомства с форматом можно перейти к самому спокойному действию: ответить на
-              три коротких вопроса и забрать PDF-гайд по адаптации без звонков и лишних шагов.
+            <p className="mt-4 text-base leading-relaxed text-gray-600">
+              Ответьте на три вопроса о ребёнке — получите рекомендации без звонков и&nbsp;регистрации.
             </p>
+
+            <div className="mt-6 flex flex-wrap justify-center gap-x-5 gap-y-1.5 text-sm text-gray-500">
+              <span className="flex items-center gap-1.5">
+                <CheckCircle2 className="h-4 w-4 text-emerald-500" />
+                3 вопроса
+              </span>
+              <span className="flex items-center gap-1.5">
+                <CheckCircle2 className="h-4 w-4 text-emerald-500" />
+                Без регистрации
+              </span>
+              <span className="flex items-center gap-1.5">
+                <CheckCircle2 className="h-4 w-4 text-emerald-500" />
+                PDF на почту не нужен — скачается сразу
+              </span>
+            </div>
           </div>
 
-          <div className="mt-16">
+          <div className="mt-12">
             <Quiz />
           </div>
         </div>
@@ -1376,12 +1367,12 @@ export function Home() {
                     <p className="text-sm leading-relaxed text-gray-500">
                       Инструмент помогает быстро получить рекомендации по детскому рациону прямо на сайте.
                     </p>
-                    <a
-                      href={featuredPost.href}
+                    <Link
+                      to={`/blog/${featuredPost.slug}`}
                       className={`${primaryButtonClass} w-full sm:w-auto mt-2 px-6 py-3 font-bold`}
                     >
                       Читать далее →
-                    </a>
+                    </Link>
                   </div>
                 </div>
               </div>
@@ -1389,9 +1380,10 @@ export function Home() {
 
             <div className="space-y-6">
               {secondaryPosts.map((post) => (
-                <article
-                  key={post.title}
-                  className="ui-card-soft ui-hover-lift overflow-hidden rounded-[1.45rem]"
+                <Link
+                  key={post.slug}
+                  to={`/blog/${post.slug}`}
+                  className="ui-card-soft ui-hover-lift overflow-hidden rounded-[1.45rem] block"
                 >
                   <div className="grid grid-cols-[7rem_1fr] gap-0 sm:grid-cols-[8.5rem_1fr]">
                     <img
@@ -1408,13 +1400,13 @@ export function Home() {
                       </h3>
                       <p className="mt-3 text-sm leading-relaxed text-gray-600">{post.excerpt}</p>
                       <div className="mt-5 border-t border-black/8 pt-4">
-                        <a href={post.href} className="text-sm font-semibold text-purple-700 hover:underline">
+                        <span className="text-sm font-semibold text-purple-700 hover:underline">
                           Читать далее →
-                        </a>
+                        </span>
                       </div>
                     </div>
                   </div>
-                </article>
+                </Link>
               ))}
             </div>
           </div>
@@ -1428,36 +1420,68 @@ export function Home() {
             <div className="absolute -left-10 top-0 h-40 w-40 rounded-full bg-purple-200/40 blur-3xl"></div>
             <div className="absolute -right-6 bottom-0 h-44 w-44 rounded-full bg-orange-200/45 blur-3xl"></div>
 
-            <div className="relative grid gap-8 lg:grid-cols-[1fr_auto] lg:items-center">
-              <div className="max-w-2xl">
-                <div className="ui-eyebrow">
+            <div className="relative">
+              <div className="max-w-2xl mx-auto text-center">
+                <div className="ui-eyebrow justify-center">
                   <Sparkles className="h-4 w-4" />
                   Следующий шаг
                 </div>
                 <h2 className={sectionTitleClass}>
-                  Войдите в личный кабинет и управляйте обучением ребенка
+                  Готовы начать?
                 </h2>
-                <p className="mt-5 max-w-xl text-lg leading-relaxed text-gray-600">
-                  Все оплаты, расписание и связь с администратором в одном месте. 
-                  Начните с бесплатного пробного занятия.
+                <p className="mt-5 text-lg leading-relaxed text-gray-600">
+                  Если вы у нас впервые — запишитесь на бесплатное пробное занятие.
+                  Если ребёнок уже занимается — войдите в личный кабинет.
                 </p>
               </div>
 
-              <div className="flex flex-col gap-4 sm:flex-row lg:flex-col">
+              <div className="mt-12 grid gap-4 sm:grid-cols-2 max-w-3xl mx-auto">
+                {/* New client → /signup */}
+                <Link
+                  to="/signup"
+                  className="group relative overflow-hidden rounded-[1.4rem] bg-gradient-to-br from-purple-600 via-purple-700 to-orange-500 p-7 sm:p-8 text-white shadow-[0_24px_60px_-30px_rgba(124,58,237,0.55)] hover:shadow-[0_30px_70px_-30px_rgba(124,58,237,0.7)] hover:-translate-y-0.5 transition-all"
+                >
+                  <div className="absolute -right-12 -top-12 h-44 w-44 rounded-full bg-orange-400/30 blur-3xl pointer-events-none" />
+                  <div className="relative">
+                    <p className="text-[11px] font-semibold uppercase tracking-[0.18em] text-orange-200">
+                      Я новый клиент
+                    </p>
+                    <h3 className="mt-3 text-2xl font-black tracking-tight">
+                      Записаться на пробное занятие
+                    </h3>
+                    <p className="mt-3 text-sm text-white/85 leading-relaxed">
+                      Первое занятие бесплатно, без обязательств.
+                    </p>
+                    <span className="mt-6 inline-flex items-center gap-2 text-sm font-bold text-white">
+                      Перейти к записи
+                      <span className="transition-transform group-hover:translate-x-1">→</span>
+                    </span>
+                  </div>
+                </Link>
+
+                {/* Existing client → LK */}
                 <a
                   href="https://lk.champion-footboll.ru/"
                   target="_blank"
                   rel="noopener noreferrer"
-                  className={primaryButtonClass}
+                  className="group relative overflow-hidden rounded-[1.4rem] bg-white border border-indigo-200 p-7 sm:p-8 hover:border-indigo-400 hover:shadow-[0_20px_50px_-25px_rgba(15,23,42,0.25)] hover:-translate-y-0.5 transition-all"
                 >
-                  Войти в Личный кабинет
+                  <div className="relative">
+                    <p className="text-[11px] font-semibold uppercase tracking-[0.18em] text-indigo-700">
+                      Уже занимаемся
+                    </p>
+                    <h3 className="mt-3 text-2xl font-black tracking-tight text-gray-900">
+                      Войти в личный кабинет
+                    </h3>
+                    <p className="mt-3 text-sm text-gray-600 leading-relaxed">
+                      Расписание, оплата и связь с тренером в&nbsp;одном месте.
+                    </p>
+                    <span className="mt-6 inline-flex items-center gap-2 text-sm font-bold text-indigo-700">
+                      Открыть кабинет
+                      <span className="transition-transform group-hover:translate-x-1">→</span>
+                    </span>
+                  </div>
                 </a>
-                <button
-                  onClick={() => document.getElementById('personal-account')?.scrollIntoView({ behavior: 'smooth' })}
-                  className={secondaryButtonClass}
-                >
-                  Как это работает?
-                </button>
               </div>
             </div>
           </div>
