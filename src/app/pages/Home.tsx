@@ -458,6 +458,22 @@ export function Home() {
   const heroVideoRef = useRef<HTMLIFrameElement | null>(null);
   const navigate = useNavigate();
   const [heroPhone, setHeroPhone] = useState('+7');
+  const [quizModalOpen, setQuizModalOpen] = useState(false);
+
+  // Lock body scroll while the quiz modal is open
+  useEffect(() => {
+    if (!quizModalOpen) return;
+    const prev = document.body.style.overflow;
+    document.body.style.overflow = "hidden";
+    const onEsc = (e: KeyboardEvent) => {
+      if (e.key === "Escape") setQuizModalOpen(false);
+    };
+    window.addEventListener("keydown", onEsc);
+    return () => {
+      document.body.style.overflow = prev;
+      window.removeEventListener("keydown", onEsc);
+    };
+  }, [quizModalOpen]);
 
   const handleHeroSubmit = (e: { preventDefault: () => void }) => {
     e.preventDefault();
@@ -1289,41 +1305,32 @@ export function Home() {
         </div>
       </section>
 
-      {/* Quiz Section */}
-      <section className="py-24 bg-indigo-50/40">
+      {/* Quiz banner — opens the quiz in a modal */}
+      <section className="py-16 bg-indigo-50/40">
         <div className="container mx-auto px-4">
-          <div className="mx-auto max-w-2xl text-center">
-            <div className="ui-eyebrow">
-              <Sparkles className="h-4 w-4" />
-              Персональный гайд
-            </div>
-            <h2 className="mt-5 text-3xl md:text-4xl font-bold tracking-tight text-gray-900 leading-tight">
-              Получите PDF-гайд по адаптации
-              <br className="hidden sm:inline" /> ребёнка к спорту — за&nbsp;30&nbsp;секунд
-            </h2>
-            <p className="mt-4 text-base leading-relaxed text-gray-600">
-              Ответьте на три вопроса о ребёнке — получите рекомендации без звонков и&nbsp;регистрации.
-            </p>
-
-            <div className="mt-6 flex flex-wrap justify-center gap-x-5 gap-y-1.5 text-sm text-gray-500">
-              <span className="flex items-center gap-1.5">
-                <CheckCircle2 className="h-4 w-4 text-emerald-500" />
-                3 вопроса
-              </span>
-              <span className="flex items-center gap-1.5">
-                <CheckCircle2 className="h-4 w-4 text-emerald-500" />
-                Без регистрации
-              </span>
-              <span className="flex items-center gap-1.5">
-                <CheckCircle2 className="h-4 w-4 text-emerald-500" />
-                PDF на почту не нужен — скачается сразу
+          <button
+            type="button"
+            onClick={() => setQuizModalOpen(true)}
+            className="group mx-auto block w-full max-w-3xl rounded-[1.4rem] bg-white border border-purple-200 p-5 sm:p-6 text-left hover:border-purple-400 hover:shadow-[0_24px_50px_-30px_rgba(124,58,237,0.4)] transition-all"
+          >
+            <div className="flex flex-col sm:flex-row sm:items-center gap-4">
+              <div className="flex h-12 w-12 shrink-0 items-center justify-center rounded-2xl bg-gradient-to-br from-purple-600 to-orange-500 shadow-md">
+                <Sparkles className="h-6 w-6 text-white" />
+              </div>
+              <div className="flex-1 min-w-0">
+                <p className="text-[11px] font-semibold uppercase tracking-[0.16em] text-purple-500">
+                  Бесплатный PDF-гайд
+                </p>
+                <h3 className="mt-1 text-lg sm:text-xl font-bold tracking-tight text-gray-900 leading-tight">
+                  3 вопроса — и забираете персональный гайд по адаптации ребёнка к спорту
+                </h3>
+              </div>
+              <span className="shrink-0 inline-flex items-center justify-center gap-2 rounded-xl bg-gradient-to-br from-purple-600 to-orange-500 text-white font-bold px-5 py-3 text-sm whitespace-nowrap group-hover:scale-105 transition-transform">
+                Открыть тест
+                <span className="transition-transform group-hover:translate-x-1">→</span>
               </span>
             </div>
-          </div>
-
-          <div className="mt-12">
-            <Quiz />
-          </div>
+          </button>
         </div>
       </section>
 
@@ -1490,6 +1497,31 @@ export function Home() {
 
       <Footer />
       <StickyMobileCTA />
+
+      {/* Quiz modal */}
+      {quizModalOpen && (
+        <div
+          className="fixed inset-0 z-[100] flex items-start justify-center overflow-y-auto bg-slate-900/60 backdrop-blur-sm p-4 sm:p-8"
+          onClick={() => setQuizModalOpen(false)}
+          role="dialog"
+          aria-modal="true"
+        >
+          <div
+            className="relative w-full max-w-3xl my-4 sm:my-8"
+            onClick={(e) => e.stopPropagation()}
+          >
+            <button
+              type="button"
+              onClick={() => setQuizModalOpen(false)}
+              className="absolute -top-3 -right-3 sm:-top-4 sm:-right-4 z-10 w-10 h-10 rounded-full bg-white shadow-lg flex items-center justify-center text-slate-700 hover:text-slate-900 hover:scale-105 transition"
+              aria-label="Закрыть тест"
+            >
+              <X className="w-5 h-5" />
+            </button>
+            <Quiz />
+          </div>
+        </div>
+      )}
     </div>
   );
 }
