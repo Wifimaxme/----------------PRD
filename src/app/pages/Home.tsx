@@ -778,8 +778,8 @@ export function Home() {
       {/* Comparison: typical section vs ФШ «Чемпион» */}
       <section className="py-32">
         <div className="container mx-auto px-4">
-          <div className="max-w-3xl">
-            <div className="ui-eyebrow">
+          <div className="max-w-3xl mx-auto text-center">
+            <div className="ui-eyebrow justify-center">
               <Sparkles className="h-4 w-4" />
               Почему именно мы
             </div>
@@ -791,7 +791,7 @@ export function Home() {
             </p>
           </div>
 
-          <div className="mt-16 grid gap-4 lg:grid-cols-2 max-w-4xl">
+          <div className="mt-16 grid gap-4 lg:grid-cols-2 max-w-4xl mx-auto">
             {/* "Как обычно" — muted card */}
             <div className="rounded-[1.3rem] border border-slate-200 bg-slate-50 p-5 sm:p-6 relative">
               <p className="text-[11px] font-semibold uppercase tracking-[0.16em] text-slate-500 mb-2">
@@ -871,7 +871,7 @@ export function Home() {
             </p>
           </div>
 
-          <div className="mt-14 -mx-4 px-4 snap-x snap-mandatory overflow-x-auto pb-5 [scrollbar-width:thin] [scrollbar-color:rgba(147,51,234,0.45)_transparent]">
+          <div className="mt-14 -mx-4 px-4 snap-x snap-proximity overflow-x-auto overscroll-y-auto pb-5 [scrollbar-width:thin] [scrollbar-color:rgba(147,51,234,0.45)_transparent]">
             <div className="flex w-max gap-4">
             {coaches.map((coach, index) => (
               <motion.article
