@@ -991,7 +991,7 @@ export function Home() {
       <section id="philosophy" className="py-32">
         <div className="container mx-auto px-4">
           <div className="grid gap-16 lg:grid-cols-[0.9fr_1.1fr] lg:items-start lg:gap-20">
-            <div className="lg:sticky lg:top-24">
+            <div>
               <div className="max-w-2xl">
                 <div className="ui-eyebrow">
                   <Award className="h-4 w-4" />
