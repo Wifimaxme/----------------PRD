@@ -22,6 +22,8 @@ import {
   QrCode,
   LogIn,
   X,
+  Compass,
+  CalendarHeart,
 } from "lucide-react";
 
 interface Coach {
@@ -192,23 +194,31 @@ const aboutHighlights = [
 
 const philosophyPillars = [
   {
+    icon: Heart,
     label: "Интерес вместо давления",
     text: "Ребёнок включается через игру и чувство успеха, а не через страх ошибки и гонку за результатом.",
+    accentClass: "from-rose-500 to-orange-400",
+    tintClass: "bg-rose-50 text-rose-600",
   },
   {
-    label: "Возраст 3-7 лет",
-    text: "Учитываем утомляемость, чувствительность к неудачам и потребность в частой смене деятельности.",
+    icon: CalendarHeart,
+    label: "Бережно к дошкольнику",
+    text: "Учитываем утомляемость, чувствительность к неудачам и потребность в частой смене деятельности — программа адаптирована под 3–7 лет.",
+    accentClass: "from-purple-600 to-fuchsia-500",
+    tintClass: "bg-purple-50 text-purple-600",
   },
   {
-    label: "Среда помогает учиться",
+    icon: Compass,
+    label: "Среда учит",
     text: "Упражнения и формат тренировки подсказывают ребёнку правильное действие и постепенно растят уверенность.",
+    accentClass: "from-orange-500 to-amber-400",
+    tintClass: "bg-orange-50 text-orange-600",
+    examples: [
+      "дриблинг как побег от монстров",
+      "обводка как сбор сокровищ",
+      "удар как спасение города",
+    ],
   },
-];
-
-const philosophyExamples = [
-  "дриблинг как побег от монстров",
-  "обводка как сбор сокровищ",
-  "удар как спасение города",
 ];
 
 const funinoSignals = ["3×3 или 4×4", "4 мини-ворот", "Head Up", "Решения без страха"];
@@ -1009,20 +1019,46 @@ export function Home() {
             </div>
 
             <div className="grid gap-6">
-              {philosophyPillars.map((item, index) => (
-                <article
-                  key={item.label}
-                  className="rounded-[1.25rem] border border-black/6 bg-white/50 p-6 sm:p-8"
-                >
-                  <p className="text-[11px] font-semibold uppercase tracking-[0.18em] text-purple-500">
-                    Принцип 0{index + 1}
-                  </p>
-                  <h3 className="mt-3 text-2xl font-bold tracking-tight text-gray-900">
-                    {item.label}
-                  </h3>
-                  <p className="ui-body-sm mt-3 text-gray-700">{item.text}</p>
-                </article>
-              ))}
+              {philosophyPillars.map((item, index) => {
+                const Icon = item.icon;
+                return (
+                  <motion.article
+                    key={item.label}
+                    initial={{ opacity: 0, y: 24 }}
+                    whileInView={{ opacity: 1, y: 0 }}
+                    viewport={{ once: true, margin: "-60px" }}
+                    transition={{ delay: index * 0.12, duration: 0.5, ease: "easeOut" }}
+                    className="rounded-[1.25rem] border border-black/6 bg-white/70 p-6 sm:p-8 relative overflow-hidden"
+                  >
+                    <div className={`absolute inset-x-0 top-0 h-1 bg-gradient-to-r ${item.accentClass}`} />
+
+                    <div className="flex items-start gap-4">
+                      <div className={`shrink-0 inline-flex items-center justify-center w-12 h-12 rounded-2xl ${item.tintClass}`}>
+                        <Icon className="h-6 w-6" />
+                      </div>
+                      <div className="flex-1 min-w-0">
+                        <h3 className="text-2xl font-bold tracking-tight text-gray-900 leading-tight">
+                          {item.label}
+                        </h3>
+                        <p className="ui-body-sm mt-3 text-gray-700">{item.text}</p>
+
+                        {item.examples && (
+                          <div className="mt-4 flex flex-wrap gap-2">
+                            {item.examples.map((ex) => (
+                              <span
+                                key={ex}
+                                className="inline-flex items-center rounded-full bg-orange-50 border border-orange-200 px-3 py-1 text-xs font-medium text-orange-700"
+                              >
+                                {ex}
+                              </span>
+                            ))}
+                          </div>
+                        )}
+                      </div>
+                    </div>
+                  </motion.article>
+                );
+              })}
             </div>
           </div>
 
