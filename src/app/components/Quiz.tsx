@@ -6,6 +6,7 @@ import {
   Download,
   FileText,
   Gift,
+  Loader2,
   RotateCcw,
   Sparkles,
 } from "lucide-react";
@@ -41,13 +42,53 @@ const questions: Question[] = [
   },
 ];
 
+const LEADS_ENDPOINT =
+  ((import.meta as unknown as { env?: Record<string, string> }).env?.VITE_LEADS_ENDPOINT) ||
+  "https://lk.champion-footboll.ru/api/leads";
+
+function normalizePhone(input: string): string {
+  let digits = input.replace(/\D/g, "");
+  if (digits.startsWith("8")) digits = "7" + digits.slice(1);
+  if (!digits.startsWith("7") && digits.length <= 10) digits = "7" + digits;
+  return "+" + digits.slice(0, 11);
+}
+
+function isValidPhone(value: string): boolean {
+  return /^\+7\d{10}$/.test(value);
+}
+
+// Maps the age-range answer from question 1 to a synthetic ISO DOB so
+// the MoyKlass /api/leads endpoint (which validates dob) accepts the
+// quiz lead. The exact day isn't relevant — manager will refine when
+// they follow up.
+function ageRangeToDob(ageRange: string | undefined): string {
+  const currentYear = new Date().getFullYear();
+  const map: Record<string, number> = {
+    "3-4 года": 4,
+    "4-5 лет": 5,
+    "5-6 лет": 6,
+    "6-7 лет": 7,
+  };
+  const yearsOld = ageRange ? map[ageRange] ?? 5 : 5;
+  return `${currentYear - yearsOld}-01-15`;
+}
+
 export function Quiz() {
   const [currentQuestion, setCurrentQuestion] = useState(0);
   const [answers, setAnswers] = useState<string[]>([]);
-  const [showResult, setShowResult] = useState(false);
+  const [phase, setPhase] = useState<"questions" | "lead" | "result">("questions");
   const [isDownloadingGuide, setIsDownloadingGuide] = useState(false);
   const [guideError, setGuideError] = useState<string | null>(null);
   const [guideNotice, setGuideNotice] = useState<string | null>(null);
+
+  // Lead capture step state
+  const [leadName, setLeadName] = useState("");
+  const [leadPhone, setLeadPhone] = useState("+7");
+  const [leadSubmitting, setLeadSubmitting] = useState(false);
+  const [leadSent, setLeadSent] = useState(false);
+  const [leadTouched, setLeadTouched] = useState(false);
+
+  const phoneValid = isValidPhone(leadPhone);
 
   const handleAnswer = (answer: string) => {
     const newAnswers = [...answers, answer];
@@ -58,16 +99,51 @@ export function Quiz() {
     if (currentQuestion < questions.length - 1) {
       setCurrentQuestion(currentQuestion + 1);
     } else {
-      setShowResult(true);
+      setPhase("lead");
     }
   };
 
   const reset = () => {
     setCurrentQuestion(0);
     setAnswers([]);
-    setShowResult(false);
+    setPhase("questions");
     setGuideError(null);
     setGuideNotice(null);
+    setLeadName("");
+    setLeadPhone("+7");
+    setLeadSent(false);
+    setLeadTouched(false);
+  };
+
+  const submitLead = async () => {
+    setLeadTouched(true);
+    if (!phoneValid || leadSubmitting) return;
+
+    setLeadSubmitting(true);
+    try {
+      await fetch(LEADS_ENDPOINT, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          childName: leadName.trim() || "Заявка с теста",
+          phone: leadPhone,
+          dob: ageRangeToDob(answers[0]),
+          group: answers[1] ?? null,
+          privilege: null,
+          source: `champion-footboll.ru/quiz · ${answers.join(" / ")}`,
+        }),
+      }).catch((err) => {
+        console.warn("[quiz] lead submission failed", err);
+      });
+      setLeadSent(true);
+    } finally {
+      setLeadSubmitting(false);
+      setPhase("result");
+    }
+  };
+
+  const skipLead = () => {
+    setPhase("result");
   };
 
   const handleGuideDownload = async () => {
@@ -108,19 +184,125 @@ export function Quiz() {
     value: answers[index] ?? "",
   }));
 
-  if (showResult) {
+  // ───────────────────────── Lead capture step ─────────────────────────
+  if (phase === "lead") {
     return (
       <motion.div
         initial={{ opacity: 0, y: 20 }}
         animate={{ opacity: 1, y: 0 }}
         className="relative mx-auto w-full max-w-3xl overflow-hidden rounded-[1.25rem] border border-black/6 bg-[linear-gradient(180deg,rgba(255,255,255,0.62),rgba(255,255,255,0.34))]"
       >
-        <div className="absolute inset-x-0 top-0 h-1 bg-gradient-to-r from-purple-600 via-purple-500 to-orange-500"></div>
+        <div className="absolute inset-x-0 top-0 h-1 bg-gradient-to-r from-purple-600 via-purple-500 to-orange-500" />
+
+        <div className="relative p-7 md:p-8">
+          <div className="ui-eyebrow">
+            <Sparkles className="h-4 w-4" />
+            Последний шаг
+          </div>
+
+          <h3 className="mt-4 text-2xl md:text-3xl font-bold tracking-tight text-gray-900 leading-tight">
+            Куда отправить персональный разбор от тренера?
+          </h3>
+          <p className="ui-body mt-3 max-w-2xl">
+            PDF-гайд скачается сразу. А мы перезвоним по телефону в течение дня —
+            расскажем, как мягко начать именно для вашего ребёнка, и предложим
+            время бесплатного пробного занятия.
+          </p>
+
+          <div className="mt-6 grid gap-3 sm:grid-cols-2">
+            <div>
+              <label className="block text-xs font-bold uppercase tracking-wide text-slate-700 mb-1.5">
+                Имя ребёнка
+              </label>
+              <input
+                type="text"
+                value={leadName}
+                onChange={(e) => setLeadName(e.target.value)}
+                placeholder="Например, Михаил"
+                className="w-full px-4 py-3 rounded-xl border border-slate-200 bg-white focus:border-indigo-500 focus:ring-2 focus:ring-indigo-100 focus:outline-none transition text-slate-900 placeholder:text-slate-400 text-base"
+                disabled={leadSubmitting}
+              />
+            </div>
+            <div>
+              <label className="block text-xs font-bold uppercase tracking-wide text-slate-700 mb-1.5">
+                Телефон родителя <span className="text-orange-500">*</span>
+              </label>
+              <input
+                type="tel"
+                inputMode="tel"
+                value={leadPhone}
+                onChange={(e) => setLeadPhone(normalizePhone(e.target.value))}
+                onBlur={() => setLeadPhone((p) => normalizePhone(p))}
+                onFocus={(e) => {
+                  const el = e.currentTarget;
+                  requestAnimationFrame(() => {
+                    if (el.selectionStart !== null && el.selectionStart < 2) {
+                      el.setSelectionRange(el.value.length, el.value.length);
+                    }
+                  });
+                }}
+                placeholder="+7 (___) ___-__-__"
+                className="w-full px-4 py-3 rounded-xl border border-slate-200 bg-white focus:border-indigo-500 focus:ring-2 focus:ring-indigo-100 focus:outline-none transition text-slate-900 placeholder:text-slate-400 text-base"
+                disabled={leadSubmitting}
+              />
+              {leadTouched && !phoneValid && (
+                <p className="text-xs text-red-600 mt-1 ml-1">
+                  Введите телефон в формате +7XXXXXXXXXX
+                </p>
+              )}
+            </div>
+          </div>
+
+          <div className="mt-6 flex flex-col gap-3 sm:flex-row">
+            <button
+              onClick={submitLead}
+              disabled={leadSubmitting}
+              className="ui-button-primary inline-flex flex-1 bg-gradient-to-r from-purple-600 to-orange-500 px-6 py-4 disabled:cursor-not-allowed disabled:opacity-60"
+            >
+              {leadSubmitting ? (
+                <>
+                  <Loader2 className="h-5 w-5 animate-spin" />
+                  Отправляем…
+                </>
+              ) : (
+                <>
+                  <Download className="h-5 w-5" />
+                  Получить гайд и звонок тренера
+                </>
+              )}
+            </button>
+            <button
+              onClick={skipLead}
+              disabled={leadSubmitting}
+              className="text-sm font-semibold text-slate-500 hover:text-slate-700 transition px-4 py-3"
+            >
+              Просто скачать гайд →
+            </button>
+          </div>
+
+          <p className="ui-body-sm mt-4 text-gray-500">
+            Нажимая «получить гайд», вы соглашаетесь, что мы перезвоним по
+            указанному телефону. Никаких рассылок и спама.
+          </p>
+        </div>
+      </motion.div>
+    );
+  }
+
+  // ───────────────────────── Result step ─────────────────────────
+  if (phase === "result") {
+    return (
+      <motion.div
+        initial={{ opacity: 0, y: 20 }}
+        animate={{ opacity: 1, y: 0 }}
+        className="relative mx-auto w-full max-w-3xl overflow-hidden rounded-[1.25rem] border border-black/6 bg-[linear-gradient(180deg,rgba(255,255,255,0.62),rgba(255,255,255,0.34))]"
+      >
+        <div className="absolute inset-x-0 top-0 h-1 bg-gradient-to-r from-purple-600 via-purple-500 to-orange-500" />
 
         <div className="relative p-7 md:p-8">
           <div className="ui-eyebrow text-emerald-700">
             <CheckCircle2 className="h-4 w-4" />
-            Гайд готов
+            {leadSent ? "Заявка отправлена" : "Гайд готов"}
           </div>
 
           <div className="mt-6 flex flex-col gap-5 md:flex-row md:items-start">
@@ -129,13 +311,13 @@ export function Quiz() {
             </div>
 
             <div className="text-left">
-              <h3 className="text-3xl font-bold tracking-tight text-gray-900">
-                Персональные рекомендации готовы
+              <h3 className="text-2xl md:text-3xl font-bold tracking-tight text-gray-900">
+                {leadSent ? "Тренер свяжется с вами в течение дня" : "Персональные рекомендации готовы"}
               </h3>
               <p className="ui-body mt-3 max-w-2xl">
-                Мы собрали короткий PDF-гайд по адаптации к первой тренировке.
-                Первое пробное занятие по-прежнему бесплатно, а гайд можно
-                сохранить сразу после прохождения теста.
+                {leadSent
+                  ? "Мы сохранили ваши ответы и перезвоним по номеру, который вы указали. PDF-гайд можно скачать прямо сейчас, ниже."
+                  : "Мы собрали короткий PDF-гайд по адаптации к первой тренировке. Первое пробное занятие по-прежнему бесплатно."}
               </p>
             </div>
           </div>
@@ -204,6 +386,7 @@ export function Quiz() {
     );
   }
 
+  // ───────────────────────── Questions ─────────────────────────
   return (
     <motion.div
       key={currentQuestion}
@@ -211,7 +394,7 @@ export function Quiz() {
       animate={{ opacity: 1, x: 0 }}
       className="relative mx-auto w-full max-w-3xl overflow-hidden rounded-[1.25rem] border border-black/6 bg-[linear-gradient(180deg,rgba(255,255,255,0.62),rgba(255,255,255,0.34))]"
     >
-      <div className="absolute inset-x-0 top-0 h-1 bg-gradient-to-r from-purple-600 via-purple-500 to-orange-500"></div>
+      <div className="absolute inset-x-0 top-0 h-1 bg-gradient-to-r from-purple-600 via-purple-500 to-orange-500" />
 
       <div className="relative p-7 md:p-8">
         <div className="flex flex-col gap-4 md:flex-row md:items-center md:justify-between">
@@ -229,12 +412,12 @@ export function Quiz() {
             <div
               className="h-full rounded-full bg-gradient-to-r from-purple-600 to-orange-500 transition-all duration-500"
               style={{ width: `${progress}%` }}
-            ></div>
+            />
           </div>
         </div>
 
         <div className="mt-8 text-left">
-          <h3 className="text-3xl font-bold tracking-tight text-gray-900">
+          <h3 className="text-2xl md:text-3xl font-bold tracking-tight text-gray-900">
             {questions[currentQuestion].question}
           </h3>
           <p className="ui-body mt-3 max-w-2xl">
@@ -264,8 +447,8 @@ export function Quiz() {
         ))}
 
         <div className="ui-body-sm border-t border-black/8 pt-4">
-          После последнего ответа вы сразу получите персональный PDF-гайд по
-          адаптации ребенка к первой тренировке.
+          После последнего ответа сможете оставить телефон, чтобы тренер
+          перезвонил и подсказал по адаптации, или просто скачать PDF-гайд.
         </div>
       </div>
     </motion.div>
