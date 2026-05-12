@@ -494,7 +494,7 @@ export function Home() {
                 Футбольная школа для детей 3-7 лет
               </div>
               <h1 className="mt-6 text-4xl font-bold leading-[1.02] tracking-tight text-gray-950 md:text-6xl">
-                Футбол в вашем детском саду
+                Футбол прямо<br className="hidden sm:inline" /> в саду вашего ребёнка
               </h1>
               <p className="mt-6 max-w-xl text-lg leading-relaxed text-gray-600 md:text-xl">
                 Тренировки прямо в&nbsp;детском саду — без вечерней дороги и&nbsp;логистики.
@@ -674,6 +674,84 @@ export function Home() {
         </div>
       </section>
 
+      {/* How a class flows — concrete 25-min breakdown */}
+      <section className="py-32">
+        <div className="container mx-auto px-4">
+          <div className="max-w-3xl mx-auto text-center">
+            <div className="ui-eyebrow justify-center">
+              <Sparkles className="h-4 w-4" />
+              Что происходит на тренировке
+            </div>
+            <h2 className={sectionTitleClass}>
+              25 минут — четыре чётких этапа
+            </h2>
+          </div>
+
+          <div className="mt-16 grid gap-5 sm:grid-cols-2 lg:grid-cols-4 max-w-5xl mx-auto">
+            {[
+              {
+                step: "01",
+                title: "Разминка-разогрев",
+                time: "4 мин",
+                desc: "Подвижная игра под музыку, чтобы тело включилось без усилий.",
+                accent: "from-emerald-500 to-teal-500",
+              },
+              {
+                step: "02",
+                title: "Контроль мяча",
+                time: "6 мин",
+                desc: "Простые упражнения с мячом: ведение, остановка, повороты с конусами.",
+                accent: "from-indigo-700 to-purple-700",
+              },
+              {
+                step: "03",
+                title: "Передачи в паре",
+                time: "7 мин",
+                desc: "Работа на двоих — точность, остановка мяча, первый пас.",
+                accent: "from-purple-600 to-fuchsia-500",
+              },
+              {
+                step: "04",
+                title: "Мини-игра 3×3",
+                time: "8 мин",
+                desc: "Главная награда: настоящий мини-матч, где ребёнок сразу применяет всё, что выучил.",
+                accent: "from-orange-500 to-amber-400",
+              },
+            ].map((item, i) => (
+              <motion.div
+                key={item.step}
+                initial={{ opacity: 0, y: 22 }}
+                whileInView={{ opacity: 1, y: 0 }}
+                viewport={{ once: true, margin: "-60px" }}
+                transition={{ delay: i * 0.08, duration: 0.45, ease: "easeOut" }}
+                className="relative overflow-hidden rounded-[1.3rem] bg-white border border-black/6 p-5 sm:p-6 shadow-[0_2px_14px_-6px_rgba(15,23,42,0.12)]"
+              >
+                <div className={`absolute inset-x-0 top-0 h-1 bg-gradient-to-r ${item.accent}`} />
+                <div className="flex items-baseline justify-between">
+                  <span className={`text-3xl font-black bg-gradient-to-br ${item.accent} bg-clip-text text-transparent leading-none`}>
+                    {item.step}
+                  </span>
+                  <span className="text-xs font-bold uppercase tracking-[0.16em] text-gray-400">
+                    {item.time}
+                  </span>
+                </div>
+                <h3 className="mt-4 text-lg font-bold tracking-tight text-gray-900 leading-snug">
+                  {item.title}
+                </h3>
+                <p className="mt-2 text-sm leading-relaxed text-gray-600">
+                  {item.desc}
+                </p>
+              </motion.div>
+            ))}
+          </div>
+
+          <p className="mt-10 text-center text-sm text-gray-500 max-w-2xl mx-auto">
+            Продолжительность регламентирована СанПиН: 15 мин для 3-4 лет, 20 для&nbsp;4-5,
+            25 для 5-6, 30 для 6-7. Структура одна — меняется только время каждого этапа.
+          </p>
+        </div>
+      </section>
+
       {/* Comparison: typical section vs ФШ «Чемпион» */}
       <section className="py-32">
         <div className="container mx-auto px-4">
@@ -750,6 +828,74 @@ export function Home() {
       </section>
 
       {/* Coaches Section */}
+      {/* Parent testimonials */}
+      <section className="py-32">
+        <div className="container mx-auto px-4">
+          <div className="max-w-3xl mx-auto text-center">
+            <div className="ui-eyebrow justify-center">
+              <Sparkles className="h-4 w-4" />
+              Что говорят родители
+            </div>
+            <h2 className={sectionTitleClass}>
+              Истории семей, которые с&nbsp;нами уже играют
+            </h2>
+          </div>
+
+          <div className="mt-16 grid gap-5 lg:grid-cols-3 max-w-6xl mx-auto">
+            {[
+              {
+                quote:
+                  "Сын первые две недели плакал у двери. Сейчас сам берёт сумку и спрашивает в&nbsp;понедельник: «Когда футбол?». Тренер ни разу не повысил голос — Михаил это чувствует.",
+                author: "Анна",
+                detail: "мама Михаила, 4 года · сад №32",
+                initial: "А",
+                tint: "from-orange-500 to-rose-500",
+              },
+              {
+                quote:
+                  "Записали ради социализации, через год Кирилл сам тащит нас на «свои» мини-турниры. Удобно, что не возим — занятие проходит в его же саду, в знакомых стенах.",
+                author: "Дмитрий",
+                detail: "папа Кирилла, 6 лет · сад №436",
+                initial: "Д",
+                tint: "from-indigo-700 to-purple-700",
+              },
+              {
+                quote:
+                  "Близнецы — Глеб и Стёпа. Льгота для двоих детей реальная: 1960&nbsp;₽ за каждого. Никаких скрытых счетов, не пропустили — не списали. Просто и&nbsp;по-человечески.",
+                author: "Юлия",
+                detail: "мама близнецов, 3 года · сад №59",
+                initial: "Ю",
+                tint: "from-purple-600 to-fuchsia-500",
+              },
+            ].map((t, i) => (
+              <motion.figure
+                key={t.author}
+                initial={{ opacity: 0, y: 22 }}
+                whileInView={{ opacity: 1, y: 0 }}
+                viewport={{ once: true, margin: "-60px" }}
+                transition={{ delay: i * 0.1, duration: 0.45, ease: "easeOut" }}
+                className="relative overflow-hidden rounded-[1.3rem] bg-white border border-black/6 p-6 sm:p-7 shadow-[0_2px_14px_-6px_rgba(15,23,42,0.12)] flex flex-col"
+              >
+                <div className={`absolute inset-x-0 top-0 h-1 bg-gradient-to-r ${t.tint}`} />
+                <div className="text-5xl font-black leading-none text-purple-200 select-none">“</div>
+                <blockquote className="mt-2 text-base leading-relaxed text-gray-700 flex-1">
+                  {t.quote}
+                </blockquote>
+                <figcaption className="mt-6 flex items-center gap-3 border-t border-black/6 pt-4">
+                  <div className={`flex h-10 w-10 shrink-0 items-center justify-center rounded-full bg-gradient-to-br ${t.tint} text-white font-bold`}>
+                    {t.initial}
+                  </div>
+                  <div>
+                    <div className="text-sm font-bold text-gray-900">{t.author}</div>
+                    <div className="text-xs text-gray-500">{t.detail}</div>
+                  </div>
+                </figcaption>
+              </motion.figure>
+            ))}
+          </div>
+        </div>
+      </section>
+
       <section id="coaches" className="py-32 bg-slate-50/60">
         <div className="container mx-auto px-4">
           <div className="max-w-3xl">
@@ -865,21 +1011,20 @@ export function Home() {
                   Подход школы
                 </div>
                 <h2 className={sectionTitleClass}>
-                  Наша философия и методика
+                  Учим через игру, не через муштру
                 </h2>
                 <p className="mt-5 text-lg leading-relaxed text-gray-600">
-                  Мы не строим обучение вокруг давления и результата любой ценой. Ребёнок входит в
-                  спорт через понятную игровую среду, постепенное освоение навыков и ощущение, что у
-                  него получается.
+                  Каждое занятие — это 3-4 маленькие победы, на которых ребёнок чувствует
+                  «у меня получается». Этого достаточно, чтобы он сам захотел прийти и&nbsp;на
+                  вторую тренировку, и на двадцатую.
                 </p>
 
                 <div className="mt-16 border-t border-black/8 pt-5">
                   <p className="text-[11px] font-semibold uppercase tracking-[0.18em] text-purple-500">
-                    Главный эффект
+                    Что это даёт ребёнку
                   </p>
                   <p className="mt-3 text-2xl font-bold tracking-tight text-gray-900 sm:pr-8">
-                    Ребёнок сохраняет доверие к спорту на старте, потому что чувствует безопасность,
-                    интерес и постепенный рост.
+                    Спокойный старт в спорте — без давления, страха ошибки и сравнений с другими.
                   </p>
                 </div>
               </div>
@@ -943,13 +1088,19 @@ export function Home() {
 
                   {/* Methodology badges */}
                   <div className="mt-5 flex flex-wrap gap-2">
-                    <span className="inline-flex items-center gap-1.5 rounded-full bg-purple-50 border border-purple-200 px-3 py-1 text-xs font-semibold text-purple-700">
+                    <span
+                      className="inline-flex items-center gap-1.5 rounded-full bg-purple-50 border border-purple-200 px-3 py-1 text-xs font-semibold text-purple-700"
+                      title="Методика Coerver Coaching — европейский подход к работе через микро-победы"
+                    >
                       <Award className="h-3.5 w-3.5" />
-                      По методике Coerver Coaching
+                      Учим через микро-победы
                     </span>
-                    <span className="inline-flex items-center gap-1.5 rounded-full bg-orange-50 border border-orange-200 px-3 py-1 text-xs font-semibold text-orange-700">
+                    <span
+                      className="inline-flex items-center gap-1.5 rounded-full bg-orange-50 border border-orange-200 px-3 py-1 text-xs font-semibold text-orange-700"
+                      title="Формат FUNino 3×3 — четыре мини-ворот, больше касаний и решений на каждом занятии"
+                    >
                       <Users className="h-3.5 w-3.5" />
-                      Формат FUNino 3×3
+                      Игры 3×3 — больше касаний у каждого
                     </span>
                   </div>
 
@@ -1209,6 +1360,75 @@ export function Home() {
         </div>
       </section>
 
+      {/* FAQ — parent's predictable doubts */}
+      <section className="py-32">
+        <div className="container mx-auto px-4">
+          <div className="max-w-3xl mx-auto text-center">
+            <div className="ui-eyebrow justify-center">
+              <Sparkles className="h-4 w-4" />
+              Частые вопросы
+            </div>
+            <h2 className={sectionTitleClass}>
+              Что обычно спрашивают родители
+            </h2>
+          </div>
+
+          <div className="mt-14 grid gap-3 max-w-3xl mx-auto">
+            {[
+              {
+                q: "Что если ребёнок плачет на первом занятии?",
+                a: "Это нормально для дошкольника. Тренер не уговаривает и не давит — просто остаётся рядом, привлекает игрой. Большинство детей включаются на 2-3 тренировке. Если адаптация не идёт — поможем понять, что подходит именно вашему ребёнку.",
+              },
+              {
+                q: "Что нужно взять с собой на пробное?",
+                a: "Только спортивную одежду и кроссовки на сменку. Мяч, манишку и конусы выдаст тренер. Воды — обычная бутылочка. Никаких бутс на первое занятие не нужно.",
+              },
+              {
+                q: "Что если ребёнок заболел и пропустил занятия?",
+                a: "Услуга оплачивается фактом проведения — пропуски не списываются и не требуют справок. Возвращаемся, когда выздоровел.",
+              },
+              {
+                q: "А если в моём саду вы не работаете?",
+                a: "Сейчас мы в более чем 30 садах Новосибирска. Если в вашем нас ещё нет — оставьте телефон, расскажем про ближайший филиал и обсудим возможность открыть группу в вашем.",
+              },
+              {
+                q: "Со скольки лет можно начинать?",
+                a: "С 3 лет. Для каждой возрастной группы — отдельная программа: 3-4 года тренируются 15 минут, 4-5 — 20, 5-6 — 25, 6-7 — 30 минут (по нормам СанПиН).",
+              },
+              {
+                q: "Что если ребёнку не понравится?",
+                a: "Пробное бесплатно и ни к чему не обязывает. Если после первой тренировки понимаете, что не идёт — никаких списаний, оплат, обязательств. Это нормальная история для дошкольников.",
+              },
+              {
+                q: "Какая скидка для многодетных и сотрудников ДОУ?",
+                a: "Льготный тариф 1 960 ₽/мес (вместо 2 760 ₽) — для многодетных семей, опекунов, сотрудников детского сада и семей, у которых занимаются двое и больше детей.",
+              },
+            ].map((f, i) => (
+              <motion.details
+                key={i}
+                initial={{ opacity: 0, y: 12 }}
+                whileInView={{ opacity: 1, y: 0 }}
+                viewport={{ once: true, margin: "-40px" }}
+                transition={{ delay: i * 0.05, duration: 0.35, ease: "easeOut" }}
+                className="group rounded-[1rem] border border-black/6 bg-white p-5 sm:p-6 shadow-[0_1px_8px_-4px_rgba(15,23,42,0.08)] hover:border-purple-200 transition"
+              >
+                <summary className="flex items-start justify-between gap-4 cursor-pointer list-none">
+                  <span className="text-base sm:text-lg font-bold tracking-tight text-gray-900 leading-snug">
+                    {f.q}
+                  </span>
+                  <span className="shrink-0 inline-flex items-center justify-center w-7 h-7 rounded-full bg-purple-50 text-purple-700 text-lg leading-none transition-transform duration-300 group-open:rotate-45">
+                    +
+                  </span>
+                </summary>
+                <p className="mt-3 text-sm sm:text-base leading-relaxed text-gray-600">
+                  {f.a}
+                </p>
+              </motion.details>
+            ))}
+          </div>
+        </div>
+      </section>
+
       {/* Blog Section */}
       <section id="blog" className="py-32">
         <div className="container mx-auto px-4">
@@ -1291,6 +1511,64 @@ export function Home() {
                 </Link>
               ))}
             </div>
+          </div>
+        </div>
+      </section>
+
+      {/* What happens after signup */}
+      <section className="py-24 bg-slate-50/50">
+        <div className="container mx-auto px-4">
+          <div className="max-w-3xl mx-auto text-center">
+            <div className="ui-eyebrow justify-center">
+              <Sparkles className="h-4 w-4" />
+              Что будет, если оставить телефон
+            </div>
+            <h2 className={sectionTitleClass}>
+              Три простых шага, ничего сложного
+            </h2>
+          </div>
+
+          <div className="mt-14 grid gap-5 sm:grid-cols-3 max-w-5xl mx-auto">
+            {[
+              {
+                step: "1",
+                title: "Согласуем время",
+                desc: "Менеджер позвонит в течение часа, подскажет, в каких садах ближайшие группы, и подберёт удобный день.",
+                accent: "from-emerald-500 to-teal-500",
+              },
+              {
+                step: "2",
+                title: "Тренер встретит у входа",
+                desc: "Приходите за 10 минут до начала. Форма не нужна — спортивная одежда, кроссовки. Мяч и манишку выдадим.",
+                accent: "from-indigo-700 to-purple-700",
+              },
+              {
+                step: "3",
+                title: "25 минут занятия",
+                desc: "Ребёнок пробует первое упражнение, родитель наблюдает рядом. После занятия — короткий разговор с тренером.",
+                accent: "from-orange-500 to-amber-400",
+              },
+            ].map((s, i) => (
+              <motion.div
+                key={s.step}
+                initial={{ opacity: 0, y: 22 }}
+                whileInView={{ opacity: 1, y: 0 }}
+                viewport={{ once: true, margin: "-60px" }}
+                transition={{ delay: i * 0.1, duration: 0.45, ease: "easeOut" }}
+                className="relative overflow-hidden rounded-[1.3rem] bg-white border border-black/6 p-6 shadow-[0_2px_14px_-6px_rgba(15,23,42,0.12)]"
+              >
+                <div className={`absolute inset-x-0 top-0 h-1 bg-gradient-to-r ${s.accent}`} />
+                <div className={`inline-flex h-11 w-11 items-center justify-center rounded-full bg-gradient-to-br ${s.accent} text-white text-lg font-black shadow-md`}>
+                  {s.step}
+                </div>
+                <h3 className="mt-4 text-lg font-bold tracking-tight text-gray-900">
+                  {s.title}
+                </h3>
+                <p className="mt-2 text-sm leading-relaxed text-gray-600">
+                  {s.desc}
+                </p>
+              </motion.div>
+            ))}
           </div>
         </div>
       </section>
