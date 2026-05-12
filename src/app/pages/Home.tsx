@@ -42,7 +42,7 @@ const coaches: Coach[] = [
     name: "Ильиных Александр",
     photo: "/images/coaches/ilyinikh.png",
     experience: "10 лет тренерского стажа",
-    focus: "Системно выстраивает базу движения и помогает ребёнку уверенно войти в спорт без перегруза.",
+    focus: "База движения и мягкий вход в спорт.",
     bgClass: "bg-orange-500",
     badges: ["10 лет стажа", "КМС", "НГПУ ФФК"],
     clubs: [
@@ -55,7 +55,7 @@ const coaches: Coach[] = [
     name: "Мензоров Максим",
     photo: "/images/coaches/menzorov.png",
     experience: "6 лет тренерского стажа",
-    focus: "Собирает доверие через спокойную коммуникацию и превращает тренировку в понятный детям ритуал успеха.",
+    focus: "Доверие через спокойный диалог.",
     bgClass: "bg-orange-600",
     badges: ["6 лет стажа", "1 разряд", "НГПУ ФФК"],
     clubs: [{ year: "Игрок", label: "ДЮСШ Новосибирск", flag: "🇷🇺" }],
@@ -64,7 +64,7 @@ const coaches: Coach[] = [
     name: "Юсупов Константин",
     photo: "/images/coaches/yusupov.png",
     experience: "3 года тренерского стажа, 10 лет игрового",
-    focus: "Держит высокий темп занятия и помогает детям быстрее почувствовать уверенность в игре один в один.",
+    focus: "Высокий темп и уверенность в игре 1×1.",
     bgClass: "bg-amber-600",
     badges: ["3 года стажа", "10 лет игры"],
     clubs: [
@@ -78,7 +78,7 @@ const coaches: Coach[] = [
     name: "Кулаков Максим",
     photo: "/images/coaches/kulakov.png",
     experience: "5 лет тренерского стажа",
-    focus: "Соединяет европейскую методику с понятной ребёнку игровой подачей и вниманием к деталям техники.",
+    focus: "Европейская методика и игровая подача.",
     bgClass: "bg-orange-500",
     badges: ["C-UEFA", "5 лет стажа", "СГУГиТ"],
     clubs: [
@@ -91,7 +91,7 @@ const coaches: Coach[] = [
     name: "Свитницкий Родион",
     photo: "/images/coaches/svitnitsky.png",
     experience: "5 лет тренерского стажа",
-    focus: "Сильная сторона — мотивация и настрой детей на постепенный рост через маленькие победы.",
+    focus: "Мотивация через маленькие победы.",
     bgClass: "bg-orange-600",
     badges: ["5 лет стажа", "ФКиС"],
     clubs: [{ year: "COPA JUNIOR", label: "Красноярск, призёр" }],
@@ -100,7 +100,7 @@ const coaches: Coach[] = [
     name: "Дмитрий Бобин",
     photo: "/images/coaches/bobin.png",
     experience: "Тренерская и игровая практика",
-    focus: "Добавляет в занятия соревновательный нерв и дисциплину, не ломая детскую мотивацию.",
+    focus: "Соревновательный нерв и дисциплина.",
     bgClass: "bg-amber-600",
     badges: ["РФС C", "КМС", "СГУПС"],
     clubs: [
@@ -112,7 +112,7 @@ const coaches: Coach[] = [
     name: "Пирогов Глеб",
     photo: "/images/coaches/pirogov.png",
     experience: "Педагог-тренер по физической культуре",
-    focus: "Внимательно ведёт ребёнка через первые этапы адаптации и регулярно усиливает практику новыми стажировками.",
+    focus: "Адаптация и регулярные стажировки.",
     bgClass: "bg-orange-500",
     badges: ["Педагогика", "Игрок СФЛ"],
   },
@@ -138,33 +138,6 @@ const heroHighlights = [
   {
     value: "3-7 лет",
     label: "программа под дошкольный возраст",
-  },
-];
-
-const aboutHighlights = [
-  {
-    id: "01",
-    title: "Мы воспитываем чемпионов",
-    description:
-      "Команда тренеров помогает ребёнку расти через дисциплину, спортивный дух, выносливость и уважение к партнёрам по игре.",
-  },
-  {
-    id: "02",
-    title: "Удобное расположение",
-    description:
-      "Занятия проходят в детском саду, поэтому родителям не нужно перестраивать вечернюю логистику и тратить время на поездки.",
-  },
-  {
-    id: "03",
-    title: "Турниры и праздники",
-    description:
-      "Регулярно проводим игровые события, где ребёнок показывает прогресс, а родители видят, что спорт ассоциируется с радостью.",
-  },
-  {
-    id: "04",
-    title: "Внимание каждому",
-    description:
-      "Маленькие группы и адаптированная программа помогают не потеряться в потоке и двигаться в комфортном темпе.",
   },
 ];
 
@@ -194,41 +167,6 @@ const philosophyPillars = [
       "обводка как сбор сокровищ",
       "удар как спасение города",
     ],
-  },
-];
-
-const funinoSignals = ["3×3 или 4×4", "4 мини-ворот", "Head Up", "Решения без страха"];
-
-const funinoBenefits = [
-  {
-    title: "1. Максимум касаний",
-    icon: Users,
-    badge: "Постоянное вовлечение",
-    description:
-      "Каждый ребёнок чаще работает с мячом и не выпадает из игры в ожидании своей очереди.",
-    accentClass: "from-orange-500 to-amber-400",
-    surfaceClass: "from-orange-50 to-amber-50",
-    borderClass: "border-orange-200",
-  },
-  {
-    title: "2. Когнитивное развитие",
-    icon: Trophy,
-    badge: "Игровой интеллект",
-    description:
-      "Четыре воротa заставляют сканировать поле, поднимать голову и самому выбирать решение.",
-    accentClass: "from-purple-600 to-fuchsia-500",
-    surfaceClass: "from-purple-50 to-orange-50",
-    borderClass: "border-purple-200",
-  },
-  {
-    title: "3. Среда как учитель",
-    icon: Heart,
-    badge: "Без давления",
-    description:
-      "Тренер направляет игру, а дети пробуют, ошибаются и учатся принимать решения без страха критики.",
-    accentClass: "from-rose-500 to-orange-400",
-    surfaceClass: "from-rose-50 to-orange-50",
-    borderClass: "border-rose-200",
   },
 ];
 
@@ -559,8 +497,7 @@ export function Home() {
                 Футбол в вашем детском саду
               </h1>
               <p className="mt-6 max-w-xl text-lg leading-relaxed text-gray-600 md:text-xl">
-                Больше чем просто игра: тренировки проходят прямо в детском саду, а
-                ребёнок приходит в спорт мягко, с интересом и без лишней логистики для семьи.
+                Тренировки прямо в&nbsp;детском саду — без вечерней дороги и&nbsp;логистики.
               </p>
 
               {/* Inline phone-capture form — primary hero CTA */}
@@ -737,60 +674,6 @@ export function Home() {
         </div>
       </section>
 
-      {/* About School Section */}
-      <section id="about" className="py-32">
-        <div className="container mx-auto px-4">
-          <div className="grid gap-14 lg:grid-cols-[0.78fr_1.22fr] lg:gap-16">
-            <div className="max-w-xl">
-              <div className="ui-eyebrow">
-                <Users className="h-4 w-4" />
-                О школе
-              </div>
-              <h2 className={sectionTitleClass}>
-                Спокойный вход в спорт без перегруза для ребёнка и родителей
-              </h2>
-              <p className="mt-5 text-lg leading-relaxed text-gray-600">
-                Мы строим занятия вокруг детского возраста, ритма семьи и реальной
-                вовлечённости ребёнка. Поэтому школа ощущается не как ещё одна секция, а как
-                естественная часть жизни в садике.
-              </p>
-              <div className="ui-body-sm mt-8 border-l-2 border-purple-200 pl-5">
-                Маленькие группы, тренировки прямо в детском саду и бережная программа помогают
-                ребёнку чувствовать себя увереннее уже с первых занятий.
-              </div>
-            </div>
-
-            <div className="grid gap-x-10 gap-y-10 sm:grid-cols-2">
-              {aboutHighlights.map((item) => (
-                <article key={item.id} className="border-l border-black/8 pl-5">
-                  <div className="relative mb-5 flex h-16 w-16 shrink-0 items-center justify-center overflow-hidden rounded-full bg-orange-500 shadow-[0_8px_16px_rgba(234,88,12,0.25)]">
-                    <div className="absolute inset-0 opacity-15">
-                      <svg viewBox="0 0 100 100" fill="none" stroke="black" strokeWidth="4" className="h-full w-full">
-                        <polygon points="50,25 74,42 65,71 35,71 26,42" fill="black" />
-                        <line x1="50" y1="25" x2="50" y2="0" />
-                        <line x1="26" y1="42" x2="0" y2="30" />
-                        <line x1="74" y1="42" x2="100" y2="30" />
-                        <line x1="35" y1="71" x2="15" y2="100" />
-                        <line x1="65" y1="71" x2="85" y2="100" />
-                      </svg>
-                    </div>
-                    <span className="relative z-10 text-3xl font-black text-white" style={{ textShadow: "0 2px 4px rgba(0,0,0,0.3)" }}>
-                      {item.id}
-                    </span>
-                  </div>
-                  <h3 className="text-2xl font-bold tracking-tight text-gray-900">
-                    {item.title}
-                  </h3>
-                  <p className="ui-body-sm mt-3">
-                    {item.description}
-                  </p>
-                </article>
-              ))}
-            </div>
-          </div>
-        </div>
-      </section>
-
       {/* Comparison: typical section vs ФШ «Чемпион» */}
       <section className="py-32">
         <div className="container mx-auto px-4">
@@ -802,9 +685,6 @@ export function Home() {
             <h2 className={sectionTitleClass}>
               Удобно для семьи, серьёзно для ребёнка
             </h2>
-            <p className="mt-5 text-lg leading-relaxed text-gray-600">
-              Сравните, как обычно устроены детские секции — и как у&nbsp;нас.
-            </p>
           </div>
 
           <div className="mt-16 grid gap-4 lg:grid-cols-2 max-w-4xl mx-auto">
@@ -880,11 +760,6 @@ export function Home() {
             <h2 className={sectionTitleClass}>
               Тренерский состав, которому родители доверяют с первого занятия
             </h2>
-            <p className="mt-5 text-lg leading-relaxed text-gray-600">
-              Команда практиков с лицензиями, игровым опытом и бережным подходом к дошкольникам.
-              Важны не только регалии, но и то, как тренер умеет включить ребёнка в игру и
-              удержать его интерес.
-            </p>
           </div>
 
           <div className="mt-14 -mx-4 px-4 snap-x snap-proximity overflow-x-auto overscroll-y-auto pb-5 [scrollbar-width:thin] [scrollbar-color:rgba(147,51,234,0.45)_transparent]">
@@ -1436,10 +1311,6 @@ export function Home() {
                 <h2 className={sectionTitleClass}>
                   Готовы начать?
                 </h2>
-                <p className="mt-5 text-lg leading-relaxed text-gray-600">
-                  Если вы у нас впервые — запишитесь на бесплатное пробное занятие.
-                  Если ребёнок уже занимается — войдите в личный кабинет.
-                </p>
               </div>
 
               <div className="mt-12 grid gap-4 sm:grid-cols-2 max-w-3xl mx-auto">
