@@ -1311,21 +1311,21 @@ export function Home() {
           <button
             type="button"
             onClick={() => setQuizModalOpen(true)}
-            className="group mx-auto block w-full max-w-3xl rounded-[1.4rem] bg-white border border-purple-200 p-5 sm:p-6 text-left hover:border-purple-400 hover:shadow-[0_24px_50px_-30px_rgba(124,58,237,0.4)] transition-all"
+            className="group mx-auto block w-full max-w-4xl rounded-[1.4rem] bg-white border border-black/6 p-6 sm:p-7 text-left shadow-[0_2px_14px_-6px_rgba(15,23,42,0.12)] hover:border-purple-300 hover:shadow-[0_24px_50px_-30px_rgba(124,58,237,0.4)] hover:-translate-y-0.5 transition-all"
           >
-            <div className="flex flex-col sm:flex-row sm:items-center gap-4">
-              <div className="flex h-12 w-12 shrink-0 items-center justify-center rounded-2xl bg-gradient-to-br from-purple-600 to-orange-500 shadow-md">
-                <Sparkles className="h-6 w-6 text-white" />
+            <div className="grid grid-cols-1 sm:grid-cols-[auto_1fr_auto] items-center gap-5">
+              <div className="flex h-14 w-14 shrink-0 items-center justify-center rounded-2xl bg-gradient-to-br from-purple-600 to-orange-500 shadow-[0_10px_22px_-12px_rgba(124,58,237,0.6)]">
+                <Sparkles className="h-7 w-7 text-white" />
               </div>
-              <div className="flex-1 min-w-0">
+              <div className="min-w-0">
                 <p className="text-[11px] font-semibold uppercase tracking-[0.16em] text-purple-500">
                   Бесплатный PDF-гайд
                 </p>
-                <h3 className="mt-1 text-lg sm:text-xl font-bold tracking-tight text-gray-900 leading-tight">
+                <h3 className="mt-1 text-lg sm:text-xl font-bold tracking-tight text-gray-900 leading-snug">
                   3 вопроса — и забираете персональный гайд по адаптации ребёнка к спорту
                 </h3>
               </div>
-              <span className="shrink-0 inline-flex items-center justify-center gap-2 rounded-xl bg-gradient-to-br from-purple-600 to-orange-500 text-white font-bold px-5 py-3 text-sm whitespace-nowrap group-hover:scale-105 transition-transform">
+              <span className="shrink-0 inline-flex items-center justify-center gap-2 rounded-xl bg-gradient-to-br from-purple-600 to-orange-500 text-white font-bold px-6 py-3.5 text-sm whitespace-nowrap shadow-[0_10px_22px_-10px_rgba(124,58,237,0.5)] group-hover:shadow-[0_14px_28px_-10px_rgba(124,58,237,0.6)] transition-shadow">
                 Открыть тест
                 <span className="transition-transform group-hover:translate-x-1">→</span>
               </span>
