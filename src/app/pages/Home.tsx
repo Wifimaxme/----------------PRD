@@ -88,7 +88,7 @@ const coaches: Coach[] = [
     ],
   },
   {
-    name: "Свитницкий Родион",
+    name: "Слюсарь Александр",
     photo: "/images/coaches/svitnitsky.png",
     experience: "5 лет тренерского стажа",
     focus: "Мотивация через маленькие победы.",
@@ -97,7 +97,7 @@ const coaches: Coach[] = [
     clubs: [{ year: "COPA JUNIOR", label: "Красноярск, призёр" }],
   },
   {
-    name: "Дмитрий Бобин",
+    name: "Долгаль Владимир",
     photo: "/images/coaches/bobin.png",
     experience: "Тренерская и игровая практика",
     focus: "Соревновательный нерв и дисциплина.",
