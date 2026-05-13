@@ -13,41 +13,41 @@ export function Footer() {
               </div>
               <div className="font-bold text-lg">Чемпион и К</div>
             </div>
-            <p className="text-gray-400 text-sm">
+            <p className="text-gray-300 text-sm">
               ООО «Чемпион и К»<br />
               ИНН: 5403027269<br />
               ОГРН: 1175476013888
             </p>
           </div>
 
-          <div>
+          <address className="not-italic">
             <h3 className="font-bold mb-4">Контакты</h3>
             <div className="space-y-2 text-sm">
-              <a href="tel:+79138927059" className="flex items-center gap-2 text-gray-400 hover:text-white transition">
-                <Phone className="w-4 h-4" />
+              <a href="tel:+79138927059" className="flex items-center gap-2 text-gray-300 hover:text-white transition">
+                <Phone className="w-4 h-4" aria-hidden="true" />
                 8-913-892-70-59
               </a>
-              <a href="mailto:income@champion-footboll.ru" className="flex items-center gap-2 text-gray-400 hover:text-white transition">
-                <Mail className="w-4 h-4" />
+              <a href="mailto:income@champion-footboll.ru" className="flex items-center gap-2 text-gray-300 hover:text-white transition">
+                <Mail className="w-4 h-4" aria-hidden="true" />
                 income@champion-footboll.ru
               </a>
-              <div className="flex items-start gap-2 text-gray-400">
-                <MapPin className="w-4 h-4 mt-1" />
+              <div className="flex items-start gap-2 text-gray-300">
+                <MapPin className="w-4 h-4 mt-1" aria-hidden="true" />
                 <span>г. Новосибирск</span>
               </div>
             </div>
-          </div>
+          </address>
 
           <div>
             <h3 className="font-bold mb-4">Юридическая информация</h3>
             <div className="space-y-2 text-sm">
-              <Link to="/education-info/basic" className="block text-gray-400 hover:text-white transition">
+              <Link to="/education-info/basic" className="block text-gray-300 hover:text-white transition">
                 Сведения об образовательной организации
               </Link>
-              <Link to="/privacy-policy" className="block text-gray-400 hover:text-white transition">
+              <Link to="/privacy-policy" className="block text-gray-300 hover:text-white transition">
                 Политика обработки персональных данных
               </Link>
-              <Link to="/oferta" className="block text-gray-400 hover:text-white transition">
+              <Link to="/oferta" className="block text-gray-300 hover:text-white transition">
                 Публичная оферта
               </Link>
             </div>

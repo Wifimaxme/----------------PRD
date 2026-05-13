@@ -249,12 +249,19 @@ export function Signup() {
                                     <form onSubmit={handleSubmit} className="space-y-3" noValidate>
                                         {/* Фамилия и Имя ребёнка */}
                                         <div>
+                                            <label htmlFor="signup-childname" className="sr-only">
+                                                Фамилия и имя ребёнка
+                                            </label>
                                             <input
+                                                id="signup-childname"
                                                 type="text"
                                                 value={childName}
                                                 onChange={(e) => setChildName(e.target.value)}
                                                 placeholder="Фамилия и Имя ребёнка*"
                                                 autoComplete="off"
+                                                required
+                                                aria-required="true"
+                                                aria-invalid={touched && childName.trim().length < 2}
                                                 className="w-full px-5 py-4 rounded-xl border border-slate-200 bg-white focus:border-indigo-500 focus:ring-2 focus:ring-indigo-100 focus:outline-none transition text-slate-900 placeholder:text-slate-400"
                                                 disabled={status === 'submitting'}
                                             />
@@ -265,7 +272,11 @@ export function Signup() {
 
                                         {/* Телефон */}
                                         <div>
+                                            <label htmlFor="signup-phone" className="sr-only">
+                                                Телефон в формате +7XXXXXXXXXX
+                                            </label>
                                             <input
+                                                id="signup-phone"
                                                 type="tel"
                                                 value={phone}
                                                 onChange={(e) => setPhone(normalizePhone(e.target.value))}
@@ -287,6 +298,9 @@ export function Signup() {
                                                 placeholder="+7 (___) ___-__-__"
                                                 autoComplete="tel"
                                                 inputMode="tel"
+                                                required
+                                                aria-required="true"
+                                                aria-invalid={touched && !phoneValid}
                                                 className="w-full px-5 py-4 rounded-xl border border-slate-200 bg-white focus:border-indigo-500 focus:ring-2 focus:ring-indigo-100 focus:outline-none transition text-slate-900 placeholder:text-slate-400"
                                                 disabled={status === 'submitting'}
                                             />
@@ -297,12 +311,18 @@ export function Signup() {
 
                                         {/* Номер детского сада */}
                                         <div>
+                                            <label htmlFor="signup-kindergarten" className="sr-only">
+                                                Номер детского сада
+                                            </label>
                                             <input
+                                                id="signup-kindergarten"
                                                 type="text"
                                                 value={kindergarten}
                                                 onChange={(e) => setKindergarten(e.target.value.replace(/\D/g, '').slice(0, 6))}
                                                 inputMode="numeric"
                                                 placeholder="Номер сада*"
+                                                required
+                                                aria-required="true"
                                                 className="w-full px-5 py-4 rounded-xl border border-slate-200 bg-white focus:border-indigo-500 focus:ring-2 focus:ring-indigo-100 focus:outline-none transition text-slate-900 placeholder:text-slate-400"
                                                 disabled={status === 'submitting'}
                                             />
@@ -310,11 +330,17 @@ export function Signup() {
 
                                         {/* Группа в саду */}
                                         <div>
+                                            <label htmlFor="signup-group" className="sr-only">
+                                                Название или номер группы в детском саду
+                                            </label>
                                             <input
+                                                id="signup-group"
                                                 type="text"
                                                 value={group}
                                                 onChange={(e) => setGroup(e.target.value)}
                                                 placeholder="Группа в саду*"
+                                                required
+                                                aria-required="true"
                                                 className="w-full px-5 py-4 rounded-xl border border-slate-200 bg-white focus:border-indigo-500 focus:ring-2 focus:ring-indigo-100 focus:outline-none transition text-slate-900 placeholder:text-slate-400"
                                                 disabled={status === 'submitting'}
                                             />

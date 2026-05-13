@@ -147,7 +147,7 @@ export function Documents() {
                     <button
                       type="button"
                       disabled
-                      className="bg-gray-100 text-gray-400 cursor-not-allowed px-4 py-2 rounded-lg transition flex items-center gap-2 text-sm whitespace-nowrap"
+                      className="bg-gray-100 text-gray-500 cursor-not-allowed px-4 py-2 rounded-lg transition flex items-center gap-2 text-sm whitespace-nowrap"
                     >
                       {doc.type === "PDF" ? <Download className="w-4 h-4" /> : <ExternalLink className="w-4 h-4" />}
                       Скоро

@@ -328,7 +328,7 @@ export function Quiz() {
                 key={item.label}
                 className="border-b border-black/6 px-0 py-4 text-left last:border-b-0 md:border-b-0 md:px-4"
               >
-                <div className="text-[11px] font-semibold uppercase tracking-[0.16em] text-gray-400">
+                <div className="text-[11px] font-semibold uppercase tracking-[0.16em] text-gray-500">
                   {item.label}
                 </div>
                 <div className="mt-2 text-sm font-semibold leading-relaxed text-gray-800">
@@ -441,7 +441,7 @@ export function Quiz() {
               <span className="flex-1 text-base font-semibold text-gray-700 group-hover:text-gray-900">
                 {option}
               </span>
-              <ChevronRight className="h-5 w-5 text-gray-400 transition group-hover:translate-x-0.5 group-hover:text-purple-600" />
+              <ChevronRight className="h-5 w-5 text-gray-500 transition group-hover:translate-x-0.5 group-hover:text-purple-600" />
             </div>
           </button>
         ))}

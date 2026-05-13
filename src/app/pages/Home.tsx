@@ -40,7 +40,7 @@ interface Coach {
 const coaches: Coach[] = [
   {
     name: "Ильиных Александр",
-    photo: "/images/coaches/ilyinikh.png",
+    photo: "/images/coaches/ilyinikh.webp",
     experience: "10 лет тренерского стажа",
     focus: "База движения и мягкий вход в спорт.",
     bgClass: "bg-orange-500",
@@ -53,7 +53,7 @@ const coaches: Coach[] = [
   },
   {
     name: "Мензоров Максим",
-    photo: "/images/coaches/menzorov.png",
+    photo: "/images/coaches/menzorov.webp",
     experience: "6 лет тренерского стажа",
     focus: "Доверие через спокойный диалог.",
     bgClass: "bg-orange-600",
@@ -62,7 +62,7 @@ const coaches: Coach[] = [
   },
   {
     name: "Юсупов Константин",
-    photo: "/images/coaches/yusupov.png",
+    photo: "/images/coaches/yusupov.webp",
     experience: "3 года тренерского стажа, 10 лет игрового",
     focus: "Высокий темп и уверенность в игре 1×1.",
     bgClass: "bg-amber-600",
@@ -76,7 +76,7 @@ const coaches: Coach[] = [
   },
   {
     name: "Кулаков Максим",
-    photo: "/images/coaches/kulakov.png",
+    photo: "/images/coaches/kulakov.webp",
     experience: "5 лет тренерского стажа",
     focus: "Европейская методика и игровая подача.",
     bgClass: "bg-orange-500",
@@ -89,7 +89,7 @@ const coaches: Coach[] = [
   },
   {
     name: "Слюсарь Александр",
-    photo: "/images/coaches/svitnitsky.png",
+    photo: "/images/coaches/svitnitsky.webp",
     experience: "5 лет тренерского стажа",
     focus: "Мотивация через маленькие победы.",
     bgClass: "bg-orange-600",
@@ -98,7 +98,7 @@ const coaches: Coach[] = [
   },
   {
     name: "Долгаль Владимир",
-    photo: "/images/coaches/bobin.png",
+    photo: "/images/coaches/bobin.webp",
     experience: "Тренерская и игровая практика",
     focus: "Соревновательный нерв и дисциплина.",
     bgClass: "bg-amber-600",
@@ -110,7 +110,7 @@ const coaches: Coach[] = [
   },
   {
     name: "Пирогов Глеб",
-    photo: "/images/coaches/pirogov.png",
+    photo: "/images/coaches/pirogov.webp",
     experience: "Педагог-тренер по физической культуре",
     focus: "Адаптация и регулярные стажировки.",
     bgClass: "bg-orange-500",
@@ -487,7 +487,7 @@ export function Home() {
         <HeroFloatingShapes />
 
         <div className="container mx-auto px-4 relative z-10">
-          <div className="grid items-center gap-12 lg:grid-cols-[0.82fr_1.18fr] lg:gap-14">
+          <div className="grid items-center gap-12 lg:grid-cols-[1.05fr_0.95fr] lg:gap-14">
             <div className="max-w-2xl">
               <div className="ui-eyebrow">
                 <Sparkles className="h-4 w-4" />
@@ -564,7 +564,7 @@ export function Home() {
                     >
                       {coach.photo ? (
                         <img
-                          src={`${coach.photo}?v=4`}
+                          src={`${coach.photo}?v=5`}
                           alt={coach.name}
                           loading="lazy"
                           className="w-full h-full object-cover object-top"
@@ -616,6 +616,7 @@ export function Home() {
                   src={HERO_VIDEO_SRC}
                   title="Тренировки в детской футбольной школе Чемпион и К"
                   frameBorder="0"
+                  loading="lazy"
                   onLoad={() => {
                     setIsHeroVideoReady(true);
                     requestHeroVideoPlayback();
@@ -650,7 +651,7 @@ export function Home() {
                 initial={{ opacity: 0, y: 22 }}
                 whileInView={{ opacity: 1, y: 0 }}
                 viewport={{ once: true, margin: "-40px" }}
-                transition={{ delay: i * 0.06, duration: 0.45, ease: "easeOut" }}
+                transition={{ delay: i * 0.06, duration: 0.3, ease: "easeOut" }}
                 className="relative overflow-hidden rounded-[1.1rem] bg-white border border-black/6 p-4 shadow-[0_2px_14px_-6px_rgba(15,23,42,0.12)]"
               >
                 <div className={`absolute inset-x-0 top-0 h-1 bg-gradient-to-r ${stat.accentClass}`} />
@@ -683,7 +684,7 @@ export function Home() {
               Что происходит на тренировке
             </div>
             <h2 className={sectionTitleClass}>
-              25 минут — четыре чётких этапа
+              30 минут — четыре чётких этапа
             </h2>
           </div>
 
@@ -692,28 +693,28 @@ export function Home() {
               {
                 step: "01",
                 title: "Разминка-разогрев",
-                time: "4 мин",
+                time: "5 мин",
                 desc: "Подвижная игра под музыку, чтобы тело включилось без усилий.",
                 accent: "from-emerald-500 to-teal-500",
               },
               {
                 step: "02",
                 title: "Контроль мяча",
-                time: "6 мин",
+                time: "7 мин",
                 desc: "Простые упражнения с мячом: ведение, остановка, повороты с конусами.",
                 accent: "from-indigo-700 to-purple-700",
               },
               {
                 step: "03",
                 title: "Передачи в паре",
-                time: "7 мин",
+                time: "8 мин",
                 desc: "Работа на двоих — точность, остановка мяча, первый пас.",
                 accent: "from-purple-600 to-fuchsia-500",
               },
               {
                 step: "04",
                 title: "Мини-игра 3×3",
-                time: "8 мин",
+                time: "10 мин",
                 desc: "Главная награда: настоящий мини-матч, где ребёнок сразу применяет всё, что выучил.",
                 accent: "from-orange-500 to-amber-400",
               },
@@ -723,7 +724,7 @@ export function Home() {
                 initial={{ opacity: 0, y: 22 }}
                 whileInView={{ opacity: 1, y: 0 }}
                 viewport={{ once: true, margin: "-60px" }}
-                transition={{ delay: i * 0.08, duration: 0.45, ease: "easeOut" }}
+                transition={{ delay: i * 0.05, duration: 0.3, ease: "easeOut" }}
                 className="relative overflow-hidden rounded-[1.3rem] bg-white border border-black/6 p-5 sm:p-6 shadow-[0_2px_14px_-6px_rgba(15,23,42,0.12)]"
               >
                 <div className={`absolute inset-x-0 top-0 h-1 bg-gradient-to-r ${item.accent}`} />
@@ -731,7 +732,7 @@ export function Home() {
                   <span className={`text-3xl font-black bg-gradient-to-br ${item.accent} bg-clip-text text-transparent leading-none`}>
                     {item.step}
                   </span>
-                  <span className="text-xs font-bold uppercase tracking-[0.16em] text-gray-400">
+                  <span className="text-xs font-bold uppercase tracking-[0.16em] text-gray-500">
                     {item.time}
                   </span>
                 </div>
@@ -777,7 +778,7 @@ export function Home() {
                     initial={{ opacity: 0, x: -16 }}
                     whileInView={{ opacity: 1, x: 0 }}
                     viewport={{ once: true, margin: "-40px" }}
-                    transition={{ delay: i * 0.08, duration: 0.4, ease: "easeOut" }}
+                    transition={{ delay: i * 0.05, duration: 0.3, ease: "easeOut" }}
                     className="flex items-start gap-3 text-slate-600"
                   >
                     <span className="shrink-0 mt-0.5 inline-flex items-center justify-center w-6 h-6 rounded-full bg-slate-300 text-white">
@@ -807,7 +808,7 @@ export function Home() {
                       initial={{ opacity: 0, x: 16 }}
                       whileInView={{ opacity: 1, x: 0 }}
                       viewport={{ once: true, margin: "-40px" }}
-                      transition={{ delay: i * 0.08 + 0.05, duration: 0.4, ease: "easeOut" }}
+                      transition={{ delay: i * 0.05 + 0.05, duration: 0.3, ease: "easeOut" }}
                       className="flex items-start gap-3 text-white/95 font-medium"
                     >
                       <span className="shrink-0 mt-0.5 inline-flex items-center justify-center w-6 h-6 rounded-full bg-white text-emerald-600">
@@ -818,179 +819,6 @@ export function Home() {
                   ))}
                 </ul>
               </div>
-            </div>
-          </div>
-        </div>
-      </section>
-
-      {/* Coaches Section */}
-      {/* Parent testimonials */}
-      <section className="py-32">
-        <div className="container mx-auto px-4">
-          <div className="max-w-3xl mx-auto text-center">
-            <div className="ui-eyebrow justify-center">
-              <Sparkles className="h-4 w-4" />
-              Что говорят родители
-            </div>
-            <h2 className={sectionTitleClass}>
-              Истории семей, которые с&nbsp;нами уже играют
-            </h2>
-          </div>
-
-          <div className="mt-16 grid gap-5 lg:grid-cols-3 max-w-6xl mx-auto">
-            {[
-              {
-                quote:
-                  "Сын первые две недели плакал у двери. Сейчас сам берёт сумку и спрашивает в&nbsp;понедельник: «Когда футбол?». Тренер ни разу не повысил голос — Михаил это чувствует.",
-                author: "Анна",
-                detail: "мама Михаила, 4 года · сад №32",
-                initial: "А",
-                tint: "from-orange-500 to-rose-500",
-              },
-              {
-                quote:
-                  "Записали ради социализации, через год Кирилл сам тащит нас на «свои» мини-турниры. Удобно, что не возим — занятие проходит в его же саду, в знакомых стенах.",
-                author: "Дмитрий",
-                detail: "папа Кирилла, 6 лет · сад №436",
-                initial: "Д",
-                tint: "from-indigo-700 to-purple-700",
-              },
-              {
-                quote:
-                  "Близнецы — Глеб и Стёпа. Льгота для двоих детей реальная: 1960 ₽ за каждого. Никаких скрытых счетов, не пропустили — не списали. Просто и по-человечески.",
-                author: "Юлия",
-                detail: "мама близнецов, 3 года · сад №59",
-                initial: "Ю",
-                tint: "from-purple-600 to-fuchsia-500",
-              },
-            ].map((t, i) => (
-              <motion.figure
-                key={t.author}
-                initial={{ opacity: 0, y: 22 }}
-                whileInView={{ opacity: 1, y: 0 }}
-                viewport={{ once: true, margin: "-60px" }}
-                transition={{ delay: i * 0.1, duration: 0.45, ease: "easeOut" }}
-                className="relative overflow-hidden rounded-[1.3rem] bg-white border border-black/6 p-6 sm:p-7 shadow-[0_2px_14px_-6px_rgba(15,23,42,0.12)] flex flex-col"
-              >
-                <div className={`absolute inset-x-0 top-0 h-1 bg-gradient-to-r ${t.tint}`} />
-                <div className="text-5xl font-black leading-none text-purple-200 select-none">“</div>
-                <blockquote className="mt-2 text-base leading-relaxed text-gray-700 flex-1">
-                  {t.quote}
-                </blockquote>
-                <figcaption className="mt-6 flex items-center gap-3 border-t border-black/6 pt-4">
-                  <div className={`flex h-10 w-10 shrink-0 items-center justify-center rounded-full bg-gradient-to-br ${t.tint} text-white font-bold`}>
-                    {t.initial}
-                  </div>
-                  <div>
-                    <div className="text-sm font-bold text-gray-900">{t.author}</div>
-                    <div className="text-xs text-gray-500">{t.detail}</div>
-                  </div>
-                </figcaption>
-              </motion.figure>
-            ))}
-          </div>
-        </div>
-      </section>
-
-      <section id="coaches" className="py-32 bg-slate-50/60">
-        <div className="container mx-auto px-4">
-          <div className="max-w-3xl">
-            <div className="ui-eyebrow">
-              <Sparkles className="h-4 w-4" />
-              Наставники школы
-            </div>
-            <h2 className={sectionTitleClass}>
-              Тренерский состав, которому родители доверяют с первого занятия
-            </h2>
-          </div>
-
-          <div className="mt-14 -mx-4 px-4 snap-x snap-proximity overflow-x-auto overscroll-y-auto pb-5 [scrollbar-width:thin] [scrollbar-color:rgba(147,51,234,0.45)_transparent]">
-            <div className="flex w-max gap-4">
-            {coaches.map((coach, index) => (
-              <motion.article
-                key={coach.name}
-                initial={{ opacity: 0, y: 24 }}
-                whileInView={{ opacity: 1, y: 0 }}
-                viewport={{ once: true, margin: "-60px" }}
-                transition={{ delay: index * 0.06, duration: 0.4, ease: "easeOut" }}
-                className="group w-[270px] sm:w-[290px] shrink-0 snap-start flex flex-col overflow-hidden rounded-[1.25rem] bg-white border border-black/6 shadow-[0_2px_12px_-6px_rgba(15,23,42,0.12)] hover:shadow-[0_24px_40px_-24px_rgba(15,23,42,0.25)] hover:-translate-y-1 transition-all duration-300"
-              >
-                {/* Photo / fallback */}
-                <div className={`relative aspect-square overflow-hidden ${coach.photo ? "bg-gradient-to-b from-orange-50 via-white to-indigo-50" : coach.bgClass}`}>
-                  {coach.photo ? (
-                    <img
-                      src={`${coach.photo}?v=4`}
-                      alt={coach.name}
-                      loading="lazy"
-                      className="absolute inset-x-0 top-0 h-[120%] w-full object-cover object-top transition-transform duration-500 group-hover:scale-105"
-                    />
-                  ) : (
-                    <div className="flex h-full w-full items-center justify-center text-white">
-                      <span className="text-7xl font-black tracking-tight">
-                        {getCoachInitials(coach.name)}
-                      </span>
-                    </div>
-                  )}
-                  <div className="absolute inset-x-0 bottom-0 h-24 bg-gradient-to-t from-black/55 via-black/20 to-transparent pointer-events-none" />
-                  <div className="absolute left-4 top-4 inline-flex rounded-full bg-white/90 backdrop-blur px-2.5 py-1 text-[10px] font-bold uppercase tracking-[0.12em] text-indigo-900">
-                    №{String(index + 1).padStart(2, "0")}
-                  </div>
-                  <div className="absolute inset-x-4 bottom-3">
-                    <h3 className="text-xl font-black text-white leading-tight drop-shadow-sm">
-                      {coach.name}
-                    </h3>
-                  </div>
-                </div>
-
-                {/* Body */}
-                <div className="flex flex-col flex-1 p-5">
-                  <p className="text-[11px] font-semibold uppercase tracking-[0.16em] text-gray-400">
-                    Опыт
-                  </p>
-                  <p className="mt-1 text-sm font-medium text-gray-700">
-                    {coach.experience}
-                  </p>
-
-                  {/* Credential pills */}
-                  <div className="mt-3 flex flex-wrap gap-1.5">
-                    {coach.badges.map((b) => (
-                      <span
-                        key={b}
-                        className="inline-flex items-center rounded-full bg-orange-50 border border-orange-200 px-2.5 py-0.5 text-[11px] font-semibold text-orange-700"
-                      >
-                        {b}
-                      </span>
-                    ))}
-                  </div>
-
-                  <p className="mt-4 text-sm leading-relaxed text-gray-600 flex-1">
-                    {coach.focus}
-                  </p>
-
-                  {/* Clubs / internships timeline */}
-                  {coach.clubs && coach.clubs.length > 0 && (
-                    <div className="mt-5 border-t border-black/6 pt-4">
-                      <p className="text-[11px] font-semibold uppercase tracking-[0.16em] text-purple-500 mb-2">
-                        Стажировки и клубы
-                      </p>
-                      <ul className="space-y-1.5">
-                        {coach.clubs.map((c, i) => (
-                          <li key={i} className="flex items-baseline gap-2.5 text-sm">
-                            <span className="shrink-0 inline-flex items-center justify-center min-w-[3.5rem] rounded-md bg-indigo-900/95 text-white text-[11px] font-bold px-1.5 py-0.5 tracking-wide">
-                              {c.year}
-                            </span>
-                            <span className="text-gray-700 leading-snug">
-                              {c.label}
-                              {c.flag && <span className="ml-1.5">{c.flag}</span>}
-                            </span>
-                          </li>
-                        ))}
-                      </ul>
-                    </div>
-                  )}
-                </div>
-              </motion.article>
-            ))}
             </div>
           </div>
         </div>
@@ -1035,7 +863,7 @@ export function Home() {
                     initial={{ opacity: 0, y: 24 }}
                     whileInView={{ opacity: 1, y: 0 }}
                     viewport={{ once: true, margin: "-60px" }}
-                    transition={{ delay: index * 0.12, duration: 0.5, ease: "easeOut" }}
+                    transition={{ delay: index * 0.05, duration: 0.35, ease: "easeOut" }}
                     className="rounded-[1.25rem] border border-black/6 bg-white/70 p-6 sm:p-8 relative overflow-hidden"
                   >
                     <div className={`absolute inset-x-0 top-0 h-1 bg-gradient-to-r ${item.accentClass}`} />
@@ -1110,7 +938,7 @@ export function Home() {
 
                 <div className="rounded-[1rem] border border-black/6 bg-white/38 p-4 sm:p-5">
                   <div className="flex items-center justify-between">
-                    <p className="text-[10px] font-semibold uppercase tracking-[0.18em] text-gray-400">
+                    <p className="text-[10px] font-semibold uppercase tracking-[0.18em] text-gray-500">
                       Пирамида развития
                     </p>
                     <p className="text-[10px] font-semibold uppercase tracking-[0.16em] text-purple-500">
@@ -1133,7 +961,7 @@ export function Home() {
                           initial={{ opacity: 0, y: 14 }}
                           whileInView={{ opacity: 1, y: 0 }}
                           viewport={{ once: true, margin: "-40px" }}
-                          transition={{ delay, duration: 0.4, ease: "easeOut" }}
+                          transition={{ delay, duration: 0.3, ease: "easeOut" }}
                           className={layer.widthClass}
                         >
                           <div
@@ -1162,7 +990,7 @@ export function Home() {
                       initial={{ opacity: 0, y: 14 }}
                       whileInView={{ opacity: 1, y: 0 }}
                       viewport={{ once: true, margin: "-40px" }}
-                      transition={{ delay: 0.12, duration: 0.4, ease: "easeOut" }}
+                      transition={{ delay: 0.12, duration: 0.3, ease: "easeOut" }}
                       className="w-full"
                     >
                       <div className="rounded-[1rem] bg-gradient-to-r from-slate-900 via-indigo-900 to-purple-900 px-4 py-3.5 text-white shadow-[0_12px_24px_-16px_rgba(15,23,42,0.62)]">
@@ -1179,6 +1007,282 @@ export function Home() {
                 </div>
               </article>
             </div>
+          </div>
+        </div>
+      </section>
+
+      {/* What happens after signup */}
+      <section className="py-24 bg-slate-50/50">
+        <div className="container mx-auto px-4">
+          <div className="max-w-3xl mx-auto text-center">
+            <div className="ui-eyebrow justify-center">
+              <Sparkles className="h-4 w-4" />
+              Что будет, если оставить телефон
+            </div>
+            <h2 className={sectionTitleClass}>
+              Три простых шага, ничего сложного
+            </h2>
+          </div>
+
+          <div className="mt-14 grid gap-5 sm:grid-cols-3 max-w-5xl mx-auto">
+            {[
+              {
+                step: "1",
+                title: "Согласуем время",
+                desc: "Менеджер позвонит в течение часа, подскажет, в каких садах ближайшие группы, и подберёт удобный день.",
+                accent: "from-emerald-500 to-teal-500",
+              },
+              {
+                step: "2",
+                title: "Тренер придёт в группу за ребёнком",
+                desc: "В назначенное время тренер заходит в группу и ведёт ребёнка в спортзал. Форма не нужна — спортивная одежда, мяч и манишку выдадим.",
+                accent: "from-indigo-700 to-purple-700",
+              },
+              {
+                step: "3",
+                title: "30 минут занятия",
+                desc: "Ребёнок занимается со своей группой по нашей программе. После — короткий отчёт тренера, что было и как ребёнок включился.",
+                accent: "from-orange-500 to-amber-400",
+              },
+            ].map((s, i) => (
+              <motion.div
+                key={s.step}
+                initial={{ opacity: 0, y: 22 }}
+                whileInView={{ opacity: 1, y: 0 }}
+                viewport={{ once: true, margin: "-60px" }}
+                transition={{ delay: i * 0.06, duration: 0.3, ease: "easeOut" }}
+                className="relative overflow-hidden rounded-[1.3rem] bg-white border border-black/6 p-6 shadow-[0_2px_14px_-6px_rgba(15,23,42,0.12)]"
+              >
+                <div className={`absolute inset-x-0 top-0 h-1 bg-gradient-to-r ${s.accent}`} />
+                <div className={`inline-flex h-11 w-11 items-center justify-center rounded-full bg-gradient-to-br ${s.accent} text-white text-lg font-black shadow-md`}>
+                  {s.step}
+                </div>
+                <h3 className="mt-4 text-lg font-bold tracking-tight text-gray-900">
+                  {s.title}
+                </h3>
+                <p className="mt-2 text-sm leading-relaxed text-gray-600">
+                  {s.desc}
+                </p>
+              </motion.div>
+            ))}
+          </div>
+
+          {/* Inline phone-capture form — repeated CTA, same handler as hero */}
+          <div className="mt-12 max-w-2xl mx-auto text-center">
+            <p className="text-base text-gray-700">
+              Оставьте телефон — менеджер позвонит в течение часа.
+            </p>
+            <form
+              onSubmit={handleHeroSubmit}
+              className="mt-5 grid grid-cols-1 sm:grid-cols-[305px_1fr] gap-3 max-w-lg mx-auto"
+            >
+              <input
+                type="tel"
+                inputMode="tel"
+                value={heroPhone}
+                onChange={(e) => setHeroPhone(normalizeHeroPhone(e.target.value))}
+                onFocus={(e) => {
+                  const el = e.currentTarget;
+                  requestAnimationFrame(() => {
+                    if (el.selectionStart !== null && el.selectionStart < 2) {
+                      el.setSelectionRange(el.value.length, el.value.length);
+                    }
+                  });
+                }}
+                placeholder="+7 (___) ___-__-__"
+                className="px-4 py-4 rounded-xl border border-slate-200 bg-white focus:border-indigo-500 focus:ring-2 focus:ring-indigo-100 focus:outline-none transition text-slate-900 placeholder:text-slate-400 text-base"
+                aria-label="Телефон для записи на пробное"
+              />
+              <button
+                type="submit"
+                className={`${primaryButtonClass} whitespace-nowrap py-4 text-base font-bold`}
+              >
+                Записаться на пробное
+              </button>
+            </form>
+            <div className="mt-3 flex flex-wrap items-center justify-center gap-x-5 gap-y-1.5 text-sm text-gray-500">
+              <span className="flex items-center gap-1.5">
+                <CheckCircle2 className="h-4 w-4 text-emerald-500" />
+                Первое занятие бесплатно
+              </span>
+              <span className="flex items-center gap-1.5">
+                <CheckCircle2 className="h-4 w-4 text-emerald-500" />
+                Без обязательств
+              </span>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      {/* Coaches Section */}
+      <section id="coaches" className="py-32 bg-slate-50/60">
+        <div className="container mx-auto px-4">
+          <div className="max-w-3xl">
+            <div className="ui-eyebrow">
+              <Sparkles className="h-4 w-4" />
+              Наставники школы
+            </div>
+            <h2 className={sectionTitleClass}>
+              Тренерский состав, которому родители доверяют с первого занятия
+            </h2>
+          </div>
+
+          <div className="mt-14 -mx-4 px-4 snap-x snap-proximity overflow-x-auto overscroll-y-auto pb-5 [scrollbar-width:thin] [scrollbar-color:rgba(147,51,234,0.45)_transparent]">
+            <div className="flex w-max gap-4">
+            {coaches.map((coach, index) => (
+              <motion.article
+                key={coach.name}
+                initial={{ opacity: 0, y: 24 }}
+                whileInView={{ opacity: 1, y: 0 }}
+                viewport={{ once: true, margin: "-60px" }}
+                transition={{ delay: index * 0.05, duration: 0.3, ease: "easeOut" }}
+                className="group w-[270px] sm:w-[290px] shrink-0 snap-start flex flex-col overflow-hidden rounded-[1.25rem] bg-white border border-black/6 shadow-[0_2px_12px_-6px_rgba(15,23,42,0.12)] hover:shadow-[0_24px_40px_-24px_rgba(15,23,42,0.25)] hover:-translate-y-1 transition-all duration-300"
+              >
+                {/* Photo / fallback */}
+                <div className={`relative aspect-square overflow-hidden ${coach.photo ? "bg-gradient-to-b from-orange-50 via-white to-indigo-50" : coach.bgClass}`}>
+                  {coach.photo ? (
+                    <img
+                      src={`${coach.photo}?v=5`}
+                      alt={coach.name}
+                      loading="lazy"
+                      className="absolute inset-x-0 top-0 h-[120%] w-full object-cover object-top transition-transform duration-500 group-hover:scale-105"
+                    />
+                  ) : (
+                    <div className="flex h-full w-full items-center justify-center text-white">
+                      <span className="text-7xl font-black tracking-tight">
+                        {getCoachInitials(coach.name)}
+                      </span>
+                    </div>
+                  )}
+                  <div className="absolute inset-x-0 bottom-0 h-24 bg-gradient-to-t from-black/55 via-black/20 to-transparent pointer-events-none" />
+                  <div className="absolute left-4 top-4 inline-flex rounded-full bg-white/90 backdrop-blur px-2.5 py-1 text-[10px] font-bold uppercase tracking-[0.12em] text-indigo-900">
+                    №{String(index + 1).padStart(2, "0")}
+                  </div>
+                  <div className="absolute inset-x-4 bottom-3">
+                    <h3 className="text-xl font-black text-white leading-tight drop-shadow-sm">
+                      {coach.name}
+                    </h3>
+                  </div>
+                </div>
+
+                {/* Body */}
+                <div className="flex flex-col flex-1 p-5">
+                  <p className="text-[11px] font-semibold uppercase tracking-[0.16em] text-gray-500">
+                    Опыт
+                  </p>
+                  <p className="mt-1 text-sm font-medium text-gray-700">
+                    {coach.experience}
+                  </p>
+
+                  {/* Credential pills */}
+                  <div className="mt-3 flex flex-wrap gap-1.5">
+                    {coach.badges.map((b) => (
+                      <span
+                        key={b}
+                        className="inline-flex items-center rounded-full bg-orange-50 border border-orange-200 px-3 py-1 text-xs font-semibold text-orange-700"
+                      >
+                        {b}
+                      </span>
+                    ))}
+                  </div>
+
+                  <p className="mt-4 text-sm leading-relaxed text-gray-600 flex-1">
+                    {coach.focus}
+                  </p>
+
+                  {/* Clubs / internships timeline */}
+                  {coach.clubs && coach.clubs.length > 0 && (
+                    <div className="mt-5 border-t border-black/6 pt-4">
+                      <p className="text-[11px] font-semibold uppercase tracking-[0.16em] text-purple-500 mb-2">
+                        Стажировки и клубы
+                      </p>
+                      <ul className="space-y-1.5">
+                        {coach.clubs.map((c, i) => (
+                          <li key={i} className="flex items-baseline gap-2.5 text-sm">
+                            <span className="shrink-0 inline-flex items-center justify-center min-w-[3.5rem] rounded-md bg-indigo-900/95 text-white text-[11px] font-bold px-1.5 py-0.5 tracking-wide">
+                              {c.year}
+                            </span>
+                            <span className="text-gray-700 leading-snug">
+                              {c.label}
+                              {c.flag && <span className="ml-1.5">{c.flag}</span>}
+                            </span>
+                          </li>
+                        ))}
+                      </ul>
+                    </div>
+                  )}
+                </div>
+              </motion.article>
+            ))}
+            </div>
+          </div>
+        </div>
+      </section>
+
+      {/* Parent testimonials */}
+      <section className="py-32">
+        <div className="container mx-auto px-4">
+          <div className="max-w-3xl mx-auto text-center">
+            <div className="ui-eyebrow justify-center">
+              <Sparkles className="h-4 w-4" />
+              Что говорят родители
+            </div>
+            <h2 className={sectionTitleClass}>
+              Истории семей, которые с&nbsp;нами уже играют
+            </h2>
+          </div>
+
+          <div className="mt-16 grid gap-5 lg:grid-cols-3 max-w-6xl mx-auto">
+            {[
+              {
+                quote:
+                  "Сын первые две недели плакал у двери. Сейчас сам берёт сумку и спрашивает в понедельник: «Когда футбол?». Тренер ни разу не повысил голос — Михаил это чувствует.",
+                author: "Анна",
+                detail: "мама Михаила, 4 года · сад №32",
+                initial: "А",
+                tint: "from-orange-500 to-rose-500",
+              },
+              {
+                quote:
+                  "Записали ради социализации, через год Кирилл сам тащит нас на «свои» мини-турниры. Удобно, что не возим — занятие проходит в его же саду, в знакомых стенах.",
+                author: "Дмитрий",
+                detail: "папа Кирилла, 6 лет · сад №436",
+                initial: "Д",
+                tint: "from-indigo-700 to-purple-700",
+              },
+              {
+                quote:
+                  "Близнецы — Глеб и Стёпа. Льгота для двоих детей реальная: 1960 ₽ за каждого. Никаких скрытых счетов, не пропустили — не списали. Просто и по-человечески.",
+                author: "Юлия",
+                detail: "мама близнецов, 3 года · сад №59",
+                initial: "Ю",
+                tint: "from-purple-600 to-fuchsia-500",
+              },
+            ].map((t, i) => (
+              <motion.figure
+                key={t.author}
+                initial={{ opacity: 0, y: 22 }}
+                whileInView={{ opacity: 1, y: 0 }}
+                viewport={{ once: true, margin: "-60px" }}
+                transition={{ delay: i * 0.06, duration: 0.3, ease: "easeOut" }}
+                className="relative overflow-hidden rounded-[1.3rem] bg-white border border-black/6 p-6 sm:p-7 shadow-[0_2px_14px_-6px_rgba(15,23,42,0.12)] flex flex-col"
+              >
+                <div className={`absolute inset-x-0 top-0 h-1 bg-gradient-to-r ${t.tint}`} />
+                <div className="text-5xl font-black leading-none text-purple-200 select-none">“</div>
+                <blockquote className="mt-2 text-base leading-relaxed text-gray-700 flex-1">
+                  {t.quote}
+                </blockquote>
+                <figcaption className="mt-6 flex items-center gap-3 border-t border-black/6 pt-4">
+                  <div className={`flex h-10 w-10 shrink-0 items-center justify-center rounded-full bg-gradient-to-br ${t.tint} text-white font-bold`}>
+                    {t.initial}
+                  </div>
+                  <div>
+                    <div className="text-sm font-bold text-gray-900">{t.author}</div>
+                    <div className="text-xs text-gray-500">{t.detail}</div>
+                  </div>
+                </figcaption>
+              </motion.figure>
+            ))}
           </div>
         </div>
       </section>
@@ -1421,6 +1525,76 @@ export function Home() {
         </div>
       </section>
 
+      {/* CTA Section */}
+      <section className="py-32">
+        <div className="container mx-auto px-4">
+          <div className="relative overflow-hidden border-t border-black/8 px-2 pt-10">
+            <div className="absolute -left-10 top-0 h-40 w-40 rounded-full bg-purple-200/40 blur-3xl"></div>
+            <div className="absolute -right-6 bottom-0 h-44 w-44 rounded-full bg-orange-200/45 blur-3xl"></div>
+
+            <div className="relative">
+              <div className="max-w-2xl mx-auto text-center">
+                <div className="ui-eyebrow justify-center">
+                  <Sparkles className="h-4 w-4" />
+                  Следующий шаг
+                </div>
+                <h2 className={sectionTitleClass}>
+                  Готовы начать?
+                </h2>
+              </div>
+
+              <div className="mt-12 grid gap-4 sm:grid-cols-2 max-w-3xl mx-auto">
+                {/* New client → /signup */}
+                <Link
+                  to="/signup"
+                  className="group relative overflow-hidden rounded-[1.4rem] bg-gradient-to-br from-purple-600 via-purple-700 to-orange-500 p-7 sm:p-8 text-white shadow-[0_24px_60px_-30px_rgba(124,58,237,0.55)] hover:shadow-[0_30px_70px_-30px_rgba(124,58,237,0.7)] hover:-translate-y-0.5 transition-all"
+                >
+                  <div className="absolute -right-12 -top-12 h-44 w-44 rounded-full bg-orange-400/30 blur-3xl pointer-events-none" />
+                  <div className="relative">
+                    <p className="text-[11px] font-semibold uppercase tracking-[0.18em] text-orange-200">
+                      Я новый клиент
+                    </p>
+                    <h3 className="mt-3 text-2xl font-black tracking-tight">
+                      Записаться на пробное занятие
+                    </h3>
+                    <p className="mt-3 text-sm text-white/85 leading-relaxed">
+                      Первое занятие бесплатно, без обязательств.
+                    </p>
+                    <span className="mt-6 inline-flex items-center gap-2 text-sm font-bold text-white">
+                      Перейти к записи
+                      <span className="transition-transform group-hover:translate-x-1">→</span>
+                    </span>
+                  </div>
+                </Link>
+
+                {/* Existing client → LK */}
+                <a
+                  href="https://lk.champion-footboll.ru/"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="group relative overflow-hidden rounded-[1.4rem] bg-white border border-indigo-200 p-7 sm:p-8 hover:border-indigo-400 hover:shadow-[0_20px_50px_-25px_rgba(15,23,42,0.25)] hover:-translate-y-0.5 transition-all"
+                >
+                  <div className="relative">
+                    <p className="text-[11px] font-semibold uppercase tracking-[0.18em] text-indigo-700">
+                      Уже занимаемся
+                    </p>
+                    <h3 className="mt-3 text-2xl font-black tracking-tight text-gray-900">
+                      Войти в личный кабинет
+                    </h3>
+                    <p className="mt-3 text-sm text-gray-600 leading-relaxed">
+                      Расписание, оплата и связь с тренером в&nbsp;одном месте.
+                    </p>
+                    <span className="mt-6 inline-flex items-center gap-2 text-sm font-bold text-indigo-700">
+                      Открыть кабинет
+                      <span className="transition-transform group-hover:translate-x-1">→</span>
+                    </span>
+                  </div>
+                </a>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
       {/* Blog Section */}
       <section id="blog" className="py-32">
         <div className="container mx-auto px-4">
@@ -1507,134 +1681,6 @@ export function Home() {
         </div>
       </section>
 
-      {/* What happens after signup */}
-      <section className="py-24 bg-slate-50/50">
-        <div className="container mx-auto px-4">
-          <div className="max-w-3xl mx-auto text-center">
-            <div className="ui-eyebrow justify-center">
-              <Sparkles className="h-4 w-4" />
-              Что будет, если оставить телефон
-            </div>
-            <h2 className={sectionTitleClass}>
-              Три простых шага, ничего сложного
-            </h2>
-          </div>
-
-          <div className="mt-14 grid gap-5 sm:grid-cols-3 max-w-5xl mx-auto">
-            {[
-              {
-                step: "1",
-                title: "Согласуем время",
-                desc: "Менеджер позвонит в течение часа, подскажет, в каких садах ближайшие группы, и подберёт удобный день.",
-                accent: "from-emerald-500 to-teal-500",
-              },
-              {
-                step: "2",
-                title: "Тренер встретит у входа",
-                desc: "Приходите за 10 минут до начала. Форма не нужна — спортивная одежда, кроссовки. Мяч и манишку выдадим.",
-                accent: "from-indigo-700 to-purple-700",
-              },
-              {
-                step: "3",
-                title: "25 минут занятия",
-                desc: "Ребёнок пробует первое упражнение, родитель наблюдает рядом. После занятия — короткий разговор с тренером.",
-                accent: "from-orange-500 to-amber-400",
-              },
-            ].map((s, i) => (
-              <motion.div
-                key={s.step}
-                initial={{ opacity: 0, y: 22 }}
-                whileInView={{ opacity: 1, y: 0 }}
-                viewport={{ once: true, margin: "-60px" }}
-                transition={{ delay: i * 0.1, duration: 0.45, ease: "easeOut" }}
-                className="relative overflow-hidden rounded-[1.3rem] bg-white border border-black/6 p-6 shadow-[0_2px_14px_-6px_rgba(15,23,42,0.12)]"
-              >
-                <div className={`absolute inset-x-0 top-0 h-1 bg-gradient-to-r ${s.accent}`} />
-                <div className={`inline-flex h-11 w-11 items-center justify-center rounded-full bg-gradient-to-br ${s.accent} text-white text-lg font-black shadow-md`}>
-                  {s.step}
-                </div>
-                <h3 className="mt-4 text-lg font-bold tracking-tight text-gray-900">
-                  {s.title}
-                </h3>
-                <p className="mt-2 text-sm leading-relaxed text-gray-600">
-                  {s.desc}
-                </p>
-              </motion.div>
-            ))}
-          </div>
-        </div>
-      </section>
-
-      {/* CTA Section */}
-      <section className="py-32">
-        <div className="container mx-auto px-4">
-          <div className="relative overflow-hidden border-t border-black/8 px-2 pt-10">
-            <div className="absolute -left-10 top-0 h-40 w-40 rounded-full bg-purple-200/40 blur-3xl"></div>
-            <div className="absolute -right-6 bottom-0 h-44 w-44 rounded-full bg-orange-200/45 blur-3xl"></div>
-
-            <div className="relative">
-              <div className="max-w-2xl mx-auto text-center">
-                <div className="ui-eyebrow justify-center">
-                  <Sparkles className="h-4 w-4" />
-                  Следующий шаг
-                </div>
-                <h2 className={sectionTitleClass}>
-                  Готовы начать?
-                </h2>
-              </div>
-
-              <div className="mt-12 grid gap-4 sm:grid-cols-2 max-w-3xl mx-auto">
-                {/* New client → /signup */}
-                <Link
-                  to="/signup"
-                  className="group relative overflow-hidden rounded-[1.4rem] bg-gradient-to-br from-purple-600 via-purple-700 to-orange-500 p-7 sm:p-8 text-white shadow-[0_24px_60px_-30px_rgba(124,58,237,0.55)] hover:shadow-[0_30px_70px_-30px_rgba(124,58,237,0.7)] hover:-translate-y-0.5 transition-all"
-                >
-                  <div className="absolute -right-12 -top-12 h-44 w-44 rounded-full bg-orange-400/30 blur-3xl pointer-events-none" />
-                  <div className="relative">
-                    <p className="text-[11px] font-semibold uppercase tracking-[0.18em] text-orange-200">
-                      Я новый клиент
-                    </p>
-                    <h3 className="mt-3 text-2xl font-black tracking-tight">
-                      Записаться на пробное занятие
-                    </h3>
-                    <p className="mt-3 text-sm text-white/85 leading-relaxed">
-                      Первое занятие бесплатно, без обязательств.
-                    </p>
-                    <span className="mt-6 inline-flex items-center gap-2 text-sm font-bold text-white">
-                      Перейти к записи
-                      <span className="transition-transform group-hover:translate-x-1">→</span>
-                    </span>
-                  </div>
-                </Link>
-
-                {/* Existing client → LK */}
-                <a
-                  href="https://lk.champion-footboll.ru/"
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="group relative overflow-hidden rounded-[1.4rem] bg-white border border-indigo-200 p-7 sm:p-8 hover:border-indigo-400 hover:shadow-[0_20px_50px_-25px_rgba(15,23,42,0.25)] hover:-translate-y-0.5 transition-all"
-                >
-                  <div className="relative">
-                    <p className="text-[11px] font-semibold uppercase tracking-[0.18em] text-indigo-700">
-                      Уже занимаемся
-                    </p>
-                    <h3 className="mt-3 text-2xl font-black tracking-tight text-gray-900">
-                      Войти в личный кабинет
-                    </h3>
-                    <p className="mt-3 text-sm text-gray-600 leading-relaxed">
-                      Расписание, оплата и связь с тренером в&nbsp;одном месте.
-                    </p>
-                    <span className="mt-6 inline-flex items-center gap-2 text-sm font-bold text-indigo-700">
-                      Открыть кабинет
-                      <span className="transition-transform group-hover:translate-x-1">→</span>
-                    </span>
-                  </div>
-                </a>
-              </div>
-            </div>
-          </div>
-        </div>
-      </section>
 
       <Footer />
       <StickyMobileCTA />
@@ -1646,6 +1692,7 @@ export function Home() {
           onClick={() => setQuizModalOpen(false)}
           role="dialog"
           aria-modal="true"
+          aria-label="Экспресс-тест для родителей: получить PDF-гайд"
         >
           <div
             className="relative w-full max-w-3xl my-4 sm:my-8"
