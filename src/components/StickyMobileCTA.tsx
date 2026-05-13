@@ -33,6 +33,8 @@ export default function StickyMobileCTA() {
 
     return (
         <div
+            role="region"
+            aria-label="Быстрые действия"
             className={`md:hidden fixed inset-x-0 bottom-0 z-40 transition-transform duration-300 ${
                 visible ? 'translate-y-0' : 'translate-y-full'
             }`}
@@ -45,7 +47,7 @@ export default function StickyMobileCTA() {
                         target="_self"
                         className="flex items-center justify-center gap-2 bg-indigo-900 hover:bg-indigo-800 text-white font-bold py-3.5 rounded-xl shadow-md active:scale-[0.98] transition text-sm"
                     >
-                        <User className="w-4 h-4" />
+                        <User className="w-4 h-4" aria-hidden="true" />
                         Личный кабинет
                     </a>
                     <Link

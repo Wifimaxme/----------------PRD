@@ -397,20 +397,29 @@ export function Home() {
   const navigate = useNavigate();
   const [heroPhone, setHeroPhone] = useState('+7');
   const [quizModalOpen, setQuizModalOpen] = useState(false);
+  const quizTriggerRef = useRef<HTMLButtonElement | null>(null);
+  const quizWasOpenRef = useRef(false);
 
-  // Lock body scroll while the quiz modal is open
+  // Lock body scroll while the quiz modal is open + return focus on close
   useEffect(() => {
-    if (!quizModalOpen) return;
-    const prev = document.body.style.overflow;
-    document.body.style.overflow = "hidden";
-    const onEsc = (e: KeyboardEvent) => {
-      if (e.key === "Escape") setQuizModalOpen(false);
-    };
-    window.addEventListener("keydown", onEsc);
-    return () => {
-      document.body.style.overflow = prev;
-      window.removeEventListener("keydown", onEsc);
-    };
+    if (quizModalOpen) {
+      quizWasOpenRef.current = true;
+      const prev = document.body.style.overflow;
+      document.body.style.overflow = "hidden";
+      const onEsc = (e: KeyboardEvent) => {
+        if (e.key === "Escape") setQuizModalOpen(false);
+      };
+      window.addEventListener("keydown", onEsc);
+      return () => {
+        document.body.style.overflow = prev;
+        window.removeEventListener("keydown", onEsc);
+      };
+    }
+    // Restore focus to the trigger when closing (WCAG modal focus management)
+    if (quizWasOpenRef.current) {
+      quizWasOpenRef.current = false;
+      quizTriggerRef.current?.focus();
+    }
   }, [quizModalOpen]);
 
   const handleHeroSubmit = (e: { preventDefault: () => void }) => {
@@ -477,6 +486,7 @@ export function Home() {
     <div className="min-h-screen">
       <Header />
 
+      <main id="main">
       {/* Hero Section */}
       <section className="relative overflow-hidden pb-24 pt-20 sm:pt-24">
         <div className="absolute inset-0">
@@ -1435,6 +1445,7 @@ export function Home() {
       <section className="py-16 bg-indigo-50/40">
         <div className="container mx-auto px-4">
           <button
+            ref={quizTriggerRef}
             type="button"
             onClick={() => setQuizModalOpen(true)}
             className="group mx-auto block w-full max-w-4xl rounded-[1.4rem] bg-white border border-black/6 p-6 sm:p-7 text-left shadow-[0_2px_14px_-6px_rgba(15,23,42,0.12)] hover:border-purple-300 hover:shadow-[0_24px_50px_-30px_rgba(124,58,237,0.4)] hover:-translate-y-0.5 transition-all"
@@ -1680,7 +1691,7 @@ export function Home() {
           </div>
         </div>
       </section>
-
+      </main>
 
       <Footer />
       <StickyMobileCTA />

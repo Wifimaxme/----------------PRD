@@ -38,7 +38,7 @@ export function Footer() {
             </div>
           </address>
 
-          <div>
+          <nav aria-label="Юридическая информация">
             <h3 className="font-bold mb-4">Юридическая информация</h3>
             <div className="space-y-2 text-sm">
               <Link to="/education-info/basic" className="block text-gray-300 hover:text-white transition">
@@ -51,7 +51,7 @@ export function Footer() {
                 Публичная оферта
               </Link>
             </div>
-          </div>
+          </nav>
         </div>
 
         <div className="border-t border-gray-800 pt-6 text-center text-sm text-gray-400">

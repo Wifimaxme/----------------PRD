@@ -57,7 +57,13 @@ export function Header() {
                 {item.label}
               </button>
             ))}
-            <Link to="/education-info/basic" className="text-sm font-medium text-gray-700 transition hover:text-purple-600 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-purple-500 focus-visible:ring-offset-2 rounded">
+            <Link
+              to="/education-info/basic"
+              aria-current={location.pathname.startsWith("/education-info") ? "page" : undefined}
+              className={`text-sm font-medium transition hover:text-purple-600 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-purple-500 focus-visible:ring-offset-2 rounded ${
+                location.pathname.startsWith("/education-info") ? "text-purple-700" : "text-gray-700"
+              }`}
+            >
               Сведения об организации
             </Link>
           </nav>
@@ -97,8 +103,11 @@ export function Header() {
               ))}
               <Link
                 to="/education-info/basic"
+                aria-current={location.pathname.startsWith("/education-info") ? "page" : undefined}
                 onClick={() => setMobileMenuOpen(false)}
-                className="block py-2 text-sm font-medium text-gray-700"
+                className={`block py-2 text-sm font-medium ${
+                  location.pathname.startsWith("/education-info") ? "text-purple-700" : "text-gray-700"
+                }`}
               >
                 Сведения об организации
               </Link>
