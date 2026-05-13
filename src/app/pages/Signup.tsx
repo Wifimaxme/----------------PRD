@@ -115,7 +115,7 @@ export function Signup() {
     }
 
     return (
-        <div className="min-h-screen bg-slate-100 flex items-center justify-center p-4 md:p-8 font-sans relative overflow-hidden">
+        <main id="main" className="min-h-screen bg-slate-100 flex items-center justify-center p-4 md:p-8 font-sans relative overflow-hidden">
             <div className="absolute top-0 left-0 w-full h-64 bg-indigo-900 skew-y-3 transform origin-top-left -z-10"></div>
             <div className="absolute bottom-0 right-0 w-full h-64 bg-indigo-900 -skew-y-3 transform origin-bottom-right -z-10"></div>
 
@@ -443,6 +443,6 @@ export function Signup() {
                     </div>
                 </div>
             </div>
-        </div>
+        </main>
     );
 }

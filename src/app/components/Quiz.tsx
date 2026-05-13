@@ -211,25 +211,29 @@ export function Quiz() {
 
           <div className="mt-6 grid gap-3 sm:grid-cols-2">
             <div>
-              <label className="block text-xs font-bold uppercase tracking-wide text-slate-700 mb-1.5">
+              <label htmlFor="quiz-name" className="block text-xs font-bold uppercase tracking-wide text-slate-700 mb-1.5">
                 Имя ребёнка
               </label>
               <input
+                id="quiz-name"
                 type="text"
                 value={leadName}
                 onChange={(e) => setLeadName(e.target.value)}
                 placeholder="Например, Михаил"
+                autoComplete="given-name"
                 className="w-full px-4 py-3 rounded-xl border border-slate-200 bg-white focus:border-indigo-500 focus:ring-2 focus:ring-indigo-100 focus:outline-none transition text-slate-900 placeholder:text-slate-400 text-base"
                 disabled={leadSubmitting}
               />
             </div>
             <div>
-              <label className="block text-xs font-bold uppercase tracking-wide text-slate-700 mb-1.5">
+              <label htmlFor="quiz-phone" className="block text-xs font-bold uppercase tracking-wide text-slate-700 mb-1.5">
                 Телефон родителя <span className="text-orange-500">*</span>
               </label>
               <input
+                id="quiz-phone"
                 type="tel"
                 inputMode="tel"
+                autoComplete="tel"
                 value={leadPhone}
                 onChange={(e) => setLeadPhone(normalizePhone(e.target.value))}
                 onBlur={() => setLeadPhone((p) => normalizePhone(p))}
@@ -242,6 +246,8 @@ export function Quiz() {
                   });
                 }}
                 placeholder="+7 (___) ___-__-__"
+                aria-required="true"
+                aria-invalid={leadTouched && !phoneValid}
                 className="w-full px-4 py-3 rounded-xl border border-slate-200 bg-white focus:border-indigo-500 focus:ring-2 focus:ring-indigo-100 focus:outline-none transition text-slate-900 placeholder:text-slate-400 text-base"
                 disabled={leadSubmitting}
               />
