@@ -52,12 +52,12 @@ export function Header() {
                 key={item.id}
                 type="button"
                 onClick={goToSection(item.id)}
-                className="text-sm font-medium text-gray-700 transition hover:text-purple-600 cursor-pointer"
+                className="text-sm font-medium text-gray-700 transition hover:text-purple-600 cursor-pointer focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-purple-500 focus-visible:ring-offset-2 rounded"
               >
                 {item.label}
               </button>
             ))}
-            <Link to="/education-info/basic" className="text-sm font-medium text-gray-700 transition hover:text-purple-600">
+            <Link to="/education-info/basic" className="text-sm font-medium text-gray-700 transition hover:text-purple-600 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-purple-500 focus-visible:ring-offset-2 rounded">
               Сведения об организации
             </Link>
           </nav>
@@ -65,7 +65,7 @@ export function Header() {
           <div className="hidden md:flex items-center gap-4">
             <a
               href="tel:+79138927059"
-              className="inline-flex items-center gap-2 text-sm font-medium text-gray-700 transition hover:text-purple-600"
+              className="inline-flex items-center gap-2 text-sm font-medium text-gray-700 transition hover:text-purple-600 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-purple-500 focus-visible:ring-offset-2 rounded"
             >
               <Phone className="w-4 h-4" />
               <span>8-913-892-70-59</span>
@@ -73,8 +73,10 @@ export function Header() {
           </div>
 
           <button
-            className="rounded-xl border border-black/6 bg-white/45 p-2 transition hover:bg-white/70 md:hidden"
+            className="rounded-xl border border-black/6 bg-white/45 p-2 transition hover:bg-white/70 md:hidden focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-purple-500"
             onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
+            aria-label="Открыть меню"
+            aria-expanded={mobileMenuOpen}
           >
             <Menu className="w-6 h-6" />
           </button>

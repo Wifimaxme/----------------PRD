@@ -1,5 +1,6 @@
 @custom-variant dark (&:is(.dark *));
 
+/* Brand colors applied via Tailwind classes (purple-700, orange-500) — these tokens are aligned with the brand so any future shadcn-style use of bg-primary/ring-primary picks up the right value. */
 :root {
   --font-size: 18px;
   --background: #fcfaf7;
@@ -8,10 +9,10 @@
   --card-foreground: oklch(0.145 0 0);
   --popover: oklch(1 0 0);
   --popover-foreground: oklch(0.145 0 0);
-  --primary: #030213;
-  --primary-foreground: oklch(1 0 0);
-  --secondary: #f3f0ea;
-  --secondary-foreground: #030213;
+  --primary: #6D28D9; /* purple-700 — brand primary */
+  --primary-foreground: #ffffff;
+  --secondary: #F97316; /* orange-500 — brand secondary */
+  --secondary-foreground: #ffffff;
   --muted: #f3f0ea;
   --muted-foreground: #717182;
   --accent: #f6efe8;
@@ -24,7 +25,7 @@
   --switch-background: #cbced4;
   --font-weight-medium: 500;
   --font-weight-normal: 400;
-  --ring: oklch(0.708 0 0);
+  --ring: #6D28D9; /* purple-700 — focus rings match brand */
   --chart-1: oklch(0.646 0.222 41.116);
   --chart-2: oklch(0.6 0.118 184.704);
   --chart-3: oklch(0.398 0.07 227.392);
