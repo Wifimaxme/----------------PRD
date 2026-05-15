@@ -1,6 +1,0 @@
-import{j as e}from"./index-DbtTWgDp.js";import{E as s}from"./EducationLayout-DNwA_HgO.js";import{c as r}from"./createLucideIcon-mVwKYF9B.js";/**
- * @license lucide-react v0.487.0 - ISC
- *
- * This source code is licensed under the ISC license.
- * See the LICENSE file in the root directory of this source tree.
- */const a=[["circle",{cx:"12",cy:"12",r:"10",key:"1mglay"}],["path",{d:"M12 2a14.5 14.5 0 0 0 0 20 14.5 14.5 0 0 0 0-20",key:"13o1zl"}],["path",{d:"M2 12h20",key:"9i4pu4"}]],t=r("globe",a);function d(){return e.jsx(s,{title:"Международное сотрудничество",children:e.jsx("div",{className:"space-y-8",children:e.jsx("section",{className:"bg-white border border-gray-200 p-8 rounded-lg shadow-sm",children:e.jsxs("div",{className:"flex items-start gap-4",children:[e.jsx("div",{className:"bg-purple-100 p-3 rounded-full mt-1 shrink-0",children:e.jsx(t,{className:"w-6 h-6 text-purple-600"})}),e.jsxs("div",{className:"text-gray-700 leading-relaxed text-lg pt-1",children:[e.jsx("p",{className:"mb-4",children:"ООО «Чемпион и К» не имеет заключенных (и не планирует) договоров с иностранными / международными организациями по вопросам образования и науки."}),e.jsx("p",{children:"Международная аккредитация образовательных программ не предусмотрена."})]})]})})})})}export{d as International};
