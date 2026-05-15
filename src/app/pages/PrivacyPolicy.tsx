@@ -35,8 +35,8 @@ const operatorRows: PolicyRow[] = [
   {
     label: "Контактный email",
     value: (
-      <a href="mailto:wifimaxme@gmail.com" className="text-purple-700 hover:underline">
-        wifimaxme@gmail.com
+      <a href="mailto:income@champion-footboll.ru" className="text-purple-700 hover:underline">
+        income@champion-footboll.ru
       </a>
     ),
   },
@@ -341,8 +341,8 @@ export function PrivacyPolicy() {
                 <p className="mt-6 text-sm leading-7 text-gray-700">
                   Для реализации своих прав субъект персональных данных или его законный
                   представитель может направить запрос на адрес{" "}
-                  <a href="mailto:wifimaxme@gmail.com" className="text-purple-700 hover:underline">
-                    wifimaxme@gmail.com
+                  <a href="mailto:income@champion-footboll.ru" className="text-purple-700 hover:underline">
+                    income@champion-footboll.ru
                   </a>{" "}
                   с темой письма «Персональные данные». Оператор вправе запросить сведения,
                   необходимые для подтверждения личности заявителя и проверки его полномочий.

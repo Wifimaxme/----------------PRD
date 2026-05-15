@@ -159,7 +159,7 @@ export function PaidServices() {
               <li>• Справка с места работы (для сотрудников ДОУ)</li>
             </ul>
             <p className="text-xs text-gray-600 mt-3">
-              Документы можно предоставить тренеру или отправить на email: wifimaxme@gmail.com
+              Документы можно предоставить тренеру или отправить на email: income@champion-footboll.ru
             </p>
           </div>
         </section>
