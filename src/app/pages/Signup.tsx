@@ -1,5 +1,5 @@
-import { useState } from 'react';
-import { useNavigate, Link } from 'react-router';
+import { useEffect, useState } from 'react';
+import { useNavigate, Link, useLocation } from 'react-router';
 import {
     Trophy, MapPin, Calendar, UserCheck, Users, RussianRuble, CircleDot,
     ArrowLeft, CheckCircle2, Loader2, AlertCircle
@@ -38,9 +38,23 @@ const PRIVILEGE_OPTIONS = [
 
 export function Signup() {
     const navigate = useNavigate();
+    const location = useLocation();
+    const prefillPhone =
+        typeof (location.state as { phone?: unknown } | null)?.phone === 'string'
+            ? (location.state as { phone: string }).phone
+            : '+7';
 
     const [childName, setChildName] = useState('');
-    const [phone, setPhone] = useState('+7');
+    const [phone, setPhone] = useState(prefillPhone);
+
+    useEffect(() => {
+        // Если пользователь пришёл с главной с заранее набранным телефоном —
+        // фокусируемся сразу на следующем поле (имя), а телефон уже заполнен.
+        if (prefillPhone !== '+7') {
+            const nameInput = document.querySelector<HTMLInputElement>('input[type="text"]');
+            nameInput?.focus();
+        }
+    }, [prefillPhone]);
     const [dob, setDob] = useState('');
     const [kindergarten, setKindergarten] = useState('');
     const [group, setGroup] = useState('');
@@ -101,7 +115,7 @@ export function Signup() {
     }
 
     return (
-        <div className="min-h-screen bg-slate-100 flex items-center justify-center p-4 md:p-8 font-sans relative overflow-hidden">
+        <main id="main" className="min-h-screen bg-slate-100 flex items-center justify-center p-4 md:p-8 font-sans relative overflow-hidden">
             <div className="absolute top-0 left-0 w-full h-64 bg-indigo-900 skew-y-3 transform origin-top-left -z-10"></div>
             <div className="absolute bottom-0 right-0 w-full h-64 bg-indigo-900 -skew-y-3 transform origin-bottom-right -z-10"></div>
 
@@ -235,12 +249,19 @@ export function Signup() {
                                     <form onSubmit={handleSubmit} className="space-y-3" noValidate>
                                         {/* Фамилия и Имя ребёнка */}
                                         <div>
+                                            <label htmlFor="signup-childname" className="sr-only">
+                                                Фамилия и имя ребёнка
+                                            </label>
                                             <input
+                                                id="signup-childname"
                                                 type="text"
                                                 value={childName}
                                                 onChange={(e) => setChildName(e.target.value)}
                                                 placeholder="Фамилия и Имя ребёнка*"
                                                 autoComplete="off"
+                                                required
+                                                aria-required="true"
+                                                aria-invalid={touched && childName.trim().length < 2}
                                                 className="w-full px-5 py-4 rounded-xl border border-slate-200 bg-white focus:border-indigo-500 focus:ring-2 focus:ring-indigo-100 focus:outline-none transition text-slate-900 placeholder:text-slate-400"
                                                 disabled={status === 'submitting'}
                                             />
@@ -251,7 +272,11 @@ export function Signup() {
 
                                         {/* Телефон */}
                                         <div>
+                                            <label htmlFor="signup-phone" className="sr-only">
+                                                Телефон в формате +7XXXXXXXXXX
+                                            </label>
                                             <input
+                                                id="signup-phone"
                                                 type="tel"
                                                 value={phone}
                                                 onChange={(e) => setPhone(normalizePhone(e.target.value))}
@@ -273,6 +298,9 @@ export function Signup() {
                                                 placeholder="+7 (___) ___-__-__"
                                                 autoComplete="tel"
                                                 inputMode="tel"
+                                                required
+                                                aria-required="true"
+                                                aria-invalid={touched && !phoneValid}
                                                 className="w-full px-5 py-4 rounded-xl border border-slate-200 bg-white focus:border-indigo-500 focus:ring-2 focus:ring-indigo-100 focus:outline-none transition text-slate-900 placeholder:text-slate-400"
                                                 disabled={status === 'submitting'}
                                             />
@@ -283,12 +311,18 @@ export function Signup() {
 
                                         {/* Номер детского сада */}
                                         <div>
+                                            <label htmlFor="signup-kindergarten" className="sr-only">
+                                                Номер детского сада
+                                            </label>
                                             <input
+                                                id="signup-kindergarten"
                                                 type="text"
                                                 value={kindergarten}
                                                 onChange={(e) => setKindergarten(e.target.value.replace(/\D/g, '').slice(0, 6))}
                                                 inputMode="numeric"
                                                 placeholder="Номер сада*"
+                                                required
+                                                aria-required="true"
                                                 className="w-full px-5 py-4 rounded-xl border border-slate-200 bg-white focus:border-indigo-500 focus:ring-2 focus:ring-indigo-100 focus:outline-none transition text-slate-900 placeholder:text-slate-400"
                                                 disabled={status === 'submitting'}
                                             />
@@ -296,11 +330,17 @@ export function Signup() {
 
                                         {/* Группа в саду */}
                                         <div>
+                                            <label htmlFor="signup-group" className="sr-only">
+                                                Название или номер группы в детском саду
+                                            </label>
                                             <input
+                                                id="signup-group"
                                                 type="text"
                                                 value={group}
                                                 onChange={(e) => setGroup(e.target.value)}
                                                 placeholder="Группа в саду*"
+                                                required
+                                                aria-required="true"
                                                 className="w-full px-5 py-4 rounded-xl border border-slate-200 bg-white focus:border-indigo-500 focus:ring-2 focus:ring-indigo-100 focus:outline-none transition text-slate-900 placeholder:text-slate-400"
                                                 disabled={status === 'submitting'}
                                             />
@@ -403,6 +443,6 @@ export function Signup() {
                     </div>
                 </div>
             </div>
-        </div>
+        </main>
     );
 }

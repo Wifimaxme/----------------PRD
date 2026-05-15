@@ -143,7 +143,7 @@ export function EducationLayout({ children, title }: EducationLayoutProps) {
       </div>
 
       {/* Content */}
-      <div className="container mx-auto px-4 py-8">
+      <main id="main" className="container mx-auto px-4 py-8">
         <div className={`${accessibilityMode ? 'bg-gray-900' : 'bg-white'} rounded-lg shadow-sm p-8`}>
           <h2 className="text-2xl font-bold mb-6" style={{ fontSize: `${fontSize * 1.5}px` }}>
             {title}
@@ -152,7 +152,7 @@ export function EducationLayout({ children, title }: EducationLayoutProps) {
             {children}
           </div>
         </div>
-      </div>
+      </main>
 
       {/* Footer */}
       <div className={`${accessibilityMode ? 'bg-gray-900' : 'bg-gray-100'} border-t py-6 mt-12`}>
