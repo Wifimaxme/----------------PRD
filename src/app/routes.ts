@@ -6,6 +6,7 @@ export const router = createHashRouter([
   {
     Component: Root,
     ErrorBoundary: NotFound,
+    HydrateFallback: () => null,
     children: [
       {
         path: "/",

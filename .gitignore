@@ -4,3 +4,7 @@ node_modules
 dist
 .DS_Store
 .claude/
+
+# Heavy design source frames (PNG originals + unused crop sets).
+# Kept locally for re-encoding; only the optimized AVIF in public/ ships.
+_design-sources/
