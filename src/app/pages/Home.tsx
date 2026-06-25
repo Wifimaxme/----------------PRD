@@ -1,10 +1,10 @@
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useRef, useState, type RefObject, type SyntheticEvent } from "react";
 import { motion } from "motion/react";
 import { Header } from "../components/Header";
 import { Footer } from "../components/Footer";
 import { Quiz } from "../components/Quiz";
 import StickyMobileCTA from "../../components/StickyMobileCTA";
-import HeroFloatingShapes, { LkFloatingShapes } from "../../components/HeroFloatingShapes";
+import HeroFloatingShapes from "../../components/HeroFloatingShapes";
 import { blogPosts } from "../data/blogPosts";
 import { Link, useNavigate } from "react-router";
 import { 
@@ -223,6 +223,9 @@ const subsectionTitleClass = "mt-5 text-3xl font-bold tracking-tight text-gray-9
 const primaryButtonClass = "ui-button-primary";
 const secondaryButtonClass = "ui-button-secondary";
 const secondaryButtonCompactClass = "ui-button-secondary px-5 py-3 text-sm";
+const standardContainerClass = "container mx-auto px-4";
+const mascotAwareContainerClass =
+  "container mx-auto px-4 lg:pr-[clamp(16rem,20vw,22rem)] xl:pr-[clamp(20rem,24vw,28rem)]";
 
 // Reads top-to-bottom (Level 5 → Level 1). Progression for the kid
 // goes the other way — bottom up — so the bottom layer is the
@@ -380,9 +383,46 @@ function CountUp({ to, suffix = "", durationMs = 1400 }: { to: number; suffix?: 
   );
 }
 
-const RUTUBE_ORIGIN = "https://rutube.ru";
-const HERO_VIDEO_SRC =
-  "https://rutube.ru/play/embed/721b945fc4c0e87084fcbdf80a690335?p=8wZJQPDWMe-wnxvAsbgzFg&autoplay=true";
+// Branded placeholder so a blog card never collapses to raw alt text if its
+// remote image fails to load. Inline SVG keeps it dependency- and network-free.
+const BLOG_IMAGE_FALLBACK =
+  "data:image/svg+xml;charset=utf-8," +
+  encodeURIComponent(
+    '<svg xmlns="http://www.w3.org/2000/svg" width="160" height="120" viewBox="0 0 160 120">' +
+      '<defs><linearGradient id="g" x1="0" y1="0" x2="1" y2="1">' +
+      '<stop offset="0" stop-color="#7c3aed"/><stop offset="1" stop-color="#f54900"/>' +
+      "</linearGradient></defs>" +
+      '<rect width="160" height="120" fill="url(#g)"/>' +
+      '<circle cx="80" cy="60" r="22" fill="none" stroke="#ffffff" stroke-width="3" stroke-opacity="0.85"/>' +
+      '<path d="M80 44 l6 12 -6 8 -6 -8z" fill="#ffffff" fill-opacity="0.85"/>' +
+      "</svg>",
+  );
+
+const handleBlogImageError = (
+  e: SyntheticEvent<HTMLImageElement>,
+) => {
+  const el = e.currentTarget;
+  if (el.src === BLOG_IMAGE_FALLBACK) return;
+  el.onerror = null;
+  el.src = BLOG_IMAGE_FALLBACK;
+  el.alt = "";
+};
+
+const buildWideSequenceFrameSrc = (frame: number) =>
+  `/images/sequences/football-school-scroll-alpha/frame_${String(frame).padStart(4, "0")}.avif`;
+
+type SequenceAssetLayout = "wide" | "hero-single" | "side-duo";
+
+// One continuous 198-frame animation (the "wide" set). The hero-single (2–32)
+// and side-duo (78–128) sets were alternate close-up crops swapped in mid-scroll,
+// but switching between sets cuts the mascot to a different scale/composition
+// instantly — a visible scale jump. Rendering every frame from the single wide
+// set keeps the scale change continuous (adjacent frames interpolate).
+const getSequenceFrameAsset = (frame: number): { src: string; layout: SequenceAssetLayout } => {
+  return { src: buildWideSequenceFrameSrc(frame), layout: "wide" };
+};
+
+const buildSequenceFrameSrc = (frame: number) => getSequenceFrameAsset(frame).src;
 
 function normalizeHeroPhone(input: string): string {
   let digits = input.replace(/\D/g, '');
@@ -392,13 +432,33 @@ function normalizeHeroPhone(input: string): string {
 }
 
 export function Home() {
-  const [isHeroVideoReady, setIsHeroVideoReady] = useState(false);
-  const heroVideoRef = useRef<HTMLIFrameElement | null>(null);
   const navigate = useNavigate();
   const [heroPhone, setHeroPhone] = useState('+7');
   const [quizModalOpen, setQuizModalOpen] = useState(false);
+  const [currentSequenceFrame, setCurrentSequenceFrame] = useState(1);
+  const [isCompactGlobalSequenceZoneActive, setIsCompactGlobalSequenceZoneActive] = useState(false);
+  const [isGlobalSequenceBackgroundVisible, setIsGlobalSequenceBackgroundVisible] = useState(true);
+  const [isHeroMascotFrontActive, setIsHeroMascotFrontActive] = useState(true);
+  const [isSignupSequenceZoneActive, setIsSignupSequenceZoneActive] = useState(false);
+  // Desktop-only, motion-respecting scroll mascot. Off on small screens and
+  // when the visitor asks for reduced motion — keeps the page light and still.
+  const [isSequenceEnabled, setIsSequenceEnabled] = useState(false);
+  const preloadedSequenceSrcRef = useRef<Set<string>>(new Set());
   const quizTriggerRef = useRef<HTMLButtonElement | null>(null);
+  const quizDialogRef = useRef<HTMLDivElement | null>(null);
   const quizWasOpenRef = useRef(false);
+  const heroSectionRef = useRef<HTMLElement | null>(null);
+  const trainingFlowSectionRef = useRef<HTMLElement | null>(null);
+  const familyFitSectionRef = useRef<HTMLElement | null>(null);
+  const signupFlowSectionRef = useRef<HTMLElement | null>(null);
+  const coachesSectionRef = useRef<HTMLElement | null>(null);
+  const coachesHeadingRef = useRef<HTMLDivElement | null>(null);
+  const testimonialsSectionRef = useRef<HTMLElement | null>(null);
+  const personalAccountSectionRef = useRef<HTMLElement | null>(null);
+  const paymentStepRef = useRef<HTMLDivElement | null>(null);
+  const quizBannerSectionRef = useRef<HTMLElement | null>(null);
+  const signupCardRef = useRef<HTMLAnchorElement | null>(null);
+  const signupVideoRef = useRef<HTMLVideoElement | null>(null);
 
   // Lock body scroll while the quiz modal is open + return focus on close
   useEffect(() => {
@@ -406,13 +466,46 @@ export function Home() {
       quizWasOpenRef.current = true;
       const prev = document.body.style.overflow;
       document.body.style.overflow = "hidden";
-      const onEsc = (e: KeyboardEvent) => {
-        if (e.key === "Escape") setQuizModalOpen(false);
+
+      // Move focus into the dialog so screen-reader and keyboard users land
+      // inside the quiz, not on the page behind it.
+      const dialog = quizDialogRef.current;
+      const focusTimer = window.setTimeout(() => {
+        const firstControl = dialog?.querySelector<HTMLElement>(
+          'button, [href], input, select, textarea, [tabindex]:not([tabindex="-1"])',
+        );
+        (firstControl ?? dialog)?.focus();
+      }, 0);
+
+      const onKeyDown = (e: KeyboardEvent) => {
+        if (e.key === "Escape") {
+          setQuizModalOpen(false);
+          return;
+        }
+        // Trap Tab focus within the dialog.
+        if (e.key !== "Tab" || !dialog) return;
+        const focusable = Array.from(
+          dialog.querySelectorAll<HTMLElement>(
+            'button, [href], input, select, textarea, [tabindex]:not([tabindex="-1"])',
+          ),
+        ).filter((el) => !el.hasAttribute("disabled") && el.offsetParent !== null);
+        if (focusable.length === 0) return;
+        const first = focusable[0];
+        const last = focusable[focusable.length - 1];
+        const active = document.activeElement as HTMLElement | null;
+        if (e.shiftKey && (active === first || active === dialog)) {
+          e.preventDefault();
+          last.focus();
+        } else if (!e.shiftKey && active === last) {
+          e.preventDefault();
+          first.focus();
+        }
       };
-      window.addEventListener("keydown", onEsc);
+      window.addEventListener("keydown", onKeyDown);
       return () => {
         document.body.style.overflow = prev;
-        window.removeEventListener("keydown", onEsc);
+        window.clearTimeout(focusTimer);
+        window.removeEventListener("keydown", onKeyDown);
       };
     }
     // Restore focus to the trigger when closing (WCAG modal focus management)
@@ -430,75 +523,250 @@ export function Home() {
   const featuredPost = blogPosts.find((post) => post.featured) ?? blogPosts[0];
   const secondaryPosts = blogPosts.filter((post) => post !== featuredPost);
 
-  const requestHeroVideoPlayback = () => {
-    const playerWindow = heroVideoRef.current?.contentWindow;
-
-    if (!playerWindow) {
-      return;
-    }
-
-    [
-      { type: "player:mute" },
-      { type: "player:setVolume", data: { volume: 0 } },
-      { type: "player:play", data: {} },
-    ].forEach((command) => {
-      playerWindow.postMessage(JSON.stringify(command), RUTUBE_ORIGIN);
-    });
-  };
-
+  // Enable the scroll mascot only on wide screens with motion allowed.
+  // Re-evaluates if the viewport crosses the lg breakpoint or the
+  // reduced-motion preference changes mid-session.
   useEffect(() => {
-    const timeoutIds: number[] = [];
-
-    const scheduleMutedAutoplay = () => {
-      [150, 500, 1400].forEach((delay) => {
-        timeoutIds.push(window.setTimeout(() => {
-          requestHeroVideoPlayback();
-        }, delay));
-      });
-    };
-
-    const handlePlayerMessage = (event: MessageEvent<string>) => {
-      if (event.origin !== RUTUBE_ORIGIN || typeof event.data !== "string") {
-        return;
-      }
-
-      try {
-        const message = JSON.parse(event.data) as { type?: string };
-
-        if (message.type === "player:ready") {
-          scheduleMutedAutoplay();
-        }
-      } catch {
-        return;
-      }
-    };
-
-    window.addEventListener("message", handlePlayerMessage);
-    scheduleMutedAutoplay();
-
+    if (typeof window === "undefined" || !window.matchMedia) return;
+    const wide = window.matchMedia("(min-width: 1024px)");
+    const reduce = window.matchMedia("(prefers-reduced-motion: reduce)");
+    const sync = () => setIsSequenceEnabled(wide.matches && !reduce.matches);
+    sync();
+    wide.addEventListener("change", sync);
+    reduce.addEventListener("change", sync);
     return () => {
-      window.removeEventListener("message", handlePlayerMessage);
-      timeoutIds.forEach((timeoutId) => window.clearTimeout(timeoutId));
+      wide.removeEventListener("change", sync);
+      reduce.removeEventListener("change", sync);
     };
   }, []);
 
-  return (
-    <div className="min-h-screen">
-      <Header />
+  // Preload frames in a sliding window around the active frame instead of
+  // pulling all 198 up front — the full set is only ever needed if the
+  // visitor scrolls the whole page, and then it arrives just ahead of them.
+  useEffect(() => {
+    if (!isSequenceEnabled) return;
+    const seen = preloadedSequenceSrcRef.current;
+    const start = Math.max(1, currentSequenceFrame - 6);
+    const end = Math.min(198, currentSequenceFrame + 24);
+    for (let frame = start; frame <= end; frame += 1) {
+      const src = buildSequenceFrameSrc(frame);
+      if (seen.has(src)) continue;
+      seen.add(src);
+      const img = new Image();
+      img.decoding = "async";
+      img.src = src;
+    }
+  }, [isSequenceEnabled, currentSequenceFrame]);
 
-      <main id="main">
+  useEffect(() => {
+    if (!isSequenceEnabled) return;
+    let frameId = 0;
+
+    const getAbsoluteTop = (ref: RefObject<HTMLElement | null>) => {
+      const node = ref.current;
+      if (!node) return 0;
+      return node.getBoundingClientRect().top + window.scrollY;
+    };
+
+    const getTriggerTop = (ref: RefObject<HTMLElement | null>, viewportFactor = 0.56) =>
+      getAbsoluteTop(ref) - window.innerHeight * viewportFactor;
+
+    const getInterpolatedFrame = (
+      scrollY: number,
+      startY: number,
+      endY: number,
+      startFrame: number,
+      endFrame: number,
+    ) => {
+      if (endY <= startY) {
+        return endFrame;
+      }
+
+      const progress = Math.min(1, Math.max(0, (scrollY - startY) / (endY - startY)));
+      return Math.round(startFrame + (endFrame - startFrame) * progress);
+    };
+
+    const updateSequence = () => {
+      frameId = 0;
+
+      const trainingTop = getTriggerTop(trainingFlowSectionRef);
+      const familyTop = getTriggerTop(familyFitSectionRef);
+      const signupFlowTop =
+        getAbsoluteTop(signupFlowSectionRef) - window.innerHeight * 0.2;
+      const coachesTop = getTriggerTop(coachesSectionRef);
+      const coachesHeadingCenter =
+        getAbsoluteTop(coachesHeadingRef) +
+        (coachesHeadingRef.current?.offsetHeight ?? 0) * 0.5;
+      const coachesCutoff = coachesHeadingCenter - window.innerHeight * 0.5;
+      const heroBottom =
+        getAbsoluteTop(heroSectionRef) + (heroSectionRef.current?.offsetHeight ?? window.innerHeight);
+      const heroFrontCutoff = heroBottom - window.innerHeight * 0.24;
+      const testimonialsTop = getTriggerTop(testimonialsSectionRef);
+      const personalTop = getTriggerTop(personalAccountSectionRef);
+      const paymentTop = getTriggerTop(paymentStepRef);
+      const quizTop = getTriggerTop(quizBannerSectionRef);
+      const heroStart = getAbsoluteTop(heroSectionRef) + Math.min(window.innerHeight * 0.14, 120);
+      const scrollY = window.scrollY;
+
+      let nextFrame = 1;
+
+      if (scrollY < heroStart) {
+        nextFrame = 1;
+      } else if (scrollY < trainingTop) {
+        nextFrame = getInterpolatedFrame(scrollY, heroStart, trainingTop, 2, 42);
+      } else if (scrollY < familyTop) {
+        nextFrame = getInterpolatedFrame(scrollY, trainingTop, familyTop, 42, 61);
+      } else if (scrollY < coachesTop) {
+        nextFrame = getInterpolatedFrame(scrollY, familyTop, coachesTop, 62, 126);
+      } else if (scrollY < testimonialsTop) {
+        nextFrame = getInterpolatedFrame(scrollY, coachesTop, testimonialsTop, 127, 148);
+      } else if (scrollY < personalTop) {
+        nextFrame = getInterpolatedFrame(scrollY, testimonialsTop, personalTop, 148, 164);
+      } else if (scrollY < paymentTop) {
+        nextFrame = getInterpolatedFrame(scrollY, personalTop, paymentTop, 164, 178);
+      } else if (scrollY < quizTop) {
+        nextFrame = getInterpolatedFrame(scrollY, paymentTop, quizTop, 179, 195);
+      } else {
+        nextFrame = 195;
+      }
+
+      const signupRect = signupCardRef.current?.getBoundingClientRect();
+      const signupInView = Boolean(
+        signupRect &&
+          signupRect.top < window.innerHeight * 0.82 &&
+          signupRect.bottom > window.innerHeight * 0.22,
+      );
+      const compactGlobalSequenceActive =
+        scrollY >= signupFlowTop && scrollY < coachesCutoff;
+      const heroMascotFrontActive = scrollY < heroFrontCutoff;
+      const globalBackgroundVisible = scrollY < coachesCutoff;
+      setCurrentSequenceFrame((prev) => (prev === nextFrame ? prev : nextFrame));
+      setIsCompactGlobalSequenceZoneActive((prev) =>
+        prev === compactGlobalSequenceActive ? prev : compactGlobalSequenceActive,
+      );
+      setIsHeroMascotFrontActive((prev) =>
+        prev === heroMascotFrontActive ? prev : heroMascotFrontActive,
+      );
+      setIsGlobalSequenceBackgroundVisible((prev) =>
+        prev === globalBackgroundVisible ? prev : globalBackgroundVisible,
+      );
+      setIsSignupSequenceZoneActive((prev) => (prev === signupInView ? prev : signupInView));
+    };
+
+    const onScrollOrResize = () => {
+      if (frameId) return;
+      frameId = window.requestAnimationFrame(updateSequence);
+    };
+
+    onScrollOrResize();
+    window.addEventListener("scroll", onScrollOrResize, { passive: true });
+    window.addEventListener("resize", onScrollOrResize);
+
+    return () => {
+      window.removeEventListener("scroll", onScrollOrResize);
+      window.removeEventListener("resize", onScrollOrResize);
+      if (frameId) {
+        window.cancelAnimationFrame(frameId);
+      }
+    };
+  }, [isSequenceEnabled]);
+
+  useEffect(() => {
+    const video = signupVideoRef.current;
+
+    if (!video) {
+      return;
+    }
+
+    if (isSignupSequenceZoneActive) {
+      const playPromise = video.play();
+      if (playPromise) {
+        playPromise.catch(() => {});
+      }
+      return;
+    }
+
+    video.pause();
+    video.currentTime = 0;
+  }, [isSignupSequenceZoneActive]);
+
+  const currentSequenceFrameSrc = buildSequenceFrameSrc(currentSequenceFrame);
+  const currentSequenceAsset = getSequenceFrameAsset(currentSequenceFrame);
+  return (
+    <div className="min-h-screen overflow-x-clip">
+      <Header />
+      {isSequenceEnabled && (
+      <motion.div
+        aria-hidden="true"
+        className={`pointer-events-none fixed inset-0 hidden lg:block ${isHeroMascotFrontActive ? "z-30" : "z-0"}`}
+        initial={false}
+        animate={{ opacity: isSignupSequenceZoneActive || !isGlobalSequenceBackgroundVisible ? 0 : 1 }}
+        transition={{ duration: 0.28, ease: "easeOut" }}
+      >
+        <div className="absolute inset-0">
+          <div className="absolute left-[8%] top-[18%] h-[24rem] w-[24rem] rounded-full bg-purple-200/12 blur-3xl"></div>
+          <div className="absolute right-[15%] top-[14%] h-[24rem] w-[24rem] rounded-full bg-orange-200/18 blur-3xl"></div>
+          <div className="absolute bottom-[12%] right-[26%] h-[26rem] w-[26rem] rounded-full bg-purple-200/14 blur-3xl"></div>
+          {currentSequenceAsset.layout === "wide" ? (
+            <motion.div
+              className="relative h-full w-full overflow-hidden origin-[82%_58%]"
+              initial={false}
+              animate={
+                isCompactGlobalSequenceZoneActive
+                  ? { scale: 0.9, x: "4%", y: "1%", opacity: 0.95 }
+                  : { scale: 0.96, x: "0%", y: "0%", opacity: 0.97 }
+              }
+              transition={{ duration: 0.35, ease: "easeOut" }}
+            >
+              <img
+                src={currentSequenceFrameSrc}
+                alt=""
+                {...{ fetchpriority: "high" }}
+                className="h-full w-full object-cover object-center drop-shadow-[0_36px_70px_rgba(15,23,42,0.16)]"
+              />
+            </motion.div>
+          ) : (
+            <motion.div
+              className={`absolute right-[1%] flex items-end justify-end overflow-visible ${
+                currentSequenceAsset.layout === "hero-single"
+                  ? "bottom-0 h-[72vh] max-h-[43rem]"
+                  : "bottom-[3%] h-[60vh] max-h-[35rem]"
+              }`}
+              initial={false}
+              animate={
+                currentSequenceAsset.layout === "side-duo" && isCompactGlobalSequenceZoneActive
+                  ? { scale: 0.88, x: "8%", y: "2%", opacity: 0.9 }
+                  : currentSequenceAsset.layout === "side-duo"
+                    ? { scale: 0.92, x: "0%", y: "0%", opacity: 0.96 }
+                    : { scale: 0.92, x: "0%", y: "0%", opacity: 0.98 }
+              }
+              transition={{ duration: 0.35, ease: "easeOut" }}
+            >
+              <img
+                src={currentSequenceFrameSrc}
+                alt=""
+                {...{ fetchpriority: "high" }}
+                className="h-full w-auto max-w-none object-contain object-right-bottom drop-shadow-[0_32px_62px_rgba(15,23,42,0.18)]"
+              />
+            </motion.div>
+          )}
+        </div>
+      </motion.div>
+      )}
+
+      <main id="main" className="relative z-10">
       {/* Hero Section */}
-      <section className="relative overflow-hidden pb-24 pt-20 sm:pt-24">
+      <section ref={heroSectionRef} className="relative flex min-h-[calc(100vh-5rem)] items-center overflow-hidden pb-20 pt-20 sm:pt-24">
         <div className="absolute inset-0">
           <div className="absolute -left-16 -top-16 h-[28rem] w-[28rem] rounded-full bg-purple-300/55 blur-3xl hero-blob hero-blob-a"></div>
           <div className="absolute -right-24 top-8 h-[32rem] w-[32rem] rounded-full bg-orange-300/55 blur-3xl hero-blob hero-blob-b"></div>
           <div className="absolute inset-x-0 bottom-0 h-24 bg-gradient-to-b from-transparent to-white/70"></div>
         </div>
+        <div className="pointer-events-none absolute inset-0 bg-[linear-gradient(90deg,rgba(252,250,247,0.99)_0%,rgba(252,250,247,0.96)_30%,rgba(252,250,247,0.88)_46%,rgba(252,250,247,0.54)_62%,rgba(252,250,247,0.14)_76%,transparent_100%)]"></div>
         <HeroFloatingShapes />
 
-        <div className="container mx-auto px-4 relative z-10">
-          <div className="grid items-center gap-12 lg:grid-cols-[1.05fr_0.95fr] lg:gap-14">
-            <div className="max-w-2xl">
+        <div className={`${mascotAwareContainerClass} relative z-10`}>
+          <div className="max-w-2xl lg:max-w-[46rem]">
               <div className="ui-eyebrow">
                 <Sparkles className="h-4 w-4" />
                 Футбольная школа для детей 3-7 лет
@@ -593,57 +861,6 @@ export function Home() {
                   и опытом в&nbsp;Манчестер Юнайтед, Локомотиве, Динамо
                 </p>
               </div>
-            </div>
-
-            <motion.div
-              className="relative lg:-mr-4 xl:-mr-8"
-              initial={{ opacity: 0, scale: 0.95, filter: "blur(12px)" }}
-              animate={{ opacity: 1, scale: 1, filter: "blur(0px)" }}
-              transition={{ duration: 1.6, ease: "easeOut", delay: 0.25 }}
-            >
-              <div className="pointer-events-none absolute -inset-6 bg-[radial-gradient(circle,rgba(124,58,237,0.18),transparent_62%)] blur-3xl"></div>
-              <div
-                id="hero-video"
-                className="relative isolate aspect-video overflow-hidden rounded-[1.6rem] bg-gray-900 shadow-[0_40px_80px_-30px_rgba(15,23,42,0.45)]"
-                style={{
-                  WebkitMaskImage:
-                    "linear-gradient(to right, transparent 0%, black 34%, black 100%)",
-                  maskImage:
-                    "linear-gradient(to right, transparent 0%, black 34%, black 100%)",
-                }}
-              >
-                <div
-                  className={`absolute inset-0 bg-gradient-to-br from-purple-600 via-purple-700 to-orange-500 transition-opacity duration-700 ${
-                    isHeroVideoReady ? 'opacity-0' : 'opacity-100'
-                  }`}
-                ></div>
-
-                <iframe
-                  ref={heroVideoRef}
-                  className={`absolute inset-0 w-full h-full transition-opacity duration-1000 ${
-                    isHeroVideoReady ? 'opacity-100' : 'opacity-0'
-                  }`}
-                  src={HERO_VIDEO_SRC}
-                  title="Тренировки в детской футбольной школе Чемпион и К"
-                  frameBorder="0"
-                  loading="lazy"
-                  onLoad={() => {
-                    setIsHeroVideoReady(true);
-                    requestHeroVideoPlayback();
-                  }}
-                  allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
-                  allowFullScreen
-                ></iframe>
-
-                {/* Light overlay only — keeps the video clearly visible */}
-                <div className="absolute inset-0 z-10 pointer-events-none">
-                  <div className="absolute inset-x-0 bottom-0 h-1/3 bg-gradient-to-t from-[#14031f]/40 to-transparent"></div>
-                  <div className="absolute left-5 bottom-5 rounded-lg bg-black/35 backdrop-blur-sm px-3 py-1.5 text-[11px] font-medium uppercase tracking-[0.18em] text-white/90">
-                    Видео запускается без звука
-                  </div>
-                </div>
-              </div>
-            </motion.div>
           </div>
         </div>
       </section>
@@ -653,8 +870,8 @@ export function Home() {
         <div className="absolute -left-20 -top-10 h-64 w-64 rounded-full bg-purple-200/25 blur-3xl pointer-events-none" />
         <div className="absolute -right-20 -bottom-10 h-72 w-72 rounded-full bg-orange-200/25 blur-3xl pointer-events-none" />
 
-        <div className="container mx-auto px-4 relative">
-          <div className="grid gap-3 grid-cols-2 sm:grid-cols-3 lg:grid-cols-6">
+        <div className={`${mascotAwareContainerClass} relative`}>
+          <div className="grid gap-3 grid-cols-2 sm:grid-cols-3 lg:grid-cols-3 xl:grid-cols-6">
             {schoolStats.map((stat, i) => (
               <motion.div
                 key={stat.label}
@@ -686,8 +903,9 @@ export function Home() {
       </section>
 
       {/* How a class flows — concrete 25-min breakdown */}
-      <section className="py-32">
-        <div className="container mx-auto px-4">
+      <section ref={trainingFlowSectionRef} className="py-32">
+        <div className={standardContainerClass}>
+          <div className="relative mx-auto max-w-[84rem] px-2 sm:px-6 lg:px-[7rem] xl:px-[10rem]">
           <div className="max-w-3xl mx-auto text-center">
             <div className="ui-eyebrow justify-center">
               <Sparkles className="h-4 w-4" />
@@ -698,7 +916,7 @@ export function Home() {
             </h2>
           </div>
 
-          <div className="mt-16 grid gap-5 sm:grid-cols-2 lg:grid-cols-4 max-w-5xl mx-auto">
+          <div className="mt-16 grid gap-5 sm:grid-cols-2 lg:grid-cols-4 max-w-6xl mx-auto">
             {[
               {
                 step: "01",
@@ -755,13 +973,14 @@ export function Home() {
               </motion.div>
             ))}
           </div>
-
+          </div>
         </div>
       </section>
 
       {/* Comparison: typical section vs ФШ «Чемпион» */}
-      <section className="py-32">
-        <div className="container mx-auto px-4">
+      <section ref={familyFitSectionRef} className="py-32">
+        <div className={standardContainerClass}>
+          <div className="relative mx-auto max-w-[84rem] px-2 sm:px-6 lg:px-[7rem] xl:px-[10rem]">
           <div className="max-w-3xl mx-auto text-center">
             <div className="ui-eyebrow justify-center">
               <Sparkles className="h-4 w-4" />
@@ -831,12 +1050,13 @@ export function Home() {
               </div>
             </div>
           </div>
+          </div>
         </div>
       </section>
 
       {/* Philosophy Section */}
       <section id="philosophy" className="py-32">
-        <div className="container mx-auto px-4">
+        <div className={standardContainerClass}>
           <div className="grid gap-16 lg:grid-cols-[0.9fr_1.1fr] lg:items-start lg:gap-20">
             <div>
               <div className="max-w-2xl">
@@ -1022,9 +1242,10 @@ export function Home() {
       </section>
 
       {/* What happens after signup */}
-      <section className="py-24 bg-slate-50/50">
-        <div className="container mx-auto px-4">
-          <div className="max-w-3xl mx-auto text-center">
+      <section ref={signupFlowSectionRef} className="py-24 bg-slate-50/50">
+        <div className={standardContainerClass}>
+          <div className="relative mx-auto max-w-[84rem] px-2 sm:px-6 lg:pr-[24rem] xl:pr-[28rem]">
+          <div className="max-w-3xl mx-auto text-center lg:max-w-4xl">
             <div className="ui-eyebrow justify-center">
               <Sparkles className="h-4 w-4" />
               Что будет, если оставить телефон
@@ -1121,13 +1342,14 @@ export function Home() {
               </span>
             </div>
           </div>
+          </div>
         </div>
       </section>
 
       {/* Coaches Section */}
-      <section id="coaches" className="py-32 bg-slate-50/60">
-        <div className="container mx-auto px-4">
-          <div className="max-w-3xl">
+      <section ref={coachesSectionRef} id="coaches" className="relative overflow-hidden bg-[#f7f6f2] py-32">
+        <div className={standardContainerClass}>
+          <div ref={coachesHeadingRef} className="max-w-3xl">
             <div className="ui-eyebrow">
               <Sparkles className="h-4 w-4" />
               Наставники школы
@@ -1137,7 +1359,12 @@ export function Home() {
             </h2>
           </div>
 
-          <div className="mt-14 -mx-4 px-4 snap-x snap-proximity overflow-x-auto overscroll-y-auto pb-5 [scrollbar-width:thin] [scrollbar-color:rgba(147,51,234,0.45)_transparent]">
+          <div
+            tabIndex={0}
+            role="group"
+            aria-label="Тренеры школы — прокрутите по горизонтали"
+            className="mt-14 -mx-4 px-4 snap-x snap-proximity overflow-x-auto overscroll-y-auto pb-5 rounded-2xl focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-purple-400 focus-visible:ring-offset-2 [scrollbar-width:thin] [scrollbar-color:rgba(147,51,234,0.45)_transparent]"
+          >
             <div className="flex w-max gap-4">
             {coaches.map((coach, index) => (
               <motion.article
@@ -1230,8 +1457,8 @@ export function Home() {
       </section>
 
       {/* Parent testimonials */}
-      <section className="py-32">
-        <div className="container mx-auto px-4">
+      <section ref={testimonialsSectionRef} className="relative overflow-hidden py-32">
+        <div className={`${standardContainerClass} relative z-10`}>
           <div className="max-w-3xl mx-auto text-center">
             <div className="ui-eyebrow justify-center">
               <Sparkles className="h-4 w-4" />
@@ -1299,7 +1526,7 @@ export function Home() {
 
       {/* Pricing Section */}
       <section id="prices" className="py-32 bg-amber-50/40">
-        <div className="container mx-auto px-4">
+        <div className={standardContainerClass}>
           <div className="grid gap-10 lg:grid-cols-[0.76fr_1.24fr] lg:gap-14">
             <div className="max-w-xl">
               <div className="ui-eyebrow">
@@ -1307,7 +1534,7 @@ export function Home() {
                 Тарифы и оплата
               </div>
               <h2 className={sectionTitleClass}>
-                Прозрачные условия без скрытых сценариев
+                Прозрачные условия без скрытых платежей
               </h2>
             </div>
 
@@ -1368,9 +1595,23 @@ export function Home() {
       </section>
 
       {/* Personal Account Section */}
-      <section id="personal-account" className="py-32 overflow-hidden bg-slate-50/50">
-        <div className="container mx-auto px-4">
-          <div className="grid gap-10 lg:grid-cols-[0.82fr_1.18fr] lg:gap-14">
+      <section ref={personalAccountSectionRef} id="personal-account" className="relative overflow-hidden bg-[#f6f5f1] py-32">
+        {isSequenceEnabled && (
+        <div aria-hidden="true" className="pointer-events-none absolute inset-0 hidden lg:block">
+          <div className="absolute inset-y-0 right-0 w-[58%]">
+            <div className="absolute right-[10%] top-[10%] h-64 w-64 rounded-full bg-orange-200/30 blur-3xl"></div>
+            <div className="absolute bottom-[8%] left-[12%] h-56 w-56 rounded-full bg-purple-200/22 blur-3xl"></div>
+            <img
+              src={currentSequenceFrameSrc}
+              alt=""
+              className="absolute inset-y-0 right-0 h-full w-full object-contain object-right opacity-[0.95]"
+            />
+          </div>
+          <div className="absolute inset-0 bg-[linear-gradient(90deg,rgba(246,245,241,1)_0%,rgba(246,245,241,0.98)_32%,rgba(246,245,241,0.9)_48%,rgba(246,245,241,0.62)_62%,rgba(246,245,241,0.16)_78%,transparent_100%)]"></div>
+        </div>
+        )}
+        <div className={standardContainerClass}>
+          <div className="relative z-10 max-w-4xl xl:max-w-[48rem]">
             <div className="max-w-xl">
               <div className="ui-eyebrow ui-eyebrow-warm">
                 <LogIn className="h-4 w-4" />
@@ -1386,8 +1627,12 @@ export function Home() {
 
               <div className="mt-14 space-y-6">
                 {personalAccountSteps.map((item) => (
-                  <div key={item.step} className="group relative border-l-2 border-orange-100 pl-8 transition-colors hover:border-orange-500 pb-2">
-                    <div className="absolute -left-3 top-0 flex h-6 w-6 items-center justify-center rounded-full bg-white border-2 border-orange-200 text-[10px] font-bold text-orange-600 shadow-sm group-hover:border-orange-500 group-hover:bg-orange-500 group-hover:text-white transition-all">
+                  <div
+                    key={item.step}
+                    ref={item.step === "03" ? paymentStepRef : undefined}
+                    className="group relative border-l-2 border-orange-100 pl-8 transition-colors hover:border-orange-500 pb-2"
+                  >
+                    <div className="absolute -left-3 top-0 flex h-6 w-6 items-center justify-center rounded-full bg-white border-2 border-orange-200 text-[10px] font-bold text-orange-700 shadow-sm group-hover:border-orange-500 group-hover:bg-orange-500 group-hover:text-white transition-all">
                       {item.step}
                     </div>
                     <h3 className="text-xl font-bold tracking-tight text-gray-900">{item.title}</h3>
@@ -1410,70 +1655,13 @@ export function Home() {
                 </a>
               </div>
             </div>
-
-            <div className="relative flex items-center justify-center">
-              <div className="absolute -left-12 -top-12 h-64 w-64 rounded-full bg-orange-200/55 blur-3xl hero-blob hero-blob-a"></div>
-              <div className="absolute -bottom-16 -right-16 h-80 w-80 rounded-full bg-purple-200/55 blur-3xl hero-blob hero-blob-b"></div>
-
-              <LkFloatingShapes />
-
-              <div className="relative z-10 mx-auto w-full max-w-[320px]">
-                {/* iPhone Mockup Container */}
-                <div className="relative aspect-[9/19] w-full overflow-hidden rounded-[3rem] border-[10px] border-slate-900 bg-slate-900 shadow-[0_45px_100px_-20px_rgba(0,0,0,0.4)]">
-                  {/* Notch */}
-                  <div className="absolute left-1/2 top-0 z-20 h-7 w-32 -translate-x-1/2 rounded-b-2xl bg-slate-900"></div>
-                  
-                  {/* Screen Content */}
-                  <div className="h-full w-full bg-[#101010]">
-                    <img
-                      src="/images/lk-screen.jpg"
-                      alt="Личный кабинет интерфейс"
-                      className="h-full w-full object-contain"
-                    />
-                  </div>
-                </div>
-                
-                {/* Decorative glow */}
-                <div className="absolute -inset-4 -z-10 rounded-[4rem] bg-orange-500/10 blur-2xl"></div>
-              </div>
-            </div>
           </div>
-        </div>
-      </section>
-
-      {/* Quiz banner — opens the quiz in a modal */}
-      <section className="py-16 bg-indigo-50/40">
-        <div className="container mx-auto px-4">
-          <button
-            ref={quizTriggerRef}
-            type="button"
-            onClick={() => setQuizModalOpen(true)}
-            className="group mx-auto block w-full max-w-4xl rounded-[1.4rem] bg-white border border-black/6 p-6 sm:p-7 text-left shadow-[0_2px_14px_-6px_rgba(15,23,42,0.12)] hover:border-purple-300 hover:shadow-[0_24px_50px_-30px_rgba(124,58,237,0.4)] hover:-translate-y-0.5 transition-all"
-          >
-            <div className="grid grid-cols-1 sm:grid-cols-[auto_1fr_auto] items-center gap-5">
-              <div className="flex h-14 w-14 shrink-0 items-center justify-center rounded-2xl bg-gradient-to-br from-purple-600 to-orange-500 shadow-[0_10px_22px_-12px_rgba(124,58,237,0.6)]">
-                <Sparkles className="h-7 w-7 text-white" />
-              </div>
-              <div className="min-w-0">
-                <p className="text-[11px] font-semibold uppercase tracking-[0.16em] text-purple-500">
-                  Бесплатный PDF-гайд
-                </p>
-                <h3 className="mt-1 text-lg sm:text-xl font-bold tracking-tight text-gray-900 leading-snug">
-                  3 вопроса — и забираете персональный гайд по адаптации ребёнка к спорту
-                </h3>
-              </div>
-              <span className="shrink-0 inline-flex items-center justify-center gap-2 rounded-xl bg-gradient-to-br from-purple-600 to-orange-500 text-white font-bold px-6 py-3.5 text-sm whitespace-nowrap shadow-[0_10px_22px_-10px_rgba(124,58,237,0.5)] group-hover:shadow-[0_14px_28px_-10px_rgba(124,58,237,0.6)] transition-shadow">
-                Открыть тест
-                <span className="transition-transform group-hover:translate-x-1">→</span>
-              </span>
-            </div>
-          </button>
         </div>
       </section>
 
       {/* FAQ — parent's predictable doubts */}
       <section className="py-32">
-        <div className="container mx-auto px-4">
+        <div className={standardContainerClass}>
           <div className="max-w-3xl mx-auto text-center">
             <div className="ui-eyebrow justify-center">
               <Sparkles className="h-4 w-4" />
@@ -1538,7 +1726,7 @@ export function Home() {
 
       {/* CTA Section */}
       <section className="py-32">
-        <div className="container mx-auto px-4">
+        <div className={standardContainerClass}>
           <div className="relative overflow-hidden border-t border-black/8 px-2 pt-10">
             <div className="absolute -left-10 top-0 h-40 w-40 rounded-full bg-purple-200/40 blur-3xl"></div>
             <div className="absolute -right-6 bottom-0 h-44 w-44 rounded-full bg-orange-200/45 blur-3xl"></div>
@@ -1554,53 +1742,84 @@ export function Home() {
                 </h2>
               </div>
 
-              <div className="mt-12 grid gap-4 sm:grid-cols-2 max-w-3xl mx-auto">
-                {/* New client → /signup */}
-                <Link
-                  to="/signup"
-                  className="group relative overflow-hidden rounded-[1.4rem] bg-gradient-to-br from-purple-600 via-purple-700 to-orange-500 p-7 sm:p-8 text-white shadow-[0_24px_60px_-30px_rgba(124,58,237,0.55)] hover:shadow-[0_30px_70px_-30px_rgba(124,58,237,0.7)] hover:-translate-y-0.5 transition-all"
-                >
-                  <div className="absolute -right-12 -top-12 h-44 w-44 rounded-full bg-orange-400/30 blur-3xl pointer-events-none" />
-                  <div className="relative">
-                    <p className="text-[11px] font-semibold uppercase tracking-[0.18em] text-orange-200">
-                      Я новый клиент
-                    </p>
-                    <h3 className="mt-3 text-2xl font-black tracking-tight">
-                      Записаться на пробное занятие
-                    </h3>
-                    <p className="mt-3 text-sm text-white/85 leading-relaxed">
-                      Первое занятие бесплатно, без обязательств.
-                    </p>
-                    <span className="mt-6 inline-flex items-center gap-2 text-sm font-bold text-white">
-                      Перейти к записи
-                      <span className="transition-transform group-hover:translate-x-1">→</span>
-                    </span>
+              <div className="mt-12 mx-auto max-w-6xl">
+                <div className="relative min-h-[24rem] overflow-hidden rounded-[2rem] border border-black/6 bg-[linear-gradient(135deg,rgba(255,255,255,0.94),rgba(255,247,237,0.82)_42%,rgba(245,240,255,0.76)_100%)] shadow-[0_18px_44px_-28px_rgba(15,23,42,0.22)] sm:min-h-[28rem] xl:min-h-[34rem]">
+                  <div className="absolute inset-0">
+                    <div className="absolute inset-0 bg-[radial-gradient(circle_at_24%_48%,rgba(255,255,255,0.6),transparent_30%),radial-gradient(circle_at_72%_50%,rgba(251,191,36,0.16),transparent_34%)]"></div>
+                    <img
+                      src="/images/cta-mascot-poster.png"
+                      alt=""
+                      className="absolute inset-0 h-full w-full object-cover object-[12%_50%]"
+                    />
+                    <video
+                      ref={signupVideoRef}
+                      autoPlay
+                      muted
+                      loop
+                      playsInline
+                      preload="auto"
+                      poster="/images/cta-mascot-poster.png"
+                      className={`absolute inset-0 h-full w-full object-cover object-[12%_50%] transition-opacity duration-300 ${
+                        isSignupSequenceZoneActive ? "opacity-100" : "opacity-96"
+                      }`}
+                    >
+                      <source src="/videos/mascot-points-right.mp4" type="video/mp4" />
+                    </video>
+                    <div className="absolute inset-0 bg-[linear-gradient(90deg,rgba(255,255,255,0.24)_0%,rgba(255,255,255,0.18)_28%,rgba(255,255,255,0.24)_48%,rgba(255,255,255,0.62)_68%,rgba(255,255,255,0.86)_100%)]"></div>
                   </div>
-                </Link>
 
-                {/* Existing client → LK */}
-                <a
-                  href="https://lk.champion-footboll.ru/"
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="group relative overflow-hidden rounded-[1.4rem] bg-white border border-indigo-200 p-7 sm:p-8 hover:border-indigo-400 hover:shadow-[0_20px_50px_-25px_rgba(15,23,42,0.25)] hover:-translate-y-0.5 transition-all"
-                >
-                  <div className="relative">
-                    <p className="text-[11px] font-semibold uppercase tracking-[0.18em] text-indigo-700">
-                      Уже занимаемся
-                    </p>
-                    <h3 className="mt-3 text-2xl font-black tracking-tight text-gray-900">
-                      Войти в личный кабинет
-                    </h3>
-                    <p className="mt-3 text-sm text-gray-600 leading-relaxed">
-                      Расписание, оплата и связь с тренером в&nbsp;одном месте.
-                    </p>
-                    <span className="mt-6 inline-flex items-center gap-2 text-sm font-bold text-indigo-700">
-                      Открыть кабинет
-                      <span className="transition-transform group-hover:translate-x-1">→</span>
-                    </span>
+                  <div className="relative z-10 flex min-h-[24rem] items-center justify-end p-6 sm:p-8 xl:min-h-[34rem] xl:p-12">
+                  <div className="grid max-w-[42rem] gap-4 sm:grid-cols-2">
+                  {/* New client → /signup */}
+                  <Link
+                    ref={signupCardRef}
+                    to="/signup"
+                    className="group relative overflow-hidden rounded-[1.4rem] bg-gradient-to-br from-purple-600 via-purple-700 to-orange-500 p-7 sm:p-8 text-white shadow-[0_24px_60px_-30px_rgba(124,58,237,0.55)] hover:shadow-[0_30px_70px_-30px_rgba(124,58,237,0.7)] hover:-translate-y-0.5 transition-all"
+                  >
+                    <div className="absolute -right-12 -top-12 h-44 w-44 rounded-full bg-orange-400/30 blur-3xl pointer-events-none" />
+                    <div className="relative">
+                      <p className="text-[11px] font-semibold uppercase tracking-[0.18em] text-orange-200">
+                        Я новый клиент
+                      </p>
+                      <h3 className="mt-3 text-2xl font-black tracking-tight">
+                        Записаться на пробное занятие
+                      </h3>
+                      <p className="mt-3 text-sm text-white/85 leading-relaxed">
+                        Первое занятие бесплатно, без обязательств.
+                      </p>
+                      <span className="mt-6 inline-flex items-center gap-2 text-sm font-bold text-white">
+                        Перейти к записи
+                        <span className="transition-transform group-hover:translate-x-1">→</span>
+                      </span>
+                    </div>
+                  </Link>
+
+                  {/* Existing client → LK */}
+                  <a
+                    href="https://lk.champion-footboll.ru/"
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="group relative overflow-hidden rounded-[1.4rem] bg-white border border-indigo-200 p-7 sm:p-8 hover:border-indigo-400 hover:shadow-[0_20px_50px_-25px_rgba(15,23,42,0.25)] hover:-translate-y-0.5 transition-all"
+                  >
+                    <div className="relative">
+                      <p className="text-[11px] font-semibold uppercase tracking-[0.18em] text-indigo-700">
+                        Уже занимаемся
+                      </p>
+                      <h3 className="mt-3 text-2xl font-black tracking-tight text-gray-900">
+                        Войти в личный кабинет
+                      </h3>
+                      <p className="mt-3 text-sm text-gray-600 leading-relaxed">
+                        Расписание, оплата и связь с тренером в&nbsp;одном месте.
+                      </p>
+                      <span className="mt-6 inline-flex items-center gap-2 text-sm font-bold text-indigo-700">
+                        Открыть кабинет
+                        <span className="transition-transform group-hover:translate-x-1">→</span>
+                      </span>
+                      </div>
+                    </a>
                   </div>
-                </a>
+                  </div>
+                </div>
               </div>
             </div>
           </div>
@@ -1608,7 +1827,7 @@ export function Home() {
       </section>
       {/* Blog Section */}
       <section id="blog" className="py-32">
-        <div className="container mx-auto px-4">
+        <div className={mascotAwareContainerClass}>
           <div className="grid gap-6 lg:grid-cols-[0.74fr_1.26fr] lg:items-end">
             <div className="max-w-xl">
               <div className="ui-eyebrow">
@@ -1627,6 +1846,8 @@ export function Home() {
                 <img
                   src={featuredPost.image}
                   alt={featuredPost.title}
+                  loading="lazy"
+                  onError={handleBlogImageError}
                   className="h-72 w-full object-cover lg:h-full"
                 />
                 <div className="flex flex-col justify-between p-7 sm:p-8">
@@ -1668,6 +1889,8 @@ export function Home() {
                     <img
                       src={post.image}
                       alt={post.title}
+                      loading="lazy"
+                      onError={handleBlogImageError}
                       className="h-full min-h-[10.5rem] w-full object-cover"
                     />
                     <div className="p-5">
@@ -1691,6 +1914,36 @@ export function Home() {
           </div>
         </div>
       </section>
+
+      {/* Quiz banner — opens the quiz in a modal */}
+      <section ref={quizBannerSectionRef} className="py-16 bg-indigo-50/40">
+        <div className={standardContainerClass}>
+          <button
+            ref={quizTriggerRef}
+            type="button"
+            onClick={() => setQuizModalOpen(true)}
+            className="group mx-auto block w-full max-w-4xl rounded-[1.4rem] bg-white border border-black/6 p-6 sm:p-7 text-left shadow-[0_2px_14px_-6px_rgba(15,23,42,0.12)] hover:border-purple-300 hover:shadow-[0_24px_50px_-30px_rgba(124,58,237,0.4)] hover:-translate-y-0.5 transition-all"
+          >
+            <div className="grid grid-cols-1 sm:grid-cols-[auto_1fr_auto] items-center gap-5">
+              <div className="flex h-14 w-14 shrink-0 items-center justify-center rounded-2xl bg-gradient-to-br from-purple-600 to-orange-500 shadow-[0_10px_22px_-12px_rgba(124,58,237,0.6)]">
+                <Sparkles className="h-7 w-7 text-white" />
+              </div>
+              <div className="min-w-0">
+                <p className="text-[11px] font-semibold uppercase tracking-[0.16em] text-purple-700">
+                  Бесплатный PDF-гайд
+                </p>
+                <h3 className="mt-1 text-lg sm:text-xl font-bold tracking-tight text-gray-900 leading-snug">
+                  3 вопроса — и забираете персональный гайд по адаптации ребёнка к спорту
+                </h3>
+              </div>
+              <span className="shrink-0 inline-flex items-center justify-center gap-2 rounded-xl bg-gradient-to-br from-purple-600 to-orange-500 text-white font-bold px-6 py-3.5 text-sm whitespace-nowrap shadow-[0_10px_22px_-10px_rgba(124,58,237,0.5)] group-hover:shadow-[0_14px_28px_-10px_rgba(124,58,237,0.6)] transition-shadow">
+                Открыть тест
+                <span className="transition-transform group-hover:translate-x-1">→</span>
+              </span>
+            </div>
+          </button>
+        </div>
+      </section>
       </main>
 
       <Footer />
@@ -1706,7 +1959,9 @@ export function Home() {
           aria-label="Экспресс-тест для родителей: получить PDF-гайд"
         >
           <div
-            className="relative w-full max-w-3xl my-4 sm:my-8"
+            ref={quizDialogRef}
+            tabIndex={-1}
+            className="relative w-full max-w-3xl my-4 sm:my-8 focus:outline-none"
             onClick={(e) => e.stopPropagation()}
           >
             <button

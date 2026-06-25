@@ -253,7 +253,7 @@ export function Quiz() {
               />
               {leadTouched && !phoneValid && (
                 <p className="text-xs text-red-600 mt-1 ml-1">
-                  Введите телефон в формате +7XXXXXXXXXX
+                  Введите телефон полностью: +7 (___) ___-__-__
                 </p>
               )}
             </div>
