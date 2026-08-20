@@ -2,8 +2,9 @@ import { useEffect, useRef, useState } from 'react';
 import { useNavigate, Link, useLocation } from 'react-router';
 import {
     Trophy, MapPin, Calendar, UserCheck, Users, RussianRuble, CircleDot,
-    ArrowLeft, CheckCircle2, Loader2, AlertCircle
+    ArrowLeft, CheckCircle2, Loader2, AlertCircle, UserCircle
 } from 'lucide-react';
+import { LK_URL, shouldOpenLkInNewTab } from '../../components/lkLink';
 
 const LEADS_ENDPOINT =
     ((import.meta as unknown as { env?: Record<string, string> }).env?.VITE_LEADS_ENDPOINT)
@@ -61,8 +62,15 @@ export function Signup() {
             ? (location.state as { phone: string }).phone
             : '+7';
 
+    // Предпросмотр экрана успеха без реальной отправки заявки: #/signup?preview=success.
+    // Только в dev — прод-сборка вычищает эту ветку, боевой бэкенд заявки с
+    // localhost всё равно не принимает (CORS разрешён только для champion-footboll.ru).
+    const isDev = !!(import.meta as unknown as { env?: Record<string, unknown> }).env?.DEV;
+    const previewSuccess =
+        isDev && new URLSearchParams(location.search).get('preview') === 'success';
+
     const [childName, setChildName] = useState('');
-    const [phone, setPhone] = useState(prefillPhone);
+    const [phone, setPhone] = useState(previewSuccess ? '+79138927059' : prefillPhone);
 
     useEffect(() => {
         // Если пользователь пришёл с главной с заранее набранным телефоном —
@@ -78,7 +86,9 @@ export function Signup() {
     const [privilege, setPrivilege] = useState('');
     const [consent, setConsent] = useState(false);
 
-    const [status, setStatus] = useState<Status>('idle');
+    const openLkInNewTab = shouldOpenLkInNewTab();
+
+    const [status, setStatus] = useState<Status>(previewSuccess ? 'success' : 'idle');
     const [errorMessage, setErrorMessage] = useState<string>('');
     // Ошибка поля показывается либо после ухода из него, либо после попытки отправки.
     const [touchedFields, setTouchedFields] = useState<Partial<Record<FieldName, boolean>>>({});
@@ -288,6 +298,22 @@ export function Signup() {
                                         <p className="text-slate-600 text-sm leading-relaxed">
                                             Мы перезвоним вам по номеру <strong>{phone}</strong> в ближайшее время и подберём удобное время для пробного занятия.
                                         </p>
+
+                                        {/* Заявка уже создала ученика в CRM, поэтому вход в ЛК открыт
+                                            по тому же номеру — отдельная регистрация не нужна. */}
+                                        <a
+                                            href={LK_URL}
+                                            target={openLkInNewTab ? '_blank' : '_self'}
+                                            rel={openLkInNewTab ? 'noopener noreferrer' : undefined}
+                                            className="mt-6 w-full flex items-center justify-center gap-2 bg-indigo-700 hover:bg-indigo-800 text-white font-black uppercase tracking-wider py-4 rounded-xl transition shadow-lg shadow-indigo-700/30"
+                                        >
+                                            <UserCircle className="w-5 h-5" />
+                                            Войти в личный кабинет
+                                        </a>
+                                        <p className="text-xs text-slate-500 leading-relaxed mt-2">
+                                            Вход по тому же номеру <strong>{phone}</strong> — пароль не нужен.
+                                        </p>
+
                                         <button
                                             onClick={() => {
                                                 setChildName(''); setPhone('+7'); setDob('');
@@ -295,7 +321,7 @@ export function Signup() {
                                                 setConsent(false); setStatus('idle');
                                                 setTouchedFields({}); setSubmitAttempted(false);
                                             }}
-                                            className="mt-6 text-indigo-700 hover:text-indigo-900 text-sm font-semibold underline"
+                                            className="mt-5 text-slate-600 hover:text-indigo-800 text-sm font-semibold underline"
                                         >
                                             Записать ещё одного ребёнка
                                         </button>

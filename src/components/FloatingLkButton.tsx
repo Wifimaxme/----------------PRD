@@ -1,19 +1,11 @@
 import React from 'react';
-
-function isMobileOrTelegram(): boolean {
-  if (typeof navigator === 'undefined') return false;
-  const ua = navigator.userAgent || '';
-  // Telegram's in-app browser sets a specific user agent
-  const isTelegram = /Telegram/i.test(ua);
-  const isMobile = /Android|iPhone|iPad|iPod|Mobile/i.test(ua);
-  return isTelegram || isMobile;
-}
+import { LK_URL, shouldOpenLkInNewTab } from './lkLink';
 
 export default function FloatingLkButton() {
-  const newTab = !isMobileOrTelegram();
+  const newTab = shouldOpenLkInNewTab();
   return (
     <a
-      href="https://lk.champion-footboll.ru/"
+      href={LK_URL}
       target={newTab ? '_blank' : '_self'}
       rel={newTab ? 'noopener noreferrer' : undefined}
       style={{ textDecoration: 'none' }}
