@@ -5,6 +5,7 @@ import {
     ArrowLeft, CheckCircle2, Loader2, AlertCircle, UserCircle
 } from 'lucide-react';
 import { LK_URL, shouldOpenLkInNewTab } from '../../components/lkLink';
+import { PRICING } from '../data/pricing';
 
 const LEADS_ENDPOINT =
     ((import.meta as unknown as { env?: Record<string, string> }).env?.VITE_LEADS_ENDPOINT)
@@ -30,7 +31,7 @@ function todayIso(): string {
 // `value` совпадает с названием варианта `client_type` в MoyKlass
 // (alias=client_type, multiselect). Бэкенд сам подменит на id.
 const PRIVILEGE_OPTIONS = [
-    { value: '', label: 'Без льготы (обычный тариф 2760 ₽)' },
+    { value: '', label: `Без льготы (обычный тариф ${PRICING.base} ₽)` },
     { value: 'Многодетный', label: 'Многодетная семья' },
     { value: 'Опекун', label: 'Опекун' },
     { value: 'Сотрудник', label: 'Сотрудник детского сада' },
@@ -251,10 +252,10 @@ export function Signup() {
                                 <div className="bg-indigo-800 p-2.5 rounded-full text-white shrink-0 shadow-md shadow-indigo-800/30 mt-1"><RussianRuble className="w-5 h-5" /></div>
                                 <div className="flex-1">
                                     <h3 className="text-indigo-900 font-bold text-sm uppercase">Сколько стоит?</h3>
-                                    <p className="text-slate-800 text-base font-bold">2760 ₽/месяц</p>
+                                    <p className="text-slate-800 text-base font-bold">{PRICING.base} ₽/месяц</p>
 
                                     <div className="mt-3 bg-indigo-50 p-3 rounded-xl border border-indigo-100">
-                                        <div className="inline-block bg-indigo-800 text-white text-xs font-bold px-2 py-1 rounded-md mb-2">1960 ₽/МЕСЯЦ:</div>
+                                        <div className="inline-block bg-indigo-800 text-white text-xs font-bold px-2 py-1 rounded-md mb-2">{PRICING.privileged} ₽/МЕСЯЦ:</div>
                                         <ul className="text-xs text-slate-600 space-y-1">
                                             <li className="flex items-center gap-1.5"><CheckCircle2 className="w-3.5 h-3.5 text-orange-500 shrink-0"/> для многодетных семей</li>
                                             <li className="flex items-center gap-1.5"><CheckCircle2 className="w-3.5 h-3.5 text-orange-500 shrink-0"/> для детей с опекунами</li>
@@ -501,7 +502,7 @@ export function Signup() {
                                             </select>
                                             {privilege && (
                                                 <p className="text-xs text-orange-600 font-semibold mt-1 ml-1">
-                                                    Льготная стоимость: 1960 ₽/месяц
+                                                    Льготная стоимость: {PRICING.privileged} ₽/месяц
                                                 </p>
                                             )}
                                         </div>

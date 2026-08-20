@@ -4,6 +4,7 @@ import { Header } from "../components/Header";
 import { Footer } from "../components/Footer";
 import { Quiz } from "../components/Quiz";
 import StickyMobileCTA from "../../components/StickyMobileCTA";
+import { PRICING, formatPrice } from "../data/pricing";
 import HeroFloatingShapes, { LkFloatingShapes } from "../../components/HeroFloatingShapes";
 import { blogPosts } from "../data/blogPosts";
 import { Link, useNavigate } from "react-router";
@@ -173,11 +174,11 @@ const philosophyPillars = [
 const pricingPlans = [
   {
     name: "Базовый",
-    price: "2 760 ₽",
+    price: `${formatPrice(PRICING.base)} ₽`,
     note: "/ месяц",
     badge: "Основной тариф",
     features: [
-      "8 занятий в месяц",
+      `${PRICING.visitsPerSubscription} занятий в месяц`,
       "2 раза в неделю",
       "Группы до 10 человек",
       "Тренировки прямо в детском саду",
@@ -186,7 +187,7 @@ const pricingPlans = [
   },
   {
     name: "Льготный",
-    price: "1 960 ₽",
+    price: `${formatPrice(PRICING.privileged)} ₽`,
     note: "/ месяц",
     badge: "Выгода до 30%",
     highlighted: true,
@@ -1262,7 +1263,7 @@ export function Home() {
               },
               {
                 quote:
-                  "Близнецы — Глеб и Стёпа. Льгота для двоих детей реальная: 1960 ₽ за каждого. Никаких скрытых счетов, не пропустили — не списали. Просто и по-человечески.",
+                  `Близнецы — Глеб и Стёпа. Льгота для двоих детей реальная: ${PRICING.privileged} ₽ за каждого. Никаких скрытых счетов, не пропустили — не списали. Просто и по-человечески.`,
                 author: "Юлия",
                 detail: "мама близнецов, 3 года · сад №59",
                 initial: "Ю",
@@ -1508,7 +1509,7 @@ export function Home() {
               },
               {
                 q: "Какая скидка для многодетных и сотрудников ДОУ?",
-                a: "Льготный тариф 1 960 ₽/мес (вместо 2 760 ₽) — для многодетных семей, опекунов, сотрудников детского сада и семей, у которых занимаются двое и больше детей.",
+                a: `Льготный тариф ${formatPrice(PRICING.privileged)} ₽/мес (вместо ${formatPrice(PRICING.base)} ₽) — для многодетных семей, опекунов, сотрудников детского сада и семей, у которых занимаются двое и больше детей.`,
               },
             ].map((f, i) => (
               <motion.details
