@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import { useNavigate, Link, useLocation } from 'react-router';
 import {
     Trophy, MapPin, Calendar, UserCheck, Users, RussianRuble, CircleDot,
@@ -36,6 +36,23 @@ const PRIVILEGE_OPTIONS = [
     { value: '2 детей', label: '2+ детей в нашей школе' },
 ];
 
+// Все поля формы обязательны, кроме «Льготы» — она сознательно необязательная,
+// пустое значение означает обычный тариф.
+type FieldName = 'childName' | 'phone' | 'kindergarten' | 'group' | 'dob' | 'consent';
+
+// Порядок сверху вниз по форме: по нему ищем первое незаполненное поле,
+// чтобы проскроллить и сфокусировать именно его.
+const FIELD_ORDER: FieldName[] = ['childName', 'phone', 'kindergarten', 'group', 'dob', 'consent'];
+
+const BASE_FIELD_CLASS =
+    'w-full px-5 py-4 rounded-xl border focus:ring-2 focus:outline-none transition text-slate-900 placeholder:text-slate-400';
+const VALID_FIELD_CLASS = 'border-slate-200 bg-white focus:border-indigo-500 focus:ring-indigo-100';
+const INVALID_FIELD_CLASS = 'border-red-500 bg-red-50 focus:border-red-500 focus:ring-red-200';
+
+function fieldClass(invalid: boolean): string {
+    return `${BASE_FIELD_CLASS} ${invalid ? INVALID_FIELD_CLASS : VALID_FIELD_CLASS}`;
+}
+
 export function Signup() {
     const navigate = useNavigate();
     const location = useLocation();
@@ -63,16 +80,53 @@ export function Signup() {
 
     const [status, setStatus] = useState<Status>('idle');
     const [errorMessage, setErrorMessage] = useState<string>('');
-    const [touched, setTouched] = useState(false);
+    // Ошибка поля показывается либо после ухода из него, либо после попытки отправки.
+    const [touchedFields, setTouchedFields] = useState<Partial<Record<FieldName, boolean>>>({});
+    const [submitAttempted, setSubmitAttempted] = useState(false);
 
-    const phoneValid = isValidPhone(phone);
-    const dobValid = !!dob && dob <= todayIso();
-    const formValid = childName.trim().length >= 2 && phoneValid && dobValid && consent;
+    const fieldRefs = useRef<Partial<Record<FieldName, HTMLElement | null>>>({});
+
+    const errors: Partial<Record<FieldName, string>> = {};
+    if (childName.trim().length < 2) errors.childName = 'Введите фамилию и имя ребёнка';
+    if (!isValidPhone(phone)) errors.phone = 'Введите телефон в формате +7XXXXXXXXXX';
+    if (!kindergarten.trim()) errors.kindergarten = 'Укажите номер детского сада';
+    if (!group.trim()) errors.group = 'Укажите группу в саду';
+    if (!dob) errors.dob = 'Укажите дату рождения';
+    else if (dob > todayIso()) errors.dob = 'Дата рождения не может быть в будущем';
+    if (!consent) errors.consent = 'Подтвердите согласие на обработку персональных данных';
+
+    const formValid = FIELD_ORDER.every(field => !errors[field]);
+
+    // Сводка над кнопкой — только про незаполненные поля ввода. У согласия своя
+    // подпись под чекбоксом, дублировать её обобщённым текстом не нужно.
+    const hasEmptyFields = FIELD_ORDER.some(field => field !== 'consent' && errors[field]);
+
+    function showError(field: FieldName): string | undefined {
+        return submitAttempted || touchedFields[field] ? errors[field] : undefined;
+    }
+
+    function markTouched(field: FieldName) {
+        setTouchedFields(prev => ({ ...prev, [field]: true }));
+    }
+
+    function focusFirstInvalid() {
+        const firstInvalid = FIELD_ORDER.find(field => errors[field]);
+        if (!firstInvalid) return;
+        const el = fieldRefs.current[firstInvalid];
+        if (!el) return;
+        const reduceMotion = window.matchMedia?.('(prefers-reduced-motion: reduce)').matches;
+        el.scrollIntoView({ block: 'center', behavior: reduceMotion ? 'auto' : 'smooth' });
+        el.focus({ preventScroll: true });
+    }
 
     async function handleSubmit(event: { preventDefault: () => void }) {
         event.preventDefault();
-        setTouched(true);
-        if (!formValid || status === 'submitting') return;
+        setSubmitAttempted(true);
+        if (status === 'submitting') return;
+        if (!formValid) {
+            focusFirstInvalid();
+            return;
+        }
 
         if (!LEADS_ENDPOINT) {
             setStatus('error');
@@ -91,8 +145,8 @@ export function Signup() {
                     childName: childName.trim(),
                     phone,
                     dob,
-                    kindergarten: kindergarten.trim() || null,
-                    group: group.trim() || null,
+                    kindergarten: kindergarten.trim(),
+                    group: group.trim(),
                     privilege: privilege || null,
                     source: 'champion-footboll.ru/signup',
                 }),
@@ -238,7 +292,8 @@ export function Signup() {
                                             onClick={() => {
                                                 setChildName(''); setPhone('+7'); setDob('');
                                                 setKindergarten(''); setGroup(''); setPrivilege('');
-                                                setConsent(false); setTouched(false); setStatus('idle');
+                                                setConsent(false); setStatus('idle');
+                                                setTouchedFields({}); setSubmitAttempted(false);
                                             }}
                                             className="mt-6 text-indigo-700 hover:text-indigo-900 text-sm font-semibold underline"
                                         >
@@ -254,19 +309,25 @@ export function Signup() {
                                             </label>
                                             <input
                                                 id="signup-childname"
+                                                ref={(el) => { fieldRefs.current.childName = el; }}
                                                 type="text"
                                                 value={childName}
                                                 onChange={(e) => setChildName(e.target.value)}
+                                                onBlur={() => markTouched('childName')}
                                                 placeholder="Фамилия и Имя ребёнка*"
                                                 autoComplete="off"
                                                 required
                                                 aria-required="true"
-                                                aria-invalid={touched && childName.trim().length < 2}
-                                                className="w-full px-5 py-4 rounded-xl border border-slate-200 bg-white focus:border-indigo-500 focus:ring-2 focus:ring-indigo-100 focus:outline-none transition text-slate-900 placeholder:text-slate-400"
+                                                aria-invalid={!!showError('childName')}
+                                                aria-describedby={showError('childName') ? 'signup-childname-error' : undefined}
+                                                className={fieldClass(!!showError('childName'))}
                                                 disabled={status === 'submitting'}
                                             />
-                                            {touched && childName.trim().length < 2 && (
-                                                <p className="text-xs text-red-600 mt-1 ml-1">Введите имя ребёнка</p>
+                                            {showError('childName') && (
+                                                <p id="signup-childname-error" role="alert" className="flex items-center gap-1.5 text-xs text-red-600 mt-1 ml-1">
+                                                    <AlertCircle className="w-3.5 h-3.5 shrink-0" />
+                                                    {errors.childName}
+                                                </p>
                                             )}
                                         </div>
 
@@ -277,10 +338,11 @@ export function Signup() {
                                             </label>
                                             <input
                                                 id="signup-phone"
+                                                ref={(el) => { fieldRefs.current.phone = el; }}
                                                 type="tel"
                                                 value={phone}
                                                 onChange={(e) => setPhone(normalizePhone(e.target.value))}
-                                                onBlur={() => setPhone(p => normalizePhone(p))}
+                                                onBlur={() => { setPhone(p => normalizePhone(p)); markTouched('phone'); }}
                                                 onFocus={(e) => {
                                                     const el = e.currentTarget;
                                                     requestAnimationFrame(() => {
@@ -300,12 +362,16 @@ export function Signup() {
                                                 inputMode="tel"
                                                 required
                                                 aria-required="true"
-                                                aria-invalid={touched && !phoneValid}
-                                                className="w-full px-5 py-4 rounded-xl border border-slate-200 bg-white focus:border-indigo-500 focus:ring-2 focus:ring-indigo-100 focus:outline-none transition text-slate-900 placeholder:text-slate-400"
+                                                aria-invalid={!!showError('phone')}
+                                                aria-describedby={showError('phone') ? 'signup-phone-error' : undefined}
+                                                className={fieldClass(!!showError('phone'))}
                                                 disabled={status === 'submitting'}
                                             />
-                                            {touched && !phoneValid && (
-                                                <p className="text-xs text-red-600 mt-1 ml-1">Введите телефон в формате +7XXXXXXXXXX</p>
+                                            {showError('phone') && (
+                                                <p id="signup-phone-error" role="alert" className="flex items-center gap-1.5 text-xs text-red-600 mt-1 ml-1">
+                                                    <AlertCircle className="w-3.5 h-3.5 shrink-0" />
+                                                    {errors.phone}
+                                                </p>
                                             )}
                                         </div>
 
@@ -316,16 +382,26 @@ export function Signup() {
                                             </label>
                                             <input
                                                 id="signup-kindergarten"
+                                                ref={(el) => { fieldRefs.current.kindergarten = el; }}
                                                 type="text"
                                                 value={kindergarten}
                                                 onChange={(e) => setKindergarten(e.target.value.replace(/\D/g, '').slice(0, 6))}
+                                                onBlur={() => markTouched('kindergarten')}
                                                 inputMode="numeric"
                                                 placeholder="Номер сада*"
                                                 required
                                                 aria-required="true"
-                                                className="w-full px-5 py-4 rounded-xl border border-slate-200 bg-white focus:border-indigo-500 focus:ring-2 focus:ring-indigo-100 focus:outline-none transition text-slate-900 placeholder:text-slate-400"
+                                                aria-invalid={!!showError('kindergarten')}
+                                                aria-describedby={showError('kindergarten') ? 'signup-kindergarten-error' : undefined}
+                                                className={fieldClass(!!showError('kindergarten'))}
                                                 disabled={status === 'submitting'}
                                             />
+                                            {showError('kindergarten') && (
+                                                <p id="signup-kindergarten-error" role="alert" className="flex items-center gap-1.5 text-xs text-red-600 mt-1 ml-1">
+                                                    <AlertCircle className="w-3.5 h-3.5 shrink-0" />
+                                                    {errors.kindergarten}
+                                                </p>
+                                            )}
                                         </div>
 
                                         {/* Группа в саду */}
@@ -335,32 +411,52 @@ export function Signup() {
                                             </label>
                                             <input
                                                 id="signup-group"
+                                                ref={(el) => { fieldRefs.current.group = el; }}
                                                 type="text"
                                                 value={group}
                                                 onChange={(e) => setGroup(e.target.value)}
+                                                onBlur={() => markTouched('group')}
                                                 placeholder="Группа в саду*"
                                                 required
                                                 aria-required="true"
-                                                className="w-full px-5 py-4 rounded-xl border border-slate-200 bg-white focus:border-indigo-500 focus:ring-2 focus:ring-indigo-100 focus:outline-none transition text-slate-900 placeholder:text-slate-400"
+                                                aria-invalid={!!showError('group')}
+                                                aria-describedby={showError('group') ? 'signup-group-error' : undefined}
+                                                className={fieldClass(!!showError('group'))}
                                                 disabled={status === 'submitting'}
                                             />
+                                            {showError('group') && (
+                                                <p id="signup-group-error" role="alert" className="flex items-center gap-1.5 text-xs text-red-600 mt-1 ml-1">
+                                                    <AlertCircle className="w-3.5 h-3.5 shrink-0" />
+                                                    {errors.group}
+                                                </p>
+                                            )}
                                         </div>
 
                                         {/* Дата рождения */}
                                         <div>
-                                            <label className="block text-sm font-medium text-slate-600 mb-1.5 ml-1">
+                                            <label htmlFor="signup-dob" className="block text-sm font-medium text-slate-600 mb-1.5 ml-1">
                                                 Дата рожд. уч-ка<span className="text-orange-500">*</span>
                                             </label>
                                             <input
+                                                id="signup-dob"
+                                                ref={(el) => { fieldRefs.current.dob = el; }}
                                                 type="date"
                                                 value={dob}
                                                 onChange={(e) => setDob(e.target.value)}
+                                                onBlur={() => markTouched('dob')}
                                                 max={todayIso()}
-                                                className="w-full px-5 py-4 rounded-xl border border-slate-200 bg-white focus:border-indigo-500 focus:ring-2 focus:ring-indigo-100 focus:outline-none transition text-slate-900 placeholder:text-slate-400"
+                                                required
+                                                aria-required="true"
+                                                aria-invalid={!!showError('dob')}
+                                                aria-describedby={showError('dob') ? 'signup-dob-error' : undefined}
+                                                className={fieldClass(!!showError('dob'))}
                                                 disabled={status === 'submitting'}
                                             />
-                                            {touched && !dobValid && (
-                                                <p className="text-xs text-red-600 mt-1 ml-1">Укажите дату рождения</p>
+                                            {showError('dob') && (
+                                                <p id="signup-dob-error" role="alert" className="flex items-center gap-1.5 text-xs text-red-600 mt-1 ml-1">
+                                                    <AlertCircle className="w-3.5 h-3.5 shrink-0" />
+                                                    {errors.dob}
+                                                </p>
                                             )}
                                         </div>
 
@@ -369,10 +465,10 @@ export function Signup() {
                                             <select
                                                 value={privilege}
                                                 onChange={(e) => setPrivilege(e.target.value)}
-                                                className="w-full px-5 py-4 rounded-xl border border-slate-200 bg-white focus:border-indigo-500 focus:ring-2 focus:ring-indigo-100 focus:outline-none transition text-slate-900"
+                                                className={`${BASE_FIELD_CLASS} ${VALID_FIELD_CLASS}`}
                                                 disabled={status === 'submitting'}
                                             >
-                                                <option value="">Льгота</option>
+                                                <option value="">Льгота (если есть)</option>
                                                 {PRIVILEGE_OPTIONS.filter(o => o.value).map(opt => (
                                                     <option key={opt.value} value={opt.value}>{opt.label}</option>
                                                 ))}
@@ -383,6 +479,15 @@ export function Signup() {
                                                 </p>
                                             )}
                                         </div>
+
+                                        {submitAttempted && hasEmptyFields && (
+                                            <div role="alert" className="flex items-start gap-2 p-3 rounded-xl bg-red-50 border border-red-200">
+                                                <AlertCircle className="w-4 h-4 text-red-600 shrink-0 mt-0.5" />
+                                                <p className="text-xs text-red-700 leading-relaxed">
+                                                    Чтобы отправить заявку, заполните поля, отмеченные красным.
+                                                </p>
+                                            </div>
+                                        )}
 
                                         {status === 'error' && errorMessage && (
                                             <div className="flex items-start gap-2 p-3 rounded-xl bg-red-50 border border-red-200">
@@ -411,10 +516,19 @@ export function Signup() {
                                         <label className="flex items-start gap-3 cursor-pointer pt-2">
                                             <input
                                                 type="checkbox"
+                                                ref={(el) => { fieldRefs.current.consent = el; }}
                                                 checked={consent}
-                                                onChange={(e) => setConsent(e.target.checked)}
+                                                onChange={(e) => { setConsent(e.target.checked); markTouched('consent'); }}
                                                 disabled={status === 'submitting'}
-                                                className="mt-0.5 w-4 h-4 rounded border-2 border-slate-300 text-indigo-700 focus:ring-indigo-500 cursor-pointer shrink-0"
+                                                required
+                                                aria-required="true"
+                                                aria-invalid={!!showError('consent')}
+                                                aria-describedby={showError('consent') ? 'signup-consent-error' : undefined}
+                                                className={`mt-0.5 w-4 h-4 rounded border-2 text-indigo-700 cursor-pointer shrink-0 ${
+                                                    showError('consent')
+                                                        ? 'border-red-500 ring-2 ring-red-200 focus:ring-red-500'
+                                                        : 'border-slate-300 focus:ring-indigo-500'
+                                                }`}
                                             />
                                             <span className="text-xs text-slate-600 leading-relaxed">
                                                 Я согласен(на) на обработку своих персональных данных и соглашаюсь с{' '}
@@ -422,8 +536,11 @@ export function Signup() {
                                                 <Link to="/oferta" className="text-indigo-700 underline hover:text-indigo-900">Подробнее</Link>
                                             </span>
                                         </label>
-                                        {touched && !consent && (
-                                            <p className="text-xs text-red-600 -mt-2 ml-7">Подтвердите согласие</p>
+                                        {showError('consent') && (
+                                            <p id="signup-consent-error" role="alert" className="flex items-center gap-1.5 text-xs text-red-600 -mt-2 ml-7">
+                                                <AlertCircle className="w-3.5 h-3.5 shrink-0" />
+                                                {errors.consent}
+                                            </p>
                                         )}
 
                                         <p className="text-[11px] text-slate-500 text-center leading-relaxed pt-1">
