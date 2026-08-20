@@ -1,6 +1,7 @@
 import { EducationLayout } from "../components/EducationLayout";
 import { Wallet, FileText, Download, AlertCircle } from "lucide-react";
 import { Link } from "react-router";
+import { PRICING, formatPrice } from "../data/pricing";
 
 export function PaidServices() {
   return (
@@ -17,11 +18,11 @@ export function PaidServices() {
             <div className="bg-white border-2 border-purple-300 p-6 rounded-lg">
               <h4 className="font-bold text-xl mb-2">Базовый тариф</h4>
               <div className="mb-4">
-                <span className="text-3xl font-bold text-purple-600">2 760 ₽</span>
+                <span className="text-3xl font-bold text-purple-600">{formatPrice(PRICING.base)} ₽</span>
                 <span className="text-gray-600"> / месяц</span>
               </div>
               <ul className="space-y-2 text-sm text-gray-700">
-                <li>• 8 занятий в месяц</li>
+                <li>• {PRICING.visitsPerSubscription} занятий в месяц</li>
                 <li>• 2 раза в неделю</li>
                 <li>• Группы до 10 человек</li>
                 <li>• 36 учебных недель в год</li>
@@ -30,11 +31,11 @@ export function PaidServices() {
 
             <div className="bg-gradient-to-br from-purple-600 to-orange-500 text-white p-6 rounded-lg">
               <div className="bg-white/20 backdrop-blur-sm px-3 py-1 rounded-full text-sm inline-block mb-3">
-                Скидка 30%
+                Скидка {Math.round((1 - PRICING.privileged / PRICING.base) * 100)}%
               </div>
               <h4 className="font-bold text-xl mb-2">Льготный тариф</h4>
               <div className="mb-4">
-                <span className="text-3xl font-bold">1 950 ₽</span>
+                <span className="text-3xl font-bold">{formatPrice(PRICING.privileged)} ₽</span>
                 <span className="text-purple-100"> / месяц</span>
               </div>
               <ul className="space-y-2 text-sm">
