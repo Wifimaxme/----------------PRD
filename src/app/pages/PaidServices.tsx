@@ -19,10 +19,11 @@ export function PaidServices() {
               <h4 className="font-bold text-xl mb-2">Базовый тариф</h4>
               <div className="mb-4">
                 <span className="text-3xl font-bold text-purple-600">{formatPrice(PRICING.base)} ₽</span>
-                <span className="text-gray-600"> / месяц</span>
+                <span className="text-gray-600"> / пакет из {PRICING.visitsPerSubscription} занятий</span>
               </div>
               <ul className="space-y-2 text-sm text-gray-700">
-                <li>• {PRICING.visitsPerSubscription} занятий в месяц</li>
+                <li>• {PRICING.visitsPerSubscription} занятий в пакете</li>
+                <li>• Пакет бессрочный — действует до использования всех занятий</li>
                 <li>• 2 раза в неделю</li>
                 <li>• Группы до 10 человек</li>
                 <li>• 36 учебных недель в год</li>
@@ -31,12 +32,12 @@ export function PaidServices() {
 
             <div className="bg-gradient-to-br from-purple-600 to-orange-500 text-white p-6 rounded-lg">
               <div className="bg-white/20 backdrop-blur-sm px-3 py-1 rounded-full text-sm inline-block mb-3">
-                Скидка {Math.round((1 - PRICING.privileged / PRICING.base) * 100)}%
+                Выгода {formatPrice(PRICING.base - PRICING.privileged)} ₽
               </div>
               <h4 className="font-bold text-xl mb-2">Льготный тариф</h4>
               <div className="mb-4">
                 <span className="text-3xl font-bold">{formatPrice(PRICING.privileged)} ₽</span>
-                <span className="text-purple-100"> / месяц</span>
+                <span className="text-purple-100"> / пакет из {PRICING.visitsPerSubscription} занятий</span>
               </div>
               <ul className="space-y-2 text-sm">
                 <li>• Для многодетных семей</li>
@@ -53,10 +54,10 @@ export function PaidServices() {
               <div className="text-sm text-gray-700">
                 <p className="font-semibold mb-1">Важные условия оплаты:</p>
                 <ul className="space-y-1 ml-4">
-                  <li>• Услуга считается оказанной по факту проведения занятия</li>
-                  <li>• Пропуски не компенсируются и не влияют на списание средств</li>
-                  <li>• Справки о болезни не требуются</li>
-                  <li>• Перерасчет стоимости за неявки не производится</li>
+                  <li>• Услуга считается оказанной в момент проведения занятия, если в течение 3 календарных дней не поступило письменных претензий (п. 3.7 Оферты)</li>
+                  <li>• Услуги считаются оказанными только в объёме фактически посещённых занятий</li>
+                  <li>• <strong>Пропущенное занятие не списывается</strong> и остаётся в пакете — справки о болезни не требуются</li>
+                  <li>• Перерасчёт за неявки не производится именно потому, что без посещения списания не происходит (п. 3.8 Оферты)</li>
                 </ul>
               </div>
             </div>
@@ -70,8 +71,10 @@ export function PaidServices() {
           <div className="bg-purple-50 border border-purple-200 p-6 rounded-lg mb-4">
             <h4 className="font-semibold mb-3">Публичная оферта</h4>
             <p className="text-sm text-gray-700 mb-4">
-              Договор заключается в форме публичной оферты. Оплата услуг через сайт является 
-              акцептом (принятием) условий договора.
+              Договор заключается в форме публичной оферты. Оформление заказа на сайте означает,
+              что заказчик согласен со всеми условиями Оферты (п. 2.1) — отдельного бумажного
+              договора не требуется. Договор считается заключённым с момента оплаты Пакета занятий
+              и акцепта Оферты; подтверждением служит чек или электронный платёжный документ (п. 4.5).
             </p>
             <Link to="/oferta" className="inline-flex w-fit bg-purple-600 text-white px-6 py-3 rounded-lg hover:bg-purple-700 transition items-center gap-2">
               <FileText className="w-5 h-5" />
@@ -93,7 +96,8 @@ export function PaidServices() {
               <div className="flex items-start gap-2">
                 <span className="text-purple-600 font-bold">2.</span>
                 <p>
-                  <strong>Срок действия:</strong> С момента оплаты до окончания оплаченного периода
+                  <strong>Срок действия:</strong> Пакет бессрочный и действует до полного использования
+                  всех {PRICING.visitsPerSubscription} занятий. Календарным месяцем срок не ограничен (п. 2.5)
                 </p>
               </div>
               <div className="flex items-start gap-2">
@@ -105,15 +109,18 @@ export function PaidServices() {
               <div className="flex items-start gap-2">
                 <span className="text-purple-600 font-bold">4.</span>
                 <p>
-                  <strong>Порядок оплаты:</strong> Оплата производится до начала календарного месяца 
-                  через систему онлайн-эквайринга Т-Банк
+                  <strong>Порядок оплаты:</strong> Оплата Пакета производится на сайте через онлайн-эквайринг
+                  Т-Банк. Обязательства по оплате считаются исполненными с момента поступления денег на счёт
+                  исполнителя (п. 3.5)
                 </p>
               </div>
               <div className="flex items-start gap-2">
                 <span className="text-purple-600 font-bold">5.</span>
                 <p>
-                  <strong>Расторжение:</strong> Возможно в любой момент по инициативе заказчика с 
-                  возвратом средств за неоказанные занятия (пропорционально)
+                  <strong>Расторжение:</strong> Заказчик вправе отказаться от договора в любой момент.
+                  Стоимость одного занятия — стоимость Пакета / {PRICING.visitsPerSubscription}; возврат
+                  считается пропорционально непосещённым занятиям и производится в течение 10 календарных
+                  дней тем же способом, которым была произведена оплата (пп. 8.1–8.5)
                 </p>
               </div>
             </div>
@@ -152,7 +159,7 @@ export function PaidServices() {
           <h3 className="font-bold text-lg mb-4">Подтверждение права на льготный тариф</h3>
           <div className="bg-blue-50 border border-blue-200 p-4 rounded-lg">
             <p className="text-sm text-gray-700 mb-3">
-              Для получения скидки 30% необходимо предоставить один из следующих документов:
+              Для перевода на льготный тариф необходимо предоставить один из следующих документов:
             </p>
             <ul className="text-sm text-gray-700 space-y-1 ml-4">
               <li>• Удостоверение многодетной семьи (для многодетных)</li>
