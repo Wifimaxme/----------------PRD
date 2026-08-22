@@ -564,23 +564,7 @@ export function Signup() {
                                             </div>
                                         )}
 
-                                        {/* Submit button */}
-                                        <button
-                                            type="submit"
-                                            disabled={status === 'submitting'}
-                                            className="w-full bg-orange-500 hover:bg-orange-600 disabled:opacity-60 disabled:cursor-not-allowed text-white font-black uppercase tracking-wider py-4 rounded-xl transition shadow-lg shadow-orange-500/30 flex items-center justify-center gap-2 mt-2"
-                                        >
-                                            {status === 'submitting' ? (
-                                                <>
-                                                    <Loader2 className="w-5 h-5 animate-spin" />
-                                                    Отправляем…
-                                                </>
-                                            ) : (
-                                                'Отправить заявку'
-                                            )}
-                                        </button>
-
-                                        {/* Согласие на обработку ПДн — под кнопкой */}
+                                        {/* Согласия — над кнопкой: по п. 4.1 Оферты подтверждаются ДО отправки формы */}
                                         <label className="flex items-start gap-3 cursor-pointer pt-2">
                                             <input
                                                 type="checkbox"
@@ -645,6 +629,22 @@ export function Signup() {
                                                 {errors.photoConsent}
                                             </p>
                                         )}
+
+                                        {/* Submit button */}
+                                        <button
+                                            type="submit"
+                                            disabled={status === 'submitting'}
+                                            className="w-full bg-orange-500 hover:bg-orange-600 disabled:opacity-60 disabled:cursor-not-allowed text-white font-black uppercase tracking-wider py-4 rounded-xl transition shadow-lg shadow-orange-500/30 flex items-center justify-center gap-2 mt-2"
+                                        >
+                                            {status === 'submitting' ? (
+                                                <>
+                                                    <Loader2 className="w-5 h-5 animate-spin" />
+                                                    Отправляем…
+                                                </>
+                                            ) : (
+                                                'Отправить заявку'
+                                            )}
+                                        </button>
 
                                         <p className="text-[11px] text-slate-500 text-center leading-relaxed pt-1">
                                             Или позвоните: <a href="tel:+79138927059" className="text-indigo-700 font-semibold">+7-913-892-70-59</a>
