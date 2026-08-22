@@ -29,6 +29,21 @@ function todayIso(): string {
     return new Date().toISOString().slice(0, 10);
 }
 
+/**
+ * Нижняя граница даты рождения — 18 лет назад.
+ *
+ * Оферта определяет Ребёнка как несовершеннолетнее лицо, а MoyKlass отвергает
+ * даты раньше 1901-01-01 с ошибкой «The date must be at least 1901-01-01 and
+ * no later than today». Раньше мы проверяли только «не в будущем», поэтому
+ * опечатка в годе (0202, 1899) проходила форму и падала уже в CRM — родитель
+ * видел техническую ошибку вместо подсказки.
+ */
+function minDobIso(): string {
+    const date = new Date();
+    date.setFullYear(date.getFullYear() - 18);
+    return date.toISOString().slice(0, 10);
+}
+
 // `value` совпадает с названием варианта `client_type` в MoyKlass
 // (alias=client_type, multiselect). Бэкенд сам подменит на id.
 const PRIVILEGE_OPTIONS = [
@@ -115,6 +130,7 @@ export function Signup() {
     if (!group.trim()) errors.group = 'Укажите группу в саду';
     if (!dob) errors.dob = 'Укажите дату рождения';
     else if (dob > todayIso()) errors.dob = 'Дата рождения не может быть в будущем';
+    else if (dob < minDobIso()) errors.dob = 'Проверьте год рождения — занятия для детей';
     if (!consent) errors.consent = 'Подтвердите принятие Оферты и согласие на обработку персональных данных';
     if (!photoConsent) errors.photoConsent = 'Без согласия на фото- и видеосъёмку занятия не проводятся (п. 7.4.7 Оферты)';
 
@@ -515,6 +531,7 @@ export function Signup() {
                                                 value={dob}
                                                 onChange={(e) => setDob(e.target.value)}
                                                 onBlur={() => markTouched('dob')}
+                                                min={minDobIso()}
                                                 max={todayIso()}
                                                 required
                                                 aria-required="true"
