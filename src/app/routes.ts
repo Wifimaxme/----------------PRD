@@ -52,6 +52,10 @@ export const router = createHashRouter([
         lazy: retryOnStaleChunk(() => import("./pages/Signup").then(m => ({ Component: m.Signup }))),
       },
       {
+        path: "/photo-consent",
+        lazy: retryOnStaleChunk(() => import("./pages/PhotoConsent").then(m => ({ Component: m.PhotoConsent }))),
+      },
+      {
         path: "/blog/:slug",
         lazy: retryOnStaleChunk(() => import("./pages/BlogArticle").then(m => ({ Component: m.BlogArticle }))),
       },

@@ -14,7 +14,7 @@ export default function StickyMobileCTA() {
     const location = useLocation();
     const path = location.pathname;
     const onSignup = path === '/signup';
-    const onLicensing = path.startsWith('/education-info') || path === '/oferta' || path === '/privacy-policy';
+    const onLicensing = path.startsWith('/education-info') || path === '/oferta' || path === '/privacy-policy' || path === '/photo-consent';
 
     useEffect(() => {
         if (onSignup || onLicensing) {
