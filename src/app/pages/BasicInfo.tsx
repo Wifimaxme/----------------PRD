@@ -1,5 +1,6 @@
 import { EducationLayout } from "../components/EducationLayout";
 import { LICENSE } from "../data/license";
+import { ORGANIZATION } from "../data/organization";
 
 type InfoRow = {
   label: string;
@@ -29,7 +30,7 @@ const generalRows: InfoRow[] = [
   },
   {
     label: "Юридический адрес",
-    value: "630088, Новосибирская область, город Новосибирск, улица 9-ый бронный переулок, дом 37",
+    value: ORGANIZATION.legalAddress,
   },
 ];
 
