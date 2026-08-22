@@ -59,7 +59,7 @@ const documents: DocumentItem[] = [
     id: "admission-rules",
     name: "Правила приема, отчисления и перевода обучающихся",
     type: "Оферта",
-    size: "разделы 4, 7А, 7Б",
+    size: "разделы 4, 8, 10",
     signed: false,
     href: "/oferta#admission",
   },
@@ -78,6 +78,14 @@ const documents: DocumentItem[] = [
     size: "редакция от 13.03.2026",
     signed: false,
     href: "/privacy-policy",
+  },
+  {
+    id: "photo-consent",
+    name: "Согласие на фотографирование ребёнка и использование фотографий",
+    type: "Оферта",
+    size: "раздел 7.4",
+    signed: false,
+    href: "/oferta#photo-consent",
   },
   {
     id: "personal-data-consent",

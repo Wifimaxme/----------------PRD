@@ -2,7 +2,7 @@
 // Создаёт ученика (он же лид) в MoyKlass через существующий services/moyklass.js.
 //
 // Схема запроса от формы:
-//   { childName, phone, dob, kindergarten?, group?, privilege?, source? }
+//   { parentName, childName, phone, dob, kindergarten, group, privilege?, source? }
 //
 // Маппинг в MoyKlass POST /v1/company/users (схема проверена живым API):
 //   name           ← childName
@@ -39,6 +39,7 @@ router.post('/', async (req, res) => {
     try {
         const body = req.body || {};
 
+        const parentName = String(body.parentName || '').trim();
         const childName = String(body.childName || '').trim();
         const phone = String(body.phone || '').trim();
         const dob = String(body.dob || '').trim();
@@ -83,11 +84,16 @@ router.post('/', async (req, res) => {
         // MoyKlass принимает phone без "+", только цифры (^[0-9]{10,15}$)
         const phoneDigits = phone.replace(/\D/g, '');
 
+        // ФИО родителя требует п. 4.1 Оферты. Отдельного признака под него в
+        // MoyKlass нет, поэтому кладём в комментарий к карточке ученика.
+        const commentLines = [`Источник: ${source}`];
+        if (parentName) commentLines.push(`Родитель: ${parentName}`);
+
         const payload = {
             name: childName,
             phone: phoneDigits,
             attributes,
-            comment: `Источник: ${source}`,
+            comment: commentLines.join('\n'),
         };
 
         const created = await moyKlass.createUser(payload);
