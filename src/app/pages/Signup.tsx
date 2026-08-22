@@ -40,11 +40,16 @@ const PRIVILEGE_OPTIONS = [
 
 // Все поля формы обязательны, кроме «Льготы» — она сознательно необязательная,
 // пустое значение означает обычный тариф.
-type FieldName = 'childName' | 'phone' | 'kindergarten' | 'group' | 'dob' | 'consent';
+type FieldName =
+    | 'parentName' | 'childName' | 'phone' | 'kindergarten' | 'group' | 'dob'
+    | 'consent' | 'photoConsent';
 
 // Порядок сверху вниз по форме: по нему ищем первое незаполненное поле,
 // чтобы проскроллить и сфокусировать именно его.
-const FIELD_ORDER: FieldName[] = ['childName', 'phone', 'kindergarten', 'group', 'dob', 'consent'];
+const FIELD_ORDER: FieldName[] = [
+    'parentName', 'childName', 'phone', 'kindergarten', 'group', 'dob',
+    'consent', 'photoConsent',
+];
 
 const BASE_FIELD_CLASS =
     'w-full px-5 py-4 rounded-xl border focus:ring-2 focus:outline-none transition text-slate-900 placeholder:text-slate-400';
@@ -70,6 +75,7 @@ export function Signup() {
     const previewSuccess =
         isDev && new URLSearchParams(location.search).get('preview') === 'success';
 
+    const [parentName, setParentName] = useState('');
     const [childName, setChildName] = useState('');
     const [phone, setPhone] = useState(previewSuccess ? '+79138927059' : prefillPhone);
 
@@ -86,6 +92,7 @@ export function Signup() {
     const [group, setGroup] = useState('');
     const [privilege, setPrivilege] = useState('');
     const [consent, setConsent] = useState(false);
+    const [photoConsent, setPhotoConsent] = useState(false);
 
     const openLkInNewTab = shouldOpenLkInNewTab();
 
@@ -98,19 +105,23 @@ export function Signup() {
     const fieldRefs = useRef<Partial<Record<FieldName, HTMLElement | null>>>({});
 
     const errors: Partial<Record<FieldName, string>> = {};
+    if (parentName.trim().length < 2) errors.parentName = 'Введите фамилию и имя родителя';
     if (childName.trim().length < 2) errors.childName = 'Введите фамилию и имя ребёнка';
     if (!isValidPhone(phone)) errors.phone = 'Введите телефон в формате +7XXXXXXXXXX';
     if (!kindergarten.trim()) errors.kindergarten = 'Укажите номер детского сада';
     if (!group.trim()) errors.group = 'Укажите группу в саду';
     if (!dob) errors.dob = 'Укажите дату рождения';
     else if (dob > todayIso()) errors.dob = 'Дата рождения не может быть в будущем';
-    if (!consent) errors.consent = 'Подтвердите согласие на обработку персональных данных';
+    if (!consent) errors.consent = 'Подтвердите принятие Оферты и согласие на обработку персональных данных';
+    if (!photoConsent) errors.photoConsent = 'Без согласия на фотографирование занятия не проводятся (п. 7.4.7 Оферты)';
 
     const formValid = FIELD_ORDER.every(field => !errors[field]);
 
     // Сводка над кнопкой — только про незаполненные поля ввода. У согласия своя
     // подпись под чекбоксом, дублировать её обобщённым текстом не нужно.
-    const hasEmptyFields = FIELD_ORDER.some(field => field !== 'consent' && errors[field]);
+    const hasEmptyFields = FIELD_ORDER.some(
+        field => field !== 'consent' && field !== 'photoConsent' && errors[field]
+    );
 
     function showError(field: FieldName): string | undefined {
         return submitAttempted || touchedFields[field] ? errors[field] : undefined;
@@ -153,6 +164,7 @@ export function Signup() {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify({
+                    parentName: parentName.trim(),
                     childName: childName.trim(),
                     phone,
                     dob,
@@ -317,9 +329,9 @@ export function Signup() {
 
                                         <button
                                             onClick={() => {
-                                                setChildName(''); setPhone('+7'); setDob('');
+                                                setParentName(''); setChildName(''); setPhone('+7'); setDob('');
                                                 setKindergarten(''); setGroup(''); setPrivilege('');
-                                                setConsent(false); setStatus('idle');
+                                                setConsent(false); setPhotoConsent(false); setStatus('idle');
                                                 setTouchedFields({}); setSubmitAttempted(false);
                                             }}
                                             className="mt-5 text-slate-600 hover:text-indigo-800 text-sm font-semibold underline"
@@ -329,6 +341,35 @@ export function Signup() {
                                     </div>
                                 ) : (
                                     <form onSubmit={handleSubmit} className="space-y-3" noValidate>
+                                        {/* Фамилия и Имя родителя — п. 4.1 Оферты */}
+                                        <div>
+                                            <label htmlFor="signup-parentname" className="sr-only">
+                                                Фамилия и имя родителя
+                                            </label>
+                                            <input
+                                                id="signup-parentname"
+                                                ref={(el) => { fieldRefs.current.parentName = el; }}
+                                                type="text"
+                                                value={parentName}
+                                                onChange={(e) => setParentName(e.target.value)}
+                                                onBlur={() => markTouched('parentName')}
+                                                placeholder="Фамилия и Имя родителя*"
+                                                autoComplete="name"
+                                                required
+                                                aria-required="true"
+                                                aria-invalid={!!showError('parentName')}
+                                                aria-describedby={showError('parentName') ? 'signup-parentname-error' : undefined}
+                                                className={fieldClass(!!showError('parentName'))}
+                                                disabled={status === 'submitting'}
+                                            />
+                                            {showError('parentName') && (
+                                                <p id="signup-parentname-error" role="alert" className="flex items-center gap-1.5 text-xs text-red-600 mt-1 ml-1">
+                                                    <AlertCircle className="w-3.5 h-3.5 shrink-0" />
+                                                    {errors.parentName}
+                                                </p>
+                                            )}
+                                        </div>
+
                                         {/* Фамилия и Имя ребёнка */}
                                         <div>
                                             <label htmlFor="signup-childname" className="sr-only">
@@ -535,7 +576,7 @@ export function Signup() {
                                                     Отправляем…
                                                 </>
                                             ) : (
-                                                'Отправить заявку!'
+                                                'Отправить заявку'
                                             )}
                                         </button>
 
@@ -558,15 +599,50 @@ export function Signup() {
                                                 }`}
                                             />
                                             <span className="text-xs text-slate-600 leading-relaxed">
-                                                Я согласен(на) на обработку своих персональных данных и соглашаюсь с{' '}
-                                                <Link to="/privacy-policy" className="text-indigo-700 underline hover:text-indigo-900">политикой конфиденциальности</Link>.{' '}
-                                                <Link to="/oferta" className="text-indigo-700 underline hover:text-indigo-900">Подробнее</Link>
+                                                Я принимаю условия{' '}
+                                                <Link to="/oferta" className="text-indigo-700 underline hover:text-indigo-900">Оферты</Link>
+                                                {' '}и Правил «Чемпион и К», подтверждаю, что являюсь законным представителем ребёнка,
+                                                и согласен(на) на обработку персональных данных — своих и ребёнка — в соответствии с{' '}
+                                                <Link to="/privacy-policy" className="text-indigo-700 underline hover:text-indigo-900">политикой конфиденциальности</Link>.
                                             </span>
                                         </label>
                                         {showError('consent') && (
                                             <p id="signup-consent-error" role="alert" className="flex items-center gap-1.5 text-xs text-red-600 -mt-2 ml-7">
                                                 <AlertCircle className="w-3.5 h-3.5 shrink-0" />
                                                 {errors.consent}
+                                            </p>
+                                        )}
+
+                                        {/* Отдельное согласие на фотографирование — п. 7.4.3 Оферты */}
+                                        <label className="flex items-start gap-3 cursor-pointer pt-1">
+                                            <input
+                                                type="checkbox"
+                                                ref={(el) => { fieldRefs.current.photoConsent = el; }}
+                                                checked={photoConsent}
+                                                onChange={(e) => { setPhotoConsent(e.target.checked); markTouched('photoConsent'); }}
+                                                disabled={status === 'submitting'}
+                                                required
+                                                aria-required="true"
+                                                aria-invalid={!!showError('photoConsent')}
+                                                aria-describedby={showError('photoConsent') ? 'signup-photoconsent-error' : undefined}
+                                                className={`mt-0.5 w-4 h-4 rounded border-2 text-indigo-700 cursor-pointer shrink-0 ${
+                                                    showError('photoConsent')
+                                                        ? 'border-red-500 ring-2 ring-red-200 focus:ring-red-500'
+                                                        : 'border-slate-300 focus:ring-indigo-500'
+                                                }`}
+                                            />
+                                            <span className="text-xs text-slate-600 leading-relaxed">
+                                                Я даю согласие на фотографирование ребёнка на занятиях и использование фотографий
+                                                для подтверждения посещаемости и закрытых фотоотчётов —{' '}
+                                                <Link to="/oferta#photo-consent" className="text-indigo-700 underline hover:text-indigo-900">п. 7.4 Оферты</Link>.
+                                                Фото доступны только родителям группы и тренерам, хранятся 5 месяцев и не используются
+                                                для распознавания лиц.
+                                            </span>
+                                        </label>
+                                        {showError('photoConsent') && (
+                                            <p id="signup-photoconsent-error" role="alert" className="flex items-center gap-1.5 text-xs text-red-600 -mt-2 ml-7">
+                                                <AlertCircle className="w-3.5 h-3.5 shrink-0" />
+                                                {errors.photoConsent}
                                             </p>
                                         )}
 
