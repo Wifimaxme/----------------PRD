@@ -1,7 +1,8 @@
 import { EducationLayout } from "../components/EducationLayout";
 import { FileText, Download, Shield, ExternalLink } from "lucide-react";
 import { LICENSE } from "../data/license";
-import { CONSENT_REVISION, OFERTA_REVISION_SHORT, POLICY_REVISION_SHORT } from "../data/legal";
+import { POLICY_REVISION_SHORT } from "../data/legal";
+import { currentRevision, legalFileUrl } from "../data/legalDocuments";
 
 type DocumentItem = {
   id: string;
@@ -67,10 +68,18 @@ const documents: DocumentItem[] = [
   {
     id: "public-offer",
     name: "Публичная оферта на оказание услуг",
-    type: "HTML",
-    size: `редакция от ${OFERTA_REVISION_SHORT}`,
+    type: "PDF",
+    size: "редакция от 20.08.2026",
     signed: false,
-    href: "/oferta",
+    href: legalFileUrl(currentRevision("oferta")!),
+  },
+  {
+    id: "legal-archive",
+    name: "Архив редакций документов (с контрольными суммами)",
+    type: "HTML",
+    size: "все редакции",
+    signed: false,
+    href: "/legal",
   },
   {
     id: "privacy-policy",
@@ -83,10 +92,10 @@ const documents: DocumentItem[] = [
   {
     id: "photo-consent",
     name: "Согласие на фото- и видеосъёмку ребёнка и использование материалов",
-    type: "HTML",
-    size: CONSENT_REVISION.toLowerCase(),
+    type: "PDF",
+    size: "редакция № 2",
     signed: false,
-    href: "/photo-consent",
+    href: legalFileUrl(currentRevision("photo-consent")!),
   },
   {
     id: "personal-data-consent",

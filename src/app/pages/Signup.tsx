@@ -6,6 +6,7 @@ import {
 } from 'lucide-react';
 import { LK_URL, shouldOpenLkInNewTab } from '../../components/lkLink';
 import { PRICING, PRICE_NOTE, formatPrice } from '../data/pricing';
+import { currentRevision, legalFileUrl } from '../data/legalDocuments';
 
 const LEADS_ENDPOINT =
     ((import.meta as unknown as { env?: Record<string, string> }).env?.VITE_LEADS_ENDPOINT)
@@ -95,6 +96,8 @@ export function Signup() {
     const [photoConsent, setPhotoConsent] = useState(false);
 
     const openLkInNewTab = shouldOpenLkInNewTab();
+    // Ссылка ведёт на неизменяемый PDF той редакции, которую подтверждает родитель.
+    const consentPdf = currentRevision('photo-consent');
 
     const [status, setStatus] = useState<Status>(previewSuccess ? 'success' : 'idle');
     const [errorMessage, setErrorMessage] = useState<string>('');
@@ -618,7 +621,14 @@ export function Signup() {
                                             <span className="text-xs text-slate-600 leading-relaxed">
                                                 Как законный представитель ребёнка, даю ООО «Чемпион и К» согласие на его
                                                 фото- и видеосъёмку во время занятий и использование материалов в закрытых отчётах.{' '}
-                                                <Link to="/photo-consent" className="text-indigo-700 underline hover:text-indigo-900">Условия согласия</Link>
+                                                <a
+                                                    href={consentPdf ? legalFileUrl(consentPdf) : '/photo-consent'}
+                                                    target="_blank"
+                                                    rel="noopener noreferrer"
+                                                    className="text-indigo-700 underline hover:text-indigo-900"
+                                                >
+                                                    Условия согласия
+                                                </a>
                                             </span>
                                         </label>
                                         {showError('photoConsent') && (

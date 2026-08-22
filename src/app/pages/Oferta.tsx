@@ -5,7 +5,7 @@ import { useLocation, Link } from "react-router";
 import { PRICING } from "../data/pricing";
 import { LICENSE } from "../data/license";
 import { ORGANIZATION } from "../data/organization";
-import { OFERTA_REVISION } from "../data/legal";
+import { currentRevision, formatBytes, legalFileUrl } from "../data/legalDocuments";
 
 /**
  * Публичная оферта, редакция от 20 августа 2026 года.
@@ -16,6 +16,7 @@ import { OFERTA_REVISION } from "../data/legal";
  */
 export function Oferta() {
   const location = useLocation();
+  const ofertaPdf = currentRevision("oferta");
 
   useEffect(() => {
     if (location.hash) {
@@ -40,9 +41,25 @@ export function Oferta() {
           <p className="text-center text-gray-600 mb-1">
             на оказание услуг {ORGANIZATION.shortName}
           </p>
-          <p className="text-center text-sm text-gray-500 mb-6">
-            Редакция от {OFERTA_REVISION}
-          </p>
+          {/* Дата редакции — часть текста документа, не подставляется переменной:
+              иначе дату можно изменить, не тронув текст, и наоборот. */}
+          <p className="text-center text-sm text-gray-500 mb-2">Редакция от 20 августа 2026 года</p>
+          {ofertaPdf && (
+            <p className="text-center mb-6 not-prose">
+              <a
+                href={legalFileUrl(ofertaPdf)}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="inline-flex items-center gap-2 rounded-lg border border-purple-200 bg-purple-50 px-4 py-2 text-sm font-semibold text-purple-800 transition hover:bg-purple-100"
+              >
+                Редакция от 20 августа 2026 (PDF, {formatBytes(ofertaPdf.bytes)})
+              </a>
+              <br />
+              <Link to="/legal#oferta" className="mt-2 inline-block text-xs text-gray-500 underline hover:text-gray-700">
+                Все редакции и контрольные суммы
+              </Link>
+            </p>
+          )}
 
           <p className="text-gray-700 mb-6">
             Настоящий документ является публичной офертой {ORGANIZATION.shortName}, ИНН{" "}
