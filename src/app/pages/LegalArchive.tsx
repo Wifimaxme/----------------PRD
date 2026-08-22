@@ -4,9 +4,9 @@ import { FileText, Download, ShieldCheck } from "lucide-react";
 import { Header } from "../components/Header";
 import { Footer } from "../components/Footer";
 import {
-  LEGAL_DOCUMENTS,
   formatBytes,
   legalFileUrl,
+  revisionsByDocument,
   type LegalRevision,
 } from "../data/legalDocuments";
 
@@ -124,7 +124,7 @@ export function LegalArchive() {
           </div>
 
           <div className="mt-6 space-y-6">
-            {LEGAL_DOCUMENTS.map((doc) => (
+            {revisionsByDocument().map((doc) => (
               <section
                 key={doc.id}
                 id={doc.id}
