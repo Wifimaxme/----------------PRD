@@ -1,1 +1,0 @@
-const r={number:"Л035-01199-54/04719505",authority:"Министерство образования Новосибирской области",grantedOn:"2 апреля 2026 года",grantedOnIso:"2026-04-02",order:"№ 244-Л от 02.04.2026",status:"Действующая",validity:"Бессрочно",registryUrl:"https://islod.obrnadzor.gov.ru/view/319694"};export{r as L};
