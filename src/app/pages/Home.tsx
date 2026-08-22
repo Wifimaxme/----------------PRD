@@ -4,7 +4,7 @@ import { Header } from "../components/Header";
 import { Footer } from "../components/Footer";
 import { Quiz } from "../components/Quiz";
 import StickyMobileCTA from "../../components/StickyMobileCTA";
-import { PRICING, formatPrice } from "../data/pricing";
+import { PRICING, PACKAGE_LABEL, PRICE_NOTE, formatPrice } from "../data/pricing";
 import HeroFloatingShapes, { LkFloatingShapes } from "../../components/HeroFloatingShapes";
 import { blogPosts } from "../data/blogPosts";
 import { Link, useNavigate } from "react-router";
@@ -175,7 +175,7 @@ const pricingPlans = [
   {
     name: "Базовый",
     price: `${formatPrice(PRICING.base)} ₽`,
-    note: "/ месяц",
+    note: `/ ${PACKAGE_LABEL}`,
     badge: "Основной тариф",
     features: [
       `${PRICING.visitsPerSubscription} занятий в месяц`,
@@ -188,7 +188,7 @@ const pricingPlans = [
   {
     name: "Льготный",
     price: `${formatPrice(PRICING.privileged)} ₽`,
-    note: "/ месяц",
+    note: `/ ${PACKAGE_LABEL}`,
     badge: "Выгода до 30%",
     highlighted: true,
     features: [
@@ -1509,7 +1509,7 @@ export function Home() {
               },
               {
                 q: "Какая скидка для многодетных и сотрудников ДОУ?",
-                a: `Льготный тариф ${formatPrice(PRICING.privileged)} ₽/мес (вместо ${formatPrice(PRICING.base)} ₽) — для многодетных семей, опекунов, сотрудников детского сада и семей, у которых занимаются двое и больше детей.`,
+                a: `Льготный тариф ${formatPrice(PRICING.privileged)} ₽ ${PRICE_NOTE} (вместо ${formatPrice(PRICING.base)} ₽) — для многодетных семей, опекунов, сотрудников детского сада и семей, у которых занимаются двое и больше детей.`,
               },
             ].map((f, i) => (
               <motion.details

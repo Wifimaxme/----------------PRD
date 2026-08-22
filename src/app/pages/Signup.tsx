@@ -5,7 +5,7 @@ import {
     ArrowLeft, CheckCircle2, Loader2, AlertCircle, UserCircle
 } from 'lucide-react';
 import { LK_URL, shouldOpenLkInNewTab } from '../../components/lkLink';
-import { PRICING } from '../data/pricing';
+import { PRICING, PRICE_NOTE, formatPrice } from '../data/pricing';
 
 const LEADS_ENDPOINT =
     ((import.meta as unknown as { env?: Record<string, string> }).env?.VITE_LEADS_ENDPOINT)
@@ -252,10 +252,10 @@ export function Signup() {
                                 <div className="bg-indigo-800 p-2.5 rounded-full text-white shrink-0 shadow-md shadow-indigo-800/30 mt-1"><RussianRuble className="w-5 h-5" /></div>
                                 <div className="flex-1">
                                     <h3 className="text-indigo-900 font-bold text-sm uppercase">Сколько стоит?</h3>
-                                    <p className="text-slate-800 text-base font-bold">{PRICING.base} ₽/месяц</p>
+                                    <p className="text-slate-800 text-base font-bold">{formatPrice(PRICING.base)} ₽ {PRICE_NOTE}</p>
 
                                     <div className="mt-3 bg-indigo-50 p-3 rounded-xl border border-indigo-100">
-                                        <div className="inline-block bg-indigo-800 text-white text-xs font-bold px-2 py-1 rounded-md mb-2">{PRICING.privileged} ₽/МЕСЯЦ:</div>
+                                        <div className="inline-block bg-indigo-800 text-white text-xs font-bold px-2 py-1 rounded-md mb-2">{formatPrice(PRICING.privileged)} ₽ ЗА ПАКЕТ:</div>
                                         <ul className="text-xs text-slate-600 space-y-1">
                                             <li className="flex items-center gap-1.5"><CheckCircle2 className="w-3.5 h-3.5 text-orange-500 shrink-0"/> для многодетных семей</li>
                                             <li className="flex items-center gap-1.5"><CheckCircle2 className="w-3.5 h-3.5 text-orange-500 shrink-0"/> для детей с опекунами</li>
@@ -502,7 +502,7 @@ export function Signup() {
                                             </select>
                                             {privilege && (
                                                 <p className="text-xs text-orange-600 font-semibold mt-1 ml-1">
-                                                    Льготная стоимость: {PRICING.privileged} ₽/месяц
+                                                    Льготная стоимость: {formatPrice(PRICING.privileged)} ₽ {PRICE_NOTE}
                                                 </p>
                                             )}
                                         </div>
