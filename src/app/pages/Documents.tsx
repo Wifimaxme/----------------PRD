@@ -1,6 +1,7 @@
 import { EducationLayout } from "../components/EducationLayout";
 import { FileText, Download, Shield, ExternalLink } from "lucide-react";
 import { LICENSE } from "../data/license";
+import { OFERTA_REVISION_SHORT, POLICY_REVISION_SHORT } from "../data/legal";
 
 type DocumentItem = {
   id: string;
@@ -65,9 +66,9 @@ const documents: DocumentItem[] = [
   },
   {
     id: "public-offer",
-    name: "Публичный Договор-оферта на оказание платных образовательных услуг",
+    name: "Публичная оферта на оказание услуг",
     type: "HTML",
-    size: "полный текст",
+    size: `редакция от ${OFERTA_REVISION_SHORT}`,
     signed: false,
     href: "/oferta",
   },
@@ -75,7 +76,7 @@ const documents: DocumentItem[] = [
     id: "privacy-policy",
     name: "Политика обработки персональных данных (ФЗ-152)",
     type: "HTML",
-    size: "редакция от 13.03.2026",
+    size: `редакция от ${POLICY_REVISION_SHORT}`,
     signed: false,
     href: "/privacy-policy",
   },

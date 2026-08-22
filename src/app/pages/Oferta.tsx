@@ -5,6 +5,7 @@ import { useLocation, Link } from "react-router";
 import { PRICING } from "../data/pricing";
 import { LICENSE } from "../data/license";
 import { ORGANIZATION } from "../data/organization";
+import { OFERTA_REVISION } from "../data/legal";
 
 /**
  * Публичная оферта, редакция от 20 августа 2026 года.
@@ -13,8 +14,6 @@ import { ORGANIZATION } from "../data/organization";
  * редакции: на них ссылаются «Документы», «Политика конфиденциальности» и
  * форма записи. Менять их идентификаторы нельзя, не поправив те страницы.
  */
-export const OFERTA_REVISION = "20 августа 2026 года";
-
 export function Oferta() {
   const location = useLocation();
 
