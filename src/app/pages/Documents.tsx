@@ -1,7 +1,6 @@
 import { EducationLayout } from "../components/EducationLayout";
 import { FileText, Download, Shield, ExternalLink } from "lucide-react";
 import { LICENSE } from "../data/license";
-import { POLICY_REVISION_SHORT } from "../data/legal";
 import { currentRevision, legalFileUrl } from "../data/legalDocuments";
 
 type DocumentItem = {
@@ -84,10 +83,10 @@ const documents: DocumentItem[] = [
   {
     id: "privacy-policy",
     name: "Политика обработки персональных данных (ФЗ-152)",
-    type: "HTML",
-    size: `редакция от ${POLICY_REVISION_SHORT}`,
+    type: "PDF",
+    size: "редакция от 22.08.2026",
     signed: false,
-    href: "/privacy-policy",
+    href: legalFileUrl(currentRevision("privacy-policy")!),
   },
   {
     id: "photo-consent",
