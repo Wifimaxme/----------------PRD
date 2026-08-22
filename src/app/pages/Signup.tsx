@@ -616,11 +616,9 @@ export function Signup() {
                                                 }`}
                                             />
                                             <span className="text-xs text-slate-600 leading-relaxed">
-                                                Я даю согласие на фотографирование и видеосъёмку ребёнка на занятиях и использование
-                                                фото- и видеоматериалов для подтверждения посещаемости и закрытых отчётов —{' '}
-                                                <Link to="/oferta#photo-consent" className="text-indigo-700 underline hover:text-indigo-900">п. 7.4 Оферты</Link>.
-                                                Материалы доступны только родителям группы и тренерам, хранятся 5 месяцев и не
-                                                используются для распознавания лиц.
+                                                Как законный представитель ребёнка, даю ООО «Чемпион и К» согласие на его
+                                                фото- и видеосъёмку во время занятий и использование материалов в закрытых отчётах.{' '}
+                                                <Link to="/photo-consent" className="text-indigo-700 underline hover:text-indigo-900">Условия согласия</Link>
                                             </span>
                                         </label>
                                         {showError('photoConsent') && (

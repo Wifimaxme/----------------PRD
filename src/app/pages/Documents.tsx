@@ -1,7 +1,7 @@
 import { EducationLayout } from "../components/EducationLayout";
 import { FileText, Download, Shield, ExternalLink } from "lucide-react";
 import { LICENSE } from "../data/license";
-import { OFERTA_REVISION_SHORT, POLICY_REVISION_SHORT } from "../data/legal";
+import { CONSENT_REVISION, OFERTA_REVISION_SHORT, POLICY_REVISION_SHORT } from "../data/legal";
 
 type DocumentItem = {
   id: string;
@@ -83,10 +83,10 @@ const documents: DocumentItem[] = [
   {
     id: "photo-consent",
     name: "Согласие на фото- и видеосъёмку ребёнка и использование материалов",
-    type: "Оферта",
-    size: "раздел 7.4",
+    type: "HTML",
+    size: CONSENT_REVISION.toLowerCase(),
     signed: false,
-    href: "/oferta#photo-consent",
+    href: "/photo-consent",
   },
   {
     id: "personal-data-consent",
