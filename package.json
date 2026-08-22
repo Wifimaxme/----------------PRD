@@ -8,7 +8,8 @@
     "predeploy": "npm run build",
     "deploy": "gh-pages -d dist",
     "build": "vite build",
-    "dev": "vite"
+    "dev": "vite",
+    "verify:legal": "node scripts/verify-legal.mjs"
   },
   "dependencies": {
     "@emotion/react": "11.14.0",

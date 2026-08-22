@@ -3,7 +3,7 @@ import { Footer } from "../components/Footer";
 import { useEffect } from "react";
 import { useLocation, Link } from "react-router";
 import { ORGANIZATION } from "../data/organization";
-import { CONSENT_REVISION } from "../data/legal";
+import { currentRevision, formatBytes, legalFileUrl } from "../data/legalDocuments";
 
 /**
  * Согласие на фото- и видеосъёмку ребёнка — отдельный документ, на который
@@ -14,6 +14,7 @@ import { CONSENT_REVISION } from "../data/legal";
  */
 export function PhotoConsent() {
   const location = useLocation();
+  const consentPdf = currentRevision("photo-consent");
 
   useEffect(() => {
     if (location.hash) {
@@ -35,7 +36,24 @@ export function PhotoConsent() {
             Согласие законного представителя на фото- и видеосъёмку ребёнка, использование его
             изображения и предоставление фото- и видеоотчётов
           </h1>
-          <p className="text-center text-sm text-gray-500 mb-6">{CONSENT_REVISION}</p>
+          {/* Номер редакции — часть текста документа, не подставляется переменной. */}
+          <p className="text-center text-sm text-gray-500 mb-2">Редакция № 2</p>
+          {consentPdf && (
+            <p className="text-center mb-6">
+              <a
+                href={legalFileUrl(consentPdf)}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="inline-flex items-center gap-2 rounded-lg border border-purple-200 bg-purple-50 px-4 py-2 text-sm font-semibold text-purple-800 transition hover:bg-purple-100"
+              >
+                Редакция № 2 (PDF, {formatBytes(consentPdf.bytes)})
+              </a>
+              <br />
+              <Link to="/legal#photo-consent" className="mt-2 inline-block text-xs text-gray-500 underline hover:text-gray-700">
+                Все редакции и контрольные суммы
+              </Link>
+            </p>
+          )}
 
           <p className="text-gray-700 mb-8">
             Настоящее согласие оформляется отдельно от публичной оферты, договора и иных документов
