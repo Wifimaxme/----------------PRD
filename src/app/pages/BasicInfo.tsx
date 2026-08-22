@@ -1,4 +1,5 @@
 import { EducationLayout } from "../components/EducationLayout";
+import { LICENSE } from "../data/license";
 
 type InfoRow = {
   label: string;
@@ -37,6 +38,31 @@ const requisitesRows: InfoRow[] = [
   { label: "ОГРН", value: "1175476013888" },
   { label: "КПП", value: "540301001" },
   { label: "Банк", value: 'АО "ТБанк"' },
+];
+
+const licenseRows: InfoRow[] = [
+  { label: "Регистрационный номер лицензии", value: LICENSE.number },
+  { label: "Лицензирующий орган", value: LICENSE.authority },
+  {
+    label: "Дата предоставления лицензии",
+    value: <time dateTime={LICENSE.grantedOnIso}>{LICENSE.grantedOn}</time>,
+  },
+  { label: "Реквизиты приказа о предоставлении", value: LICENSE.order },
+  { label: "Статус лицензии", value: LICENSE.status },
+  { label: "Срок действия", value: LICENSE.validity },
+  {
+    label: "Сведения в реестре",
+    value: (
+      <a
+        href={LICENSE.registryUrl}
+        target="_blank"
+        rel="noopener noreferrer"
+        className="text-purple-700 hover:underline"
+      >
+        Карточка лицензии в реестре Рособрнадзора
+      </a>
+    ),
+  },
 ];
 
 const scheduleRows: InfoRow[] = [
@@ -151,6 +177,15 @@ export function BasicInfo() {
 
         <InfoSection id="requisites" title="Реквизиты организации">
           <InfoTable rows={requisitesRows} />
+        </InfoSection>
+
+        <InfoSection id="license" title="Лицензия на осуществление образовательной деятельности">
+          <InfoTable rows={licenseRows} />
+          <p className="text-sm leading-7 text-gray-600">
+            Лицензия предоставлена бессрочно и подтверждена в сводном реестре лицензий
+            Рособрнадзора. Сведения доступны для проверки по регистрационному номеру{" "}
+            <span className="font-semibold text-gray-800">{LICENSE.number}</span>.
+          </p>
         </InfoSection>
 
         <InfoSection id="activity-addresses" title="Адреса осуществления образовательной деятельности">

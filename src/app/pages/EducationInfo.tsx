@@ -1,5 +1,6 @@
 import { Link } from "react-router";
 import { FileText, Users, GraduationCap, Building, Wallet, Briefcase, Globe, Award, Coffee, BookOpenCheck } from "lucide-react";
+import { LICENSE } from "../data/license";
 
 const sections = [
   {
@@ -104,9 +105,18 @@ export function EducationInfo() {
       <div className="container mx-auto px-4 py-12">
         <div className="bg-blue-50 border border-blue-200 rounded-lg p-6 mb-8">
           <p className="text-sm text-gray-700">
-            Данный раздел содержит полную информацию об образовательной организации в соответствии 
-            с требованиями <strong>Приказа Рособрнадзора № 1493</strong> и необходим для прохождения 
-            процедуры лицензирования образовательной деятельности.
+            Данный раздел содержит полную информацию об образовательной организации в соответствии
+            с требованиями <strong>Приказа Рособрнадзора № 1493</strong>. Образовательная деятельность
+            осуществляется на основании лицензии <strong>{LICENSE.number}</strong> от {LICENSE.grantedOn},
+            выданной {LICENSE.authorityInstrumental}.{" "}
+            <a
+              href={LICENSE.registryUrl}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="text-purple-700 underline hover:text-purple-800"
+            >
+              Проверить в реестре Рособрнадзора
+            </a>.
           </p>
         </div>
 

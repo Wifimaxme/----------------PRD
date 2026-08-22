@@ -1,5 +1,6 @@
 import { EducationLayout } from "../components/EducationLayout";
 import { FileText, Download, Shield, ExternalLink } from "lucide-react";
+import { LICENSE } from "../data/license";
 
 type DocumentItem = {
   id: string;
@@ -8,9 +9,20 @@ type DocumentItem = {
   size: string;
   signed: boolean;
   href?: string;
+  /** Ссылка ведёт на внешний ресурс, а не на страницу сайта или PDF. */
+  external?: boolean;
 };
 
 const documents: DocumentItem[] = [
+  {
+    id: "license",
+    name: "Лицензия на осуществление образовательной деятельности",
+    type: "Реестр Рособрнадзора",
+    size: LICENSE.number,
+    signed: false,
+    href: LICENSE.registryUrl,
+    external: true,
+  },
   {
     id: "charter",
     name: "Устав ООО «Чемпион и К»",
@@ -124,7 +136,17 @@ export function Documents() {
                     </div>
                   </div>
                   {isAvailable ? (
-                    doc.type === "PDF" ? (
+                    doc.external ? (
+                      <a
+                        href={doc.href}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className="bg-purple-600 text-white px-4 py-2 rounded-lg hover:bg-purple-700 transition flex items-center gap-2 text-sm whitespace-nowrap"
+                      >
+                        <ExternalLink className="w-4 h-4" />
+                        Проверить в реестре
+                      </a>
+                    ) : doc.type === "PDF" ? (
                       <a
                         href={doc.href}
                         target="_blank"
