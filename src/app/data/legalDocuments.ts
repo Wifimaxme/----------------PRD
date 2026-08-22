@@ -65,6 +65,22 @@ export const LEGAL_DOCUMENTS: LegalDocument[] = [
         ],
     },
     {
+        id: "privacy-policy",
+        title: "Политика в отношении обработки персональных данных",
+        page: "/privacy-policy",
+        revisions: [
+            {
+                file: "privacy-policy-2026-08-22.pdf",
+                revision: "Редакция от 22 августа 2026 года",
+                effectiveFrom: "2026-08-22",
+                publishedOn: "2026-08-22",
+                sha256: "457a3f09c1aa4e70a78107e746c411b3473db0b40fe5faf58a1e8d1b8b7316f6",
+                bytes: 233115,
+                current: true,
+            },
+        ],
+    },
+    {
         id: "photo-consent",
         title:
             "Согласие законного представителя на фото- и видеосъёмку ребёнка, использование его изображения и предоставление фото- и видеоотчётов",
