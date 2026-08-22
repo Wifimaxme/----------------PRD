@@ -1,6 +1,34 @@
+import type { ComponentType } from "react";
 import { createHashRouter, replace } from "react-router";
 import { Root } from "./Root";
 import { NotFound } from "./pages/NotFound";
+
+type RouteModule = { Component: ComponentType };
+
+/**
+ * Страницы грузятся отдельными чанками, а при выкатке старые чанки удаляются.
+ * Если вкладка открыта со вчерашней сборкой, переход на другую страницу
+ * упирается в 404 и роутер показывает «страница не найдена» — хотя страница
+ * есть, устарела сборка. Ловим это и один раз перезагружаемся за свежим
+ * index.html. Флаг снимает main.tsx после успешного старта.
+ */
+function retryOnStaleChunk(load: () => Promise<RouteModule>) {
+  return () =>
+    load().catch((error) => {
+      const KEY = "chunk-recovery-attempted";
+      try {
+        if (!sessionStorage.getItem(KEY)) {
+          sessionStorage.setItem(KEY, "1");
+          window.location.reload();
+          // Не резолвим: страница уже перезагружается, рисовать нечего.
+          return new Promise<RouteModule>(() => {});
+        }
+      } catch {
+        // sessionStorage недоступен — падаем в обычную обработку ошибки.
+      }
+      throw error;
+    });
+}
 
 export const router = createHashRouter([
   {
@@ -9,23 +37,23 @@ export const router = createHashRouter([
     children: [
       {
         path: "/",
-        lazy: () => import("./pages/Home").then(m => ({ Component: m.Home })),
+        lazy: retryOnStaleChunk(() => import("./pages/Home").then(m => ({ Component: m.Home }))),
       },
       {
         path: "/oferta",
-        lazy: () => import("./pages/Oferta").then(m => ({ Component: m.Oferta })),
+        lazy: retryOnStaleChunk(() => import("./pages/Oferta").then(m => ({ Component: m.Oferta }))),
       },
       {
         path: "/privacy-policy",
-        lazy: () => import("./pages/PrivacyPolicy").then(m => ({ Component: m.PrivacyPolicy })),
+        lazy: retryOnStaleChunk(() => import("./pages/PrivacyPolicy").then(m => ({ Component: m.PrivacyPolicy }))),
       },
       {
         path: "/signup",
-        lazy: () => import("./pages/Signup").then(m => ({ Component: m.Signup })),
+        lazy: retryOnStaleChunk(() => import("./pages/Signup").then(m => ({ Component: m.Signup }))),
       },
       {
         path: "/blog/:slug",
-        lazy: () => import("./pages/BlogArticle").then(m => ({ Component: m.BlogArticle })),
+        lazy: retryOnStaleChunk(() => import("./pages/BlogArticle").then(m => ({ Component: m.BlogArticle }))),
       },
 
       {
@@ -34,55 +62,55 @@ export const router = createHashRouter([
       },
       {
         path: "/education-info/basic",
-        lazy: () => import("./pages/BasicInfo").then(m => ({ Component: m.BasicInfo })),
+        lazy: retryOnStaleChunk(() => import("./pages/BasicInfo").then(m => ({ Component: m.BasicInfo }))),
       },
       {
         path: "/education-info/structure",
-        lazy: () => import("./pages/Structure").then(m => ({ Component: m.Structure })),
+        lazy: retryOnStaleChunk(() => import("./pages/Structure").then(m => ({ Component: m.Structure }))),
       },
       {
         path: "/education-info/documents",
-        lazy: () => import("./pages/Documents").then(m => ({ Component: m.Documents })),
+        lazy: retryOnStaleChunk(() => import("./pages/Documents").then(m => ({ Component: m.Documents }))),
       },
       {
         path: "/education-info/education",
-        lazy: () => import("./pages/Education").then(m => ({ Component: m.Education })),
+        lazy: retryOnStaleChunk(() => import("./pages/Education").then(m => ({ Component: m.Education }))),
       },
       {
         path: "/education-info/standards",
-        lazy: () => import("./pages/Standards").then(m => ({ Component: m.Standards })),
+        lazy: retryOnStaleChunk(() => import("./pages/Standards").then(m => ({ Component: m.Standards }))),
       },
       {
         path: "/education-info/staff",
-        lazy: () => import("./pages/Staff").then(m => ({ Component: m.Staff })),
+        lazy: retryOnStaleChunk(() => import("./pages/Staff").then(m => ({ Component: m.Staff }))),
       },
       {
         path: "/education-info/materials",
-        lazy: () => import("./pages/Materials").then(m => ({ Component: m.Materials })),
+        lazy: retryOnStaleChunk(() => import("./pages/Materials").then(m => ({ Component: m.Materials }))),
       },
       {
         path: "/education-info/paid-services",
-        lazy: () => import("./pages/PaidServices").then(m => ({ Component: m.PaidServices })),
+        lazy: retryOnStaleChunk(() => import("./pages/PaidServices").then(m => ({ Component: m.PaidServices }))),
       },
       {
         path: "/education-info/finance",
-        lazy: () => import("./pages/Finance").then(m => ({ Component: m.Finance })),
+        lazy: retryOnStaleChunk(() => import("./pages/Finance").then(m => ({ Component: m.Finance }))),
       },
       {
         path: "/education-info/vacancies",
-        lazy: () => import("./pages/Vacancies").then(m => ({ Component: m.Vacancies })),
+        lazy: retryOnStaleChunk(() => import("./pages/Vacancies").then(m => ({ Component: m.Vacancies }))),
       },
       {
         path: "/education-info/scholarships",
-        lazy: () => import("./pages/Scholarships").then(m => ({ Component: m.Scholarships })),
+        lazy: retryOnStaleChunk(() => import("./pages/Scholarships").then(m => ({ Component: m.Scholarships }))),
       },
       {
         path: "/education-info/catering",
-        lazy: () => import("./pages/Catering").then(m => ({ Component: m.Catering })),
+        lazy: retryOnStaleChunk(() => import("./pages/Catering").then(m => ({ Component: m.Catering }))),
       },
       {
         path: "/education-info/international",
-        lazy: () => import("./pages/International").then(m => ({ Component: m.International })),
+        lazy: retryOnStaleChunk(() => import("./pages/International").then(m => ({ Component: m.International }))),
       },
     ],
   },
