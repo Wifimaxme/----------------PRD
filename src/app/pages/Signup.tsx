@@ -76,6 +76,57 @@ function fieldClass(invalid: boolean): string {
     return `${BASE_FIELD_CLASS} ${invalid ? INVALID_FIELD_CLASS : VALID_FIELD_CLASS}`;
 }
 
+
+/**
+ * Тексты возле галочек заданы сегментами, чтобы показанный на экране текст и
+ * значение shownText в acceptances строились из одного источника. Юридически
+ * значимо не то, что написано в документе, а то, что человек видел, — поэтому
+ * дублировать строку отдельно нельзя, разъедется.
+ */
+type ConsentSegment = { text: string; to?: string };
+
+const OFERTA_CONSENT_SEGMENTS: ConsentSegment[] = [
+    { text: 'Я принимаю условия ' },
+    { text: 'Оферты', to: '/oferta' },
+    { text: ' и Правил «Чемпион и К», подтверждаю, что являюсь законным представителем ребёнка, и согласен(на) на обработку персональных данных — своих и ребёнка — в соответствии с ' },
+    { text: 'политикой конфиденциальности', to: '/privacy-policy' },
+    { text: '.' },
+];
+
+const PHOTO_CONSENT_SEGMENTS: ConsentSegment[] = [
+    { text: 'Как законный представитель ребёнка, даю ООО «Чемпион и К» согласие на его фото- и видеосъёмку во время занятий и использование материалов в закрытых отчётах. ' },
+    { text: 'Условия согласия', to: 'PHOTO_CONSENT_PDF' },
+];
+
+function segmentsToText(segments: ConsentSegment[]): string {
+    return segments.map(segment => segment.text).join('').trim();
+}
+
+
+/** Рисует подпись галочки из сегментов — тех самых, что уходят в shownText. */
+function ConsentLabel({ segments, pdfHref }: { segments: ConsentSegment[]; pdfHref?: string }) {
+    const linkClass = 'text-indigo-700 underline hover:text-indigo-900';
+    return (
+        <span className="text-xs text-slate-600 leading-relaxed">
+            {segments.map((segment, index) => {
+                if (!segment.to) return <span key={index}>{segment.text}</span>;
+                if (segment.to === 'PHOTO_CONSENT_PDF') {
+                    return (
+                        <a key={index} href={pdfHref} target="_blank" rel="noopener noreferrer" className={linkClass}>
+                            {segment.text}
+                        </a>
+                    );
+                }
+                return (
+                    <Link key={index} to={segment.to} className={linkClass}>
+                        {segment.text}
+                    </Link>
+                );
+            })}
+        </span>
+    );
+}
+
 export function Signup() {
     const navigate = useNavigate();
     const location = useLocation();
@@ -113,6 +164,45 @@ export function Signup() {
     const openLkInNewTab = shouldOpenLkInNewTab();
     // Ссылка ведёт на неизменяемый PDF той редакции, которую подтверждает родитель.
     const consentPdf = currentRevision('photo-consent');
+    const ofertaPdf = currentRevision('oferta');
+
+    /**
+     * Акцепт Оферты и согласие на съёмку — два самостоятельных юридических
+     * акта: п. 4.7 Оферты прямо говорит, что акцепт не заменяет отдельного
+     * согласия. Поэтому два элемента, а не один флаг.
+     *
+     * Хеш присылает клиент: форма знает, какую именно редакцию она показала
+     * на экране, сервер этого не знает.
+     */
+    function buildAcceptances() {
+        const acts: {
+            documentId: string;
+            revision: string;
+            file: string;
+            sha256: string;
+            shownText: string;
+        }[] = [];
+
+        if (ofertaPdf) {
+            acts.push({
+                documentId: ofertaPdf.id,
+                revision: ofertaPdf.revision,
+                file: ofertaPdf.file,
+                sha256: ofertaPdf.sha256,
+                shownText: segmentsToText(OFERTA_CONSENT_SEGMENTS),
+            });
+        }
+        if (consentPdf) {
+            acts.push({
+                documentId: consentPdf.id,
+                revision: consentPdf.revision,
+                file: consentPdf.file,
+                sha256: consentPdf.sha256,
+                shownText: segmentsToText(PHOTO_CONSENT_SEGMENTS),
+            });
+        }
+        return acts;
+    }
 
     const [status, setStatus] = useState<Status>(previewSuccess ? 'success' : 'idle');
     const [errorMessage, setErrorMessage] = useState<string>('');
@@ -191,6 +281,7 @@ export function Signup() {
                     group: group.trim(),
                     privilege: privilege || null,
                     source: 'champion-footboll.ru/signup',
+                    acceptances: buildAcceptances(),
                 }),
             });
 
@@ -602,13 +693,7 @@ export function Signup() {
                                                         : 'border-slate-300 focus:ring-indigo-500'
                                                 }`}
                                             />
-                                            <span className="text-xs text-slate-600 leading-relaxed">
-                                                Я принимаю условия{' '}
-                                                <Link to="/oferta" className="text-indigo-700 underline hover:text-indigo-900">Оферты</Link>
-                                                {' '}и Правил «Чемпион и К», подтверждаю, что являюсь законным представителем ребёнка,
-                                                и согласен(на) на обработку персональных данных — своих и ребёнка — в соответствии с{' '}
-                                                <Link to="/privacy-policy" className="text-indigo-700 underline hover:text-indigo-900">политикой конфиденциальности</Link>.
-                                            </span>
+                                            <ConsentLabel segments={OFERTA_CONSENT_SEGMENTS} />
                                         </label>
                                         {showError('consent') && (
                                             <p id="signup-consent-error" role="alert" className="flex items-center gap-1.5 text-xs text-red-600 -mt-2 ml-7">
@@ -635,18 +720,10 @@ export function Signup() {
                                                         : 'border-slate-300 focus:ring-indigo-500'
                                                 }`}
                                             />
-                                            <span className="text-xs text-slate-600 leading-relaxed">
-                                                Как законный представитель ребёнка, даю ООО «Чемпион и К» согласие на его
-                                                фото- и видеосъёмку во время занятий и использование материалов в закрытых отчётах.{' '}
-                                                <a
-                                                    href={consentPdf ? legalFileUrl(consentPdf) : '/photo-consent'}
-                                                    target="_blank"
-                                                    rel="noopener noreferrer"
-                                                    className="text-indigo-700 underline hover:text-indigo-900"
-                                                >
-                                                    Условия согласия
-                                                </a>
-                                            </span>
+                                            <ConsentLabel
+                                                segments={PHOTO_CONSENT_SEGMENTS}
+                                                pdfHref={consentPdf ? legalFileUrl(consentPdf) : '/photo-consent'}
+                                            />
                                         </label>
                                         {showError('photoConsent') && (
                                             <p id="signup-photoconsent-error" role="alert" className="flex items-center gap-1.5 text-xs text-red-600 -mt-2 ml-7">
