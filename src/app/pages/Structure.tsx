@@ -1,5 +1,6 @@
 import { EducationLayout } from "../components/EducationLayout";
 import { Users, UserCircle, Award } from "lucide-react";
+import { ORGANIZATION } from "../data/organization";
 
 export function Structure() {
   return (
@@ -89,7 +90,7 @@ export function Structure() {
                     <div className="space-y-1">
                       <p><strong>Телефон:</strong> <a href="tel:+79039037633" className="text-purple-600 hover:underline">+7-903-903-76-33</a></p>
                       <p><strong>E-mail:</strong> <a href="mailto:maxme2016@yandex.ru" className="text-purple-600 hover:underline">maxme2016@yandex.ru</a></p>
-                      <p><strong>Место нахождения:</strong> 630088, Новосибирская область, г. Новосибирск, ул. 9-ый бронный переулок, д. 37</p>
+                      <p><strong>Место нахождения:</strong> {ORGANIZATION.legalAddress}</p>
                     </div>
                   </td>
                 </tr>

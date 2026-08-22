@@ -189,7 +189,7 @@ const pricingPlans = [
     name: "Льготный",
     price: `${formatPrice(PRICING.privileged)} ₽`,
     note: `/ ${PACKAGE_LABEL}`,
-    badge: `Выгода ${formatPrice(PRICING.base - PRICING.privileged)} ₽`,
+    badge: "Выгода до 30%",
     highlighted: true,
     features: [
       "Для многодетных семей",
