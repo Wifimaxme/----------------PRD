@@ -59,6 +59,19 @@
       "id": "privacy-policy",
       "title": "Политика в отношении обработки персональных данных",
       "page": "/privacy-policy",
+      "file": "privacy-policy-2026-08-23-r2.pdf",
+      "url": "/legal/privacy-policy-2026-08-23-r2.pdf",
+      "revision": "Редакция от 23 августа 2026 года",
+      "effectiveFrom": "2026-08-23",
+      "publishedOn": "2026-08-23",
+      "sha256": "405f492102319cd2666da746826a64449d0edc02b5115d4bf039a0cdad1b77fd",
+      "bytes": 236443,
+      "current": true
+    },
+    {
+      "id": "privacy-policy",
+      "title": "Политика в отношении обработки персональных данных",
+      "page": "/privacy-policy",
       "file": "privacy-policy-2026-08-22-r1.pdf",
       "url": "/legal/privacy-policy-2026-08-22-r1.pdf",
       "revision": "Редакция от 22 августа 2026 года",
@@ -66,7 +79,7 @@
       "publishedOn": "2026-08-22",
       "sha256": "457a3f09c1aa4e70a78107e746c411b3473db0b40fe5faf58a1e8d1b8b7316f6",
       "bytes": 233115,
-      "current": true
+      "current": false
     },
     {
       "id": "photo-consent",
