@@ -43,7 +43,7 @@ export function Oferta() {
           </p>
           {/* Дата редакции — часть текста документа, не подставляется переменной:
               иначе дату можно изменить, не тронув текст, и наоборот. */}
-          <p className="text-center text-sm text-gray-500 mb-2">Редакция от 20 августа 2026 года</p>
+          <p className="text-center text-sm text-gray-500 mb-2">Редакция от 23 августа 2026 года</p>
           {ofertaPdf && (
             <p className="text-center mb-6 not-prose">
               <a
@@ -52,7 +52,7 @@ export function Oferta() {
                 rel="noopener noreferrer"
                 className="inline-flex items-center gap-2 rounded-lg border border-purple-200 bg-purple-50 px-4 py-2 text-sm font-semibold text-purple-800 transition hover:bg-purple-100"
               >
-                Редакция от 20 августа 2026 (PDF, {formatBytes(ofertaPdf.bytes)})
+                Редакция от 23 августа 2026 (PDF, {formatBytes(ofertaPdf.bytes)})
               </a>
               <br />
               <Link to="/legal#oferta" className="mt-2 inline-block text-xs text-gray-500 underline hover:text-gray-700">
