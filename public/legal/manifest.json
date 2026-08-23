@@ -7,6 +7,19 @@
       "id": "oferta",
       "title": "Публичная оферта на оказание услуг",
       "page": "/oferta",
+      "file": "oferta-2026-08-23-r2.pdf",
+      "url": "/legal/oferta-2026-08-23-r2.pdf",
+      "revision": "Редакция от 20 августа 2026 года",
+      "effectiveFrom": "2026-08-20",
+      "publishedOn": "2026-08-23",
+      "sha256": "74671a2609bb83a8ac1671ddd0e5b3bb179493a641e76ac90d911b06a5377bbf",
+      "bytes": 205654,
+      "current": true
+    },
+    {
+      "id": "oferta",
+      "title": "Публичная оферта на оказание услуг",
+      "page": "/oferta",
       "file": "oferta-2026-08-22-r1.pdf",
       "url": "/legal/oferta-2026-08-22-r1.pdf",
       "revision": "Редакция от 20 августа 2026 года",
@@ -14,7 +27,7 @@
       "publishedOn": "2026-08-22",
       "sha256": "3e04b85962b007b90d127a8624c728d80ce764b16a02676864131e7d6534fd55",
       "bytes": 193905,
-      "current": true
+      "current": false
     },
     {
       "id": "privacy-policy",
