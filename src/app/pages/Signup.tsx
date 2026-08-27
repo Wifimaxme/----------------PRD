@@ -14,6 +14,16 @@ const LEADS_ENDPOINT =
 
 type Status = 'idle' | 'submitting' | 'success' | 'error';
 
+/**
+ * Ошибка, текст которой прислал бэкенд в поле `error`.
+ *
+ * Показываем его как есть: причину отказа знает приёмная сторона, а не форма.
+ * Собирать свою строку из кода ответа нельзя — так родитель видел «HTTP 503»
+ * вместо объяснения. Приём общий для 400, 502, 503 и любого другого отказа:
+ * поменяется причина на бэкенде — текст поедет сам, править форму не придётся.
+ */
+class ServerMessageError extends Error {}
+
 function normalizePhone(input: string): string {
     let digits = input.replace(/\D/g, '');
     if (digits.startsWith('8')) digits = '7' + digits.slice(1);
@@ -286,18 +296,34 @@ export function Signup() {
             });
 
             if (!response.ok) {
-                const text = await response.text().catch(() => '');
-                throw new Error(text || `HTTP ${response.status}`);
+                const raw = await response.text().catch(() => '');
+                let serverMessage = '';
+                try {
+                    const parsed = JSON.parse(raw);
+                    if (parsed && typeof parsed.error === 'string') {
+                        serverMessage = parsed.error.trim();
+                    }
+                } catch {
+                    // Тело не JSON — покажем общий текст ниже.
+                }
+                if (serverMessage) throw new ServerMessageError(serverMessage);
+                throw new Error(raw || `HTTP ${response.status}`);
             }
 
             setStatus('success');
         } catch (err) {
             setStatus('error');
-            setErrorMessage(
-                err instanceof Error && err.message
-                    ? `Не удалось отправить заявку: ${err.message}. Позвоните по +7-913-892-70-59.`
-                    : 'Не удалось отправить заявку. Позвоните по +7-913-892-70-59.'
-            );
+            const callUs = 'Позвоните по +7-913-892-70-59.';
+            if (err instanceof ServerMessageError) {
+                // Текст бэкенда самодостаточен, свой заголовок не добавляем.
+                // Точку ставим сами, если её нет, — иначе фразы слипаются.
+                const message = /[.!?…]$/.test(err.message) ? err.message : `${err.message}.`;
+                setErrorMessage(`${message} ${callUs}`);
+            } else if (err instanceof Error && err.message) {
+                setErrorMessage(`Не удалось отправить заявку: ${err.message}. ${callUs}`);
+            } else {
+                setErrorMessage(`Не удалось отправить заявку. ${callUs}`);
+            }
         }
     }
 
