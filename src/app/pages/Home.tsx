@@ -347,6 +347,18 @@ const schoolStats: SchoolStat[] = [
     label: "достижения, финансы и расписание ребёнка",
     accentClass: "from-fuchsia-500 to-purple-600",
   },
+  {
+    kind: "badge",
+    valueLines: ["Свой", "аватар"],
+    label: "развивается вместе с ребёнком",
+    accentClass: "from-pink-500 to-fuchsia-600",
+  },
+  {
+    kind: "badge",
+    valueLines: ["Цифровые", "медали"],
+    label: "за достижения на тренировках",
+    accentClass: "from-yellow-500 to-amber-600",
+  },
 ];
 
 // "Us vs them" comparison rows — drives the convenience value
@@ -650,42 +662,6 @@ export function Home() {
       </section>
 
       {/* School in numbers — trust strip right under the hero */}
-      <section className="py-14 sm:py-20 bg-gradient-to-br from-indigo-50/50 via-white to-orange-50/40 relative overflow-hidden">
-        <div className="absolute -left-20 -top-10 h-64 w-64 rounded-full bg-purple-200/25 blur-3xl pointer-events-none" />
-        <div className="absolute -right-20 -bottom-10 h-72 w-72 rounded-full bg-orange-200/25 blur-3xl pointer-events-none" />
-
-        <div className="container mx-auto px-4 relative">
-          <div className="grid gap-3 grid-cols-2 sm:grid-cols-3 lg:grid-cols-6">
-            {schoolStats.map((stat, i) => (
-              <motion.div
-                key={stat.label}
-                initial={{ opacity: 0, y: 22 }}
-                whileInView={{ opacity: 1, y: 0 }}
-                viewport={{ once: true, margin: "-40px" }}
-                transition={{ delay: i * 0.06, duration: 0.3, ease: "easeOut" }}
-                className="relative overflow-hidden rounded-[1.1rem] bg-white border border-black/6 p-4 shadow-[0_2px_14px_-6px_rgba(15,23,42,0.12)]"
-              >
-                <div className={`absolute inset-x-0 top-0 h-1 bg-gradient-to-r ${stat.accentClass}`} />
-                {stat.kind === "number" ? (
-                  <div className={`text-3xl md:text-4xl font-black tracking-tight bg-gradient-to-br ${stat.accentClass} bg-clip-text text-transparent leading-none`}>
-                    <CountUp to={stat.value} suffix={stat.suffix} />
-                  </div>
-                ) : (
-                  <div className={`text-xl md:text-2xl font-black tracking-tight bg-gradient-to-br ${stat.accentClass} bg-clip-text text-transparent leading-tight`}>
-                    {stat.valueLines.map((line, idx) => (
-                      <div key={idx}>{line}</div>
-                    ))}
-                  </div>
-                )}
-                <p className="mt-2 text-xs leading-snug text-gray-600">
-                  {stat.label}
-                </p>
-              </motion.div>
-            ))}
-          </div>
-        </div>
-      </section>
-
       {/* How a class flows — concrete 25-min breakdown */}
       <section className="py-32">
         <div className="container mx-auto px-4">
@@ -761,9 +737,15 @@ export function Home() {
       </section>
 
       {/* Comparison: typical section vs ФШ «Чемпион» */}
-      <section className="py-32">
-        <div className="container mx-auto px-4">
-          <div className="max-w-3xl mx-auto text-center">
+      {/* Почему именно мы — сравнение и счётчики одной bento-сеткой.
+          Раньше это были две отдельные секции: сравнение убеждало, а цифры
+          подтверждали — но стояли далеко друг от друга и не работали вместе. */}
+      <section className="relative overflow-hidden bg-gradient-to-br from-indigo-50/50 via-white to-orange-50/40 py-24 sm:py-28">
+        <div className="pointer-events-none absolute -left-20 -top-10 h-64 w-64 rounded-full bg-purple-200/25 blur-3xl" />
+        <div className="pointer-events-none absolute -right-20 -bottom-10 h-72 w-72 rounded-full bg-orange-200/25 blur-3xl" />
+
+        <div className="container relative mx-auto px-4">
+          <div className="mx-auto max-w-3xl text-center">
             <div className="ui-eyebrow justify-center">
               <Sparkles className="h-4 w-4" />
               Почему именно мы
@@ -773,10 +755,10 @@ export function Home() {
             </h2>
           </div>
 
-          <div className="mt-16 grid gap-4 lg:grid-cols-2 max-w-4xl mx-auto">
-            {/* "Как обычно" — muted card */}
-            <div className="rounded-[1.3rem] border border-slate-200 bg-slate-50 p-5 sm:p-6 relative">
-              <p className="text-[11px] font-semibold uppercase tracking-[0.16em] text-slate-500 mb-2">
+          <div className="mt-14 grid grid-cols-2 gap-3 sm:gap-4 lg:grid-cols-4">
+            {/* Сравнение: две широкие плитки по половине ряда */}
+            <div className="col-span-2 relative rounded-[1.3rem] border border-slate-200 bg-slate-50 p-5 sm:p-6">
+              <p className="mb-2 text-[11px] font-semibold uppercase tracking-[0.16em] text-slate-500">
                 Как обычно
               </p>
               <h3 className="text-2xl font-bold tracking-tight text-slate-700">
@@ -792,7 +774,7 @@ export function Home() {
                     transition={{ delay: i * 0.05, duration: 0.3, ease: "easeOut" }}
                     className="flex items-start gap-3 text-slate-600"
                   >
-                    <span className="shrink-0 mt-0.5 inline-flex items-center justify-center w-6 h-6 rounded-full bg-slate-300 text-white">
+                    <span className="mt-0.5 inline-flex h-6 w-6 shrink-0 items-center justify-center rounded-full bg-slate-300 text-white">
                       <X className="h-3.5 w-3.5" />
                     </span>
                     <span className="leading-snug">{row.usual}</span>
@@ -801,12 +783,11 @@ export function Home() {
               </ul>
             </div>
 
-            {/* ФШ «Чемпион» — brand card */}
-            <div className="rounded-[1.3rem] bg-gradient-to-br from-indigo-900 via-purple-700 to-orange-500 p-5 sm:p-6 text-white relative overflow-hidden shadow-[0_24px_60px_-30px_rgba(124,58,237,0.55)]">
-              <div className="absolute -right-12 -top-12 h-56 w-56 rounded-full bg-orange-400/30 blur-3xl pointer-events-none" />
-              <div className="absolute -left-10 bottom-0 h-40 w-40 rounded-full bg-purple-400/30 blur-3xl pointer-events-none" />
+            <div className="col-span-2 relative overflow-hidden rounded-[1.3rem] bg-gradient-to-br from-indigo-900 via-purple-700 to-orange-500 p-5 text-white shadow-[0_24px_60px_-30px_rgba(124,58,237,0.55)] sm:p-6">
+              <div className="pointer-events-none absolute -right-12 -top-12 h-56 w-56 rounded-full bg-orange-400/30 blur-3xl" />
+              <div className="pointer-events-none absolute -left-10 bottom-0 h-40 w-40 rounded-full bg-purple-400/30 blur-3xl" />
               <div className="relative">
-                <p className="text-[11px] font-semibold uppercase tracking-[0.18em] text-orange-200 mb-2">
+                <p className="mb-2 text-[11px] font-semibold uppercase tracking-[0.18em] text-orange-200">
                   Наш подход
                 </p>
                 <h3 className="text-2xl font-bold tracking-tight text-white">
@@ -820,9 +801,9 @@ export function Home() {
                       whileInView={{ opacity: 1, x: 0 }}
                       viewport={{ once: true, margin: "-40px" }}
                       transition={{ delay: i * 0.05 + 0.05, duration: 0.3, ease: "easeOut" }}
-                      className="flex items-start gap-3 text-white/95 font-medium"
+                      className="flex items-start gap-3 font-medium text-white/95"
                     >
-                      <span className="shrink-0 mt-0.5 inline-flex items-center justify-center w-6 h-6 rounded-full bg-white text-emerald-600">
+                      <span className="mt-0.5 inline-flex h-6 w-6 shrink-0 items-center justify-center rounded-full bg-white text-emerald-600">
                         <CheckCircle2 className="h-4 w-4" />
                       </span>
                       <span className="leading-snug">{row.us}</span>
@@ -831,6 +812,32 @@ export function Home() {
                 </ul>
               </div>
             </div>
+
+            {/* Счётчики — по одной ячейке, добивают ряды до четырёх */}
+            {schoolStats.map((stat, i) => (
+              <motion.div
+                key={stat.label}
+                initial={{ opacity: 0, y: 22 }}
+                whileInView={{ opacity: 1, y: 0 }}
+                viewport={{ once: true, margin: "-40px" }}
+                transition={{ delay: (i % 4) * 0.06, duration: 0.3, ease: "easeOut" }}
+                className="relative overflow-hidden rounded-[1.1rem] border border-black/6 bg-white p-4 shadow-[0_2px_14px_-6px_rgba(15,23,42,0.12)] sm:p-5"
+              >
+                <div className={`absolute inset-x-0 top-0 h-1 bg-gradient-to-r ${stat.accentClass}`} />
+                {stat.kind === "number" ? (
+                  <div className={`bg-gradient-to-br text-3xl font-black leading-none tracking-tight md:text-4xl ${stat.accentClass} bg-clip-text text-transparent`}>
+                    <CountUp to={stat.value} suffix={stat.suffix} />
+                  </div>
+                ) : (
+                  <div className={`bg-gradient-to-br text-xl font-black leading-tight tracking-tight md:text-2xl ${stat.accentClass} bg-clip-text text-transparent`}>
+                    {stat.valueLines.map((line, idx) => (
+                      <div key={idx}>{line}</div>
+                    ))}
+                  </div>
+                )}
+                <p className="mt-2 text-xs leading-snug text-gray-600 sm:text-sm">{stat.label}</p>
+              </motion.div>
+            ))}
           </div>
         </div>
       </section>
