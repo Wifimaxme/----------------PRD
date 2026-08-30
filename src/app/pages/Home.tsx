@@ -325,14 +325,26 @@ const schoolStats: SchoolStat[] = [
   },
   {
     kind: "badge",
-    valueLines: ["ИИ", "в тренировке"],
-    label: "разбирает занятие и ведёт прогресс каждого ребёнка",
+    valueLines: ["Задания", "дома"],
+    label: "под наблюдением ИИ — камера считает выполнение",
     accentClass: "from-sky-500 to-indigo-500",
   },
   {
     kind: "badge",
-    valueLines: ["Медали", "и аватар"],
-    label: "ребёнок видит свой рост и хочет заниматься",
+    valueLines: ["Прозрачный", "результат"],
+    label: "отчёт по каждой тренировке ребёнка",
+    accentClass: "from-cyan-500 to-sky-600",
+  },
+  {
+    kind: "badge",
+    valueLines: ["Мировые", "практики"],
+    label: "методики тренировок для дошкольников",
+    accentClass: "from-violet-500 to-indigo-600",
+  },
+  {
+    kind: "badge",
+    valueLines: ["Личный", "кабинет"],
+    label: "достижения, финансы и расписание ребёнка",
     accentClass: "from-fuchsia-500 to-purple-600",
   },
 ];
