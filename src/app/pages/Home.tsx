@@ -2,7 +2,6 @@ import { useEffect, useRef, useState } from "react";
 import { motion } from "motion/react";
 import { Header } from "../components/Header";
 import { Footer } from "../components/Footer";
-import { Quiz } from "../components/Quiz";
 import StickyMobileCTA from "../../components/StickyMobileCTA";
 import { PRICING, PACKAGE_LABEL, PRICE_NOTE, formatPrice } from "../data/pricing";
 import HeroFloatingShapes, { LkFloatingShapes } from "../../components/HeroFloatingShapes";
@@ -26,6 +25,8 @@ import {
   X,
   Compass,
   CalendarHeart,
+  Camera,
+  Coins,
 } from "lucide-react";
 
 interface Coach {
@@ -322,6 +323,18 @@ const schoolStats: SchoolStat[] = [
     label: "программа аккредитована",
     accentClass: "from-amber-500 to-orange-500",
   },
+  {
+    kind: "badge",
+    valueLines: ["ИИ", "в тренировке"],
+    label: "разбирает занятие и ведёт прогресс каждого ребёнка",
+    accentClass: "from-sky-500 to-indigo-500",
+  },
+  {
+    kind: "badge",
+    valueLines: ["Медали", "и аватар"],
+    label: "ребёнок видит свой рост и хочет заниматься",
+    accentClass: "from-fuchsia-500 to-purple-600",
+  },
 ];
 
 // "Us vs them" comparison rows — drives the convenience value
@@ -397,31 +410,6 @@ export function Home() {
   const heroVideoRef = useRef<HTMLIFrameElement | null>(null);
   const navigate = useNavigate();
   const [heroPhone, setHeroPhone] = useState('+7');
-  const [quizModalOpen, setQuizModalOpen] = useState(false);
-  const quizTriggerRef = useRef<HTMLButtonElement | null>(null);
-  const quizWasOpenRef = useRef(false);
-
-  // Lock body scroll while the quiz modal is open + return focus on close
-  useEffect(() => {
-    if (quizModalOpen) {
-      quizWasOpenRef.current = true;
-      const prev = document.body.style.overflow;
-      document.body.style.overflow = "hidden";
-      const onEsc = (e: KeyboardEvent) => {
-        if (e.key === "Escape") setQuizModalOpen(false);
-      };
-      window.addEventListener("keydown", onEsc);
-      return () => {
-        document.body.style.overflow = prev;
-        window.removeEventListener("keydown", onEsc);
-      };
-    }
-    // Restore focus to the trigger when closing (WCAG modal focus management)
-    if (quizWasOpenRef.current) {
-      quizWasOpenRef.current = false;
-      quizTriggerRef.current?.focus();
-    }
-  }, [quizModalOpen]);
 
   const handleHeroSubmit = (e: { preventDefault: () => void }) => {
     e.preventDefault();
@@ -1368,6 +1356,140 @@ export function Home() {
         </div>
       </section>
 
+      {/* Digital progress: аватар, паутинка, задания дома, медали.
+          Стоит перед разделом про вход в кабинет: сначала показываем, ради
+          чего туда заходить, потом объясняем, как войти. */}
+      <section id="digital-progress" className="py-32 overflow-hidden">
+        <div className="container mx-auto px-4">
+          <div className="mx-auto max-w-3xl text-center">
+            <div className="ui-eyebrow justify-center">
+              <Sparkles className="h-4 w-4" />
+              Цифровая часть занятий
+            </div>
+            <h2 className={sectionTitleClass}>
+              Ребёнок видит, как растёт
+            </h2>
+            <p className="mt-6 text-lg leading-relaxed text-gray-600">
+              Дошкольнику трудно поверить, что он стал сильнее, — он этого не замечает.
+              Поэтому прогресс мы показываем: направления развития заполняются от занятия
+              к занятию, за старание приходят медали, а чемпиона в кабинете можно нарядить
+              за заработанные монеты.
+            </p>
+          </div>
+
+          <div className="mt-16 grid gap-5 lg:grid-cols-3">
+            {/* Задания дома — главное, ноу-хау */}
+            <div className="lg:col-span-2 relative overflow-hidden rounded-[2rem] border border-black/8 bg-gradient-to-br from-indigo-950 via-purple-900 to-purple-800 p-8 text-white shadow-xl md:p-10">
+              <div className="relative">
+                <div className="inline-flex items-center gap-2 rounded-full bg-white/12 px-4 py-2 text-sm font-semibold backdrop-blur-sm">
+                  <Camera className="h-4 w-4" />
+                  Задания дома
+                </div>
+                <h3 className="mt-6 text-2xl font-bold tracking-tight md:text-3xl">
+                  Камера сама считает, сколько ребёнок сделал
+                </h3>
+                <p className="mt-4 max-w-2xl text-base leading-relaxed text-purple-100">
+                  Между тренировками ребёнок получает короткие задания: стойка на одной ноге,
+                  приседания, звёздочка. Он включает камеру и выполняет — телефон распознаёт
+                  движение и сам считает секунды и повторы. Взрослый не нужен: ребёнок видит
+                  счётчик и понимает, засчитано или нет.
+                </p>
+
+                <div className="mt-8 grid gap-3 sm:grid-cols-3">
+                  {[
+                    { name: "Стойка на одной ноге", goal: "10 секунд" },
+                    { name: "Приседания", goal: "12 повторов" },
+                    { name: "Звёздочка", goal: "12 повторов" },
+                  ].map((task) => (
+                    <div key={task.name} className="rounded-2xl bg-white/10 px-5 py-4 backdrop-blur-sm">
+                      <div className="text-sm font-semibold">{task.name}</div>
+                      <div className="mt-1 text-sm text-purple-200">{task.goal}</div>
+                    </div>
+                  ))}
+                </div>
+
+                <div className="mt-8 flex items-start gap-3 rounded-2xl border border-white/15 bg-white/5 px-5 py-4">
+                  <Shield className="mt-0.5 h-5 w-5 shrink-0 text-emerald-300" />
+                  <p className="text-sm leading-relaxed text-purple-100">
+                    <strong className="text-white">Видео обрабатывается на телефоне и никуда не отправляется.</strong>{" "}
+                    Нам приходит только результат: задание засчитано, начислены баллы.
+                    Запись ребёнка дома не покидает устройство.
+                  </p>
+                </div>
+              </div>
+            </div>
+
+            {/* Паутинка развития */}
+            <div className="rounded-[2rem] border border-black/8 bg-white p-8 shadow-sm">
+              <div className="flex h-12 w-12 items-center justify-center rounded-2xl bg-gradient-to-br from-purple-600 to-indigo-600 text-white">
+                <Compass className="h-6 w-6" />
+              </div>
+              <h3 className="mt-6 text-xl font-bold tracking-tight text-gray-900">
+                Карта развития
+              </h3>
+              <p className="mt-3 text-base leading-relaxed text-gray-600">
+                Шесть направлений, которые заполняются после каждого занятия. Видно не только
+                футбол — видно, как ребёнок меняется.
+              </p>
+              <div className="mt-6 flex flex-wrap gap-2">
+                {["Техника", "Физика", "Командность", "Характер", "Дисциплина", "Мышление"].map((axis) => (
+                  <span
+                    key={axis}
+                    className="rounded-full border border-purple-100 bg-purple-50 px-3 py-1.5 text-sm font-semibold text-purple-700"
+                  >
+                    {axis}
+                  </span>
+                ))}
+              </div>
+              <p className="mt-6 border-t border-black/8 pt-5 text-sm leading-relaxed text-gray-500">
+                Тренер отмечает результат сразу после занятия — родитель видит обновление
+                в личном кабинете в тот же день.
+              </p>
+            </div>
+
+            {/* Медали */}
+            <div className="rounded-[2rem] border border-black/8 bg-white p-8 shadow-sm">
+              <div className="flex h-12 w-12 items-center justify-center rounded-2xl bg-gradient-to-br from-amber-500 to-orange-500 text-white">
+                <Award className="h-6 w-6" />
+              </div>
+              <h3 className="mt-6 text-xl font-bold tracking-tight text-gray-900">
+                Медали за старание
+              </h3>
+              <p className="mt-3 text-base leading-relaxed text-gray-600">
+                Награды приходят не за победы, а за то, что важно в этом возрасте: был активен,
+                старался, помогал другим, смело играл, хорошо слушал. Тренер отмечает это после
+                занятия — родителю приходит в кабинет.
+              </p>
+            </div>
+
+            {/* Аватар и монеты */}
+            <div className="lg:col-span-2 rounded-[2rem] border border-black/8 bg-gradient-to-br from-orange-50 to-fuchsia-50 p-8 shadow-sm md:p-10">
+              <div className="flex flex-col gap-6 md:flex-row md:items-center md:justify-between">
+                <div className="max-w-xl">
+                  <div className="flex h-12 w-12 items-center justify-center rounded-2xl bg-gradient-to-br from-fuchsia-500 to-purple-600 text-white">
+                    <Coins className="h-6 w-6" />
+                  </div>
+                  <h3 className="mt-6 text-xl font-bold tracking-tight text-gray-900">
+                    Свой чемпион и магазин апгрейдов
+                  </h3>
+                  <p className="mt-3 text-base leading-relaxed text-gray-600">
+                    У ребёнка в кабинете живёт собственный аватар. За тренировки и выполненные
+                    домашние задания начисляются монеты — на них чемпиона можно нарядить.
+                    Это и есть та причина, по которой ребёнок сам просит сделать задание.
+                  </p>
+                </div>
+                <Link
+                  to="/signup"
+                  className={`${primaryButtonClass} flex shrink-0 items-center justify-center gap-2`}
+                >
+                  Записаться на пробное
+                </Link>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
       {/* Personal Account Section */}
       <section id="personal-account" className="py-32 overflow-hidden bg-slate-50/50">
         <div className="container mx-auto px-4">
@@ -1439,36 +1561,6 @@ export function Home() {
               </div>
             </div>
           </div>
-        </div>
-      </section>
-
-      {/* Quiz banner — opens the quiz in a modal */}
-      <section className="py-16 bg-indigo-50/40">
-        <div className="container mx-auto px-4">
-          <button
-            ref={quizTriggerRef}
-            type="button"
-            onClick={() => setQuizModalOpen(true)}
-            className="group mx-auto block w-full max-w-4xl rounded-[1.4rem] bg-white border border-black/6 p-6 sm:p-7 text-left shadow-[0_2px_14px_-6px_rgba(15,23,42,0.12)] hover:border-purple-300 hover:shadow-[0_24px_50px_-30px_rgba(124,58,237,0.4)] hover:-translate-y-0.5 transition-all"
-          >
-            <div className="grid grid-cols-1 sm:grid-cols-[auto_1fr_auto] items-center gap-5">
-              <div className="flex h-14 w-14 shrink-0 items-center justify-center rounded-2xl bg-gradient-to-br from-purple-600 to-orange-500 shadow-[0_10px_22px_-12px_rgba(124,58,237,0.6)]">
-                <Sparkles className="h-7 w-7 text-white" />
-              </div>
-              <div className="min-w-0">
-                <p className="text-[11px] font-semibold uppercase tracking-[0.16em] text-purple-500">
-                  Бесплатный PDF-гайд
-                </p>
-                <h3 className="mt-1 text-lg sm:text-xl font-bold tracking-tight text-gray-900 leading-snug">
-                  3 вопроса — и забираете персональный гайд по адаптации ребёнка к спорту
-                </h3>
-              </div>
-              <span className="shrink-0 inline-flex items-center justify-center gap-2 rounded-xl bg-gradient-to-br from-purple-600 to-orange-500 text-white font-bold px-6 py-3.5 text-sm whitespace-nowrap shadow-[0_10px_22px_-10px_rgba(124,58,237,0.5)] group-hover:shadow-[0_14px_28px_-10px_rgba(124,58,237,0.6)] transition-shadow">
-                Открыть тест
-                <span className="transition-transform group-hover:translate-x-1">→</span>
-              </span>
-            </div>
-          </button>
         </div>
       </section>
 
@@ -1697,31 +1789,6 @@ export function Home() {
       <Footer />
       <StickyMobileCTA />
 
-      {/* Quiz modal */}
-      {quizModalOpen && (
-        <div
-          className="fixed inset-0 z-[100] flex items-start justify-center overflow-y-auto bg-slate-900/60 backdrop-blur-sm p-4 sm:p-8"
-          onClick={() => setQuizModalOpen(false)}
-          role="dialog"
-          aria-modal="true"
-          aria-label="Экспресс-тест для родителей: получить PDF-гайд"
-        >
-          <div
-            className="relative w-full max-w-3xl my-4 sm:my-8"
-            onClick={(e) => e.stopPropagation()}
-          >
-            <button
-              type="button"
-              onClick={() => setQuizModalOpen(false)}
-              className="absolute -top-3 -right-3 sm:-top-4 sm:-right-4 z-10 w-10 h-10 rounded-full bg-white shadow-lg flex items-center justify-center text-slate-700 hover:text-slate-900 hover:scale-105 transition"
-              aria-label="Закрыть тест"
-            >
-              <X className="w-5 h-5" />
-            </button>
-            <Quiz />
-          </div>
-        </div>
-      )}
     </div>
   );
 }
