@@ -2,7 +2,7 @@ import { useEffect, useRef, useState } from 'react';
 import { useNavigate, Link, useLocation } from 'react-router';
 import {
     Trophy, MapPin, Calendar, UserCheck, Users, RussianRuble, CircleDot,
-    ArrowLeft, CheckCircle2, Loader2, AlertCircle, UserCircle
+    ArrowLeft, CheckCircle2, Loader2, AlertCircle, UserCircle, ChevronDown
 } from 'lucide-react';
 import { LK_URL, shouldOpenLkInNewTab } from '../../components/lkLink';
 import { PRICING, PRICE_NOTE, formatPrice } from '../data/pricing';
@@ -667,17 +667,27 @@ export function Signup() {
 
                                         {/* Льгота */}
                                         <div>
-                                            <select
-                                                value={privilege}
-                                                onChange={(e) => setPrivilege(e.target.value)}
-                                                className={`${BASE_FIELD_CLASS} ${VALID_FIELD_CLASS}`}
-                                                disabled={status === 'submitting'}
-                                            >
-                                                <option value="">Льгота (если есть)</option>
-                                                {PRIVILEGE_OPTIONS.filter(o => o.value).map(opt => (
-                                                    <option key={opt.value} value={opt.value}>{opt.label}</option>
-                                                ))}
-                                            </select>
+                                            {/* Нативный select не наследует шрифт и метрики инпутов, поэтому
+                                                поле выбивалось из ряда по высоте. Убираем системную отрисовку,
+                                                задаём тот же шрифт и рисуем свою стрелку. */}
+                                            <div className="relative">
+                                                <select
+                                                    value={privilege}
+                                                    onChange={(e) => setPrivilege(e.target.value)}
+                                                    aria-label="Льгота"
+                                                    className={`${BASE_FIELD_CLASS} ${VALID_FIELD_CLASS} appearance-none font-sans text-base leading-6 pr-12`}
+                                                    disabled={status === 'submitting'}
+                                                >
+                                                    <option value="">Льготы нет</option>
+                                                    {PRIVILEGE_OPTIONS.filter(o => o.value).map(opt => (
+                                                        <option key={opt.value} value={opt.value}>{opt.label}</option>
+                                                    ))}
+                                                </select>
+                                                <ChevronDown
+                                                    aria-hidden="true"
+                                                    className="pointer-events-none absolute right-4 top-1/2 h-5 w-5 -translate-y-1/2 text-slate-400"
+                                                />
+                                            </div>
                                             {privilege && (
                                                 <p className="text-xs text-orange-600 font-semibold mt-1 ml-1">
                                                     Льготная стоимость: {formatPrice(PRICING.privileged)} ₽ {PRICE_NOTE}
