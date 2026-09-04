@@ -1,5 +1,5 @@
 import { useEffect, useRef, useState } from "react";
-import { motion } from "motion/react";
+import { motion, useReducedMotion } from "motion/react";
 import { Header } from "../components/Header";
 import { Footer } from "../components/Footer";
 import StickyMobileCTA from "../../components/StickyMobileCTA";
@@ -302,7 +302,7 @@ const schoolStats: SchoolStat[] = [
     value: 2000,
     suffix: "+",
     label: "детей прошли обучение",
-    accentClass: "from-orange-500 to-orange-600",
+    accentClass: "from-orange-700 to-orange-600",
   },
   {
     kind: "number",
@@ -315,25 +315,25 @@ const schoolStats: SchoolStat[] = [
     kind: "badge",
     valueLines: ["Круглый", "год"],
     label: "тренировки в зале и на улице",
-    accentClass: "from-emerald-500 to-teal-500",
+    accentClass: "from-emerald-700 to-teal-600",
   },
   {
     kind: "badge",
     valueLines: ["Лицензия", "Минобра"],
     label: "программа аккредитована",
-    accentClass: "from-amber-500 to-orange-500",
+    accentClass: "from-amber-700 to-orange-500",
   },
   {
     kind: "badge",
     valueLines: ["Задания", "дома"],
     label: "под наблюдением ИИ — камера считает выполнение",
-    accentClass: "from-sky-500 to-indigo-500",
+    accentClass: "from-sky-700 to-indigo-500",
   },
   {
     kind: "badge",
     valueLines: ["Прозрачный", "результат"],
     label: "отчёт по каждой тренировке ребёнка",
-    accentClass: "from-cyan-500 to-sky-600",
+    accentClass: "from-cyan-700 to-sky-600",
   },
   {
     kind: "badge",
@@ -357,7 +357,7 @@ const schoolStats: SchoolStat[] = [
     kind: "badge",
     valueLines: ["Цифровые", "медали"],
     label: "за достижения на тренировках",
-    accentClass: "from-yellow-500 to-amber-600",
+    accentClass: "from-amber-700 to-orange-600",
   },
 ];
 
@@ -386,11 +386,19 @@ const comparisonRows = [
 // Lightweight count-up: animates an integer from 0 to `to` once the
 // element scrolls into view. Pure rAF, no library.
 function CountUp({ to, suffix = "", durationMs = 1400 }: { to: number; suffix?: string; durationMs?: number }) {
+  // При включённом «уменьшить движение» показываем итог сразу: счётчик —
+  // декоративная анимация, а не смысловая, и крутить её нельзя.
+  const prefersReducedMotion = useReducedMotion();
   const [val, setVal] = useState(0);
   const ref = useRef<HTMLSpanElement | null>(null);
   const startedRef = useRef(false);
 
   useEffect(() => {
+    if (prefersReducedMotion) {
+      setVal(to);
+      startedRef.current = true;
+      return;
+    }
     const el = ref.current;
     if (!el || startedRef.current) return;
     const observer = new IntersectionObserver((entries) => {
@@ -409,7 +417,7 @@ function CountUp({ to, suffix = "", durationMs = 1400 }: { to: number; suffix?: 
     }, { threshold: 0.4 });
     observer.observe(el);
     return () => observer.disconnect();
-  }, [to, durationMs]);
+  }, [to, durationMs, prefersReducedMotion]);
 
   return (
     <span ref={ref}>
