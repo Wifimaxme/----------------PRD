@@ -59,6 +59,7 @@ function minDobIso(): string {
 const PRIVILEGE_OPTIONS = [
     { value: '', label: `Без льготы (обычный тариф ${PRICING.base} ₽)` },
     { value: 'Многодетный', label: 'Многодетная семья' },
+    { value: 'СВО', label: 'Семья участника СВО' },
     { value: 'Опекун', label: 'Опекун' },
     { value: 'Сотрудник', label: 'Сотрудник детского сада' },
     { value: '2 детей', label: '2+ детей в нашей школе' },
@@ -406,6 +407,7 @@ export function Signup() {
                                         <div className="inline-block bg-indigo-800 text-white text-xs font-bold px-2 py-1 rounded-md mb-2">{formatPrice(PRICING.privileged)} ₽ ЗА ПАКЕТ:</div>
                                         <ul className="text-xs text-slate-600 space-y-1">
                                             <li className="flex items-center gap-1.5"><CheckCircle2 className="w-3.5 h-3.5 text-orange-500 shrink-0"/> для многодетных семей</li>
+                                            <li className="flex items-center gap-1.5"><CheckCircle2 className="w-3.5 h-3.5 text-orange-500 shrink-0"/> для семей участников СВО</li>
                                             <li className="flex items-center gap-1.5"><CheckCircle2 className="w-3.5 h-3.5 text-orange-500 shrink-0"/> для детей с опекунами</li>
                                             <li className="flex items-center gap-1.5"><CheckCircle2 className="w-3.5 h-3.5 text-orange-500 shrink-0"/> для детей воспитателей</li>
                                             <li className="flex items-start gap-1.5 leading-tight"><CheckCircle2 className="w-3.5 h-3.5 text-orange-500 shrink-0 mt-0.5"/> для 2х и более детей из одной семьи</li>
