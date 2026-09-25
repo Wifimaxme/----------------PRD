@@ -652,7 +652,7 @@ export function Home() {
                     setIsHeroVideoReady(true);
                     requestHeroVideoPlayback();
                   }}
-                  allow="autoplay; encrypted-media; picture-in-picture; fullscreen"
+                  allow="autoplay; encrypted-media; picture-in-picture"
                   referrerPolicy="strict-origin-when-cross-origin"
                   allowFullScreen
                 ></iframe>

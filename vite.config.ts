@@ -44,14 +44,12 @@ function cspMetaTag(leadsEndpoint: string): Plugin {
   return {
     name: 'csp-meta-tag',
     apply: 'build',
-    transformIndexHtml() {
-      return [
-        {
-          tag: 'meta',
-          attrs: { 'http-equiv': 'Content-Security-Policy', content: buildCsp(leadsEndpoint) },
-          injectTo: 'head-prepend',
-        },
-      ]
+    transformIndexHtml(html) {
+      // Вставляем строкой, а не через tags: Vite экранирует кавычки в
+      // атрибутах, и 'self' превращается в &#39;self&#39;. Браузер это
+      // понимает, но читать dist/index.html глазами становится неприятно.
+      const meta = `<meta http-equiv="Content-Security-Policy" content="${buildCsp(leadsEndpoint)}" />`
+      return html.replace('<head>', `<head>\n    ${meta}`)
     },
   }
 }
