@@ -10,24 +10,35 @@ type RouteModule = { Component: ComponentType };
  * Если вкладка открыта со вчерашней сборкой, переход на другую страницу
  * упирается в 404 и роутер показывает «страница не найдена» — хотя страница
  * есть, устарела сборка. Ловим это и один раз перезагружаемся за свежим
- * index.html. Флаг снимает main.tsx после успешного старта.
+ * index.html. Флаг снимаем здесь же, когда чанк наконец загрузился, а не при
+ * старте приложения: после перезагрузки приложение стартует раньше, чем
+ * повторяется попытка, и снятый на старте флаг не ограничивал бы ничего.
  */
 function retryOnStaleChunk(load: () => Promise<RouteModule>) {
+  const KEY = "chunk-recovery-attempted";
   return () =>
-    load().catch((error) => {
-      const KEY = "chunk-recovery-attempted";
-      try {
-        if (!sessionStorage.getItem(KEY)) {
-          sessionStorage.setItem(KEY, "1");
-          window.location.reload();
-          // Не резолвим: страница уже перезагружается, рисовать нечего.
-          return new Promise<RouteModule>(() => {});
+    load()
+      .then((module) => {
+        try {
+          sessionStorage.removeItem(KEY);
+        } catch {
+          // sessionStorage недоступен: флага там и не было.
         }
-      } catch {
-        // sessionStorage недоступен — падаем в обычную обработку ошибки.
-      }
-      throw error;
-    });
+        return module;
+      })
+      .catch((error) => {
+        try {
+          if (!sessionStorage.getItem(KEY)) {
+            sessionStorage.setItem(KEY, "1");
+            window.location.reload();
+            // Не резолвим: страница уже перезагружается, рисовать нечего.
+            return new Promise<RouteModule>(() => {});
+          }
+        } catch {
+          // sessionStorage недоступен: падаем в обычную обработку ошибки.
+        }
+        throw error;
+      });
 }
 
 export const router = createHashRouter([
