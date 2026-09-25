@@ -308,7 +308,11 @@ export function Signup() {
                     // Тело не JSON — покажем общий текст ниже.
                 }
                 if (serverMessage) throw new ServerMessageError(serverMessage);
-                throw new Error(raw || `HTTP ${response.status}`);
+                // Тело не JSON или без поля error (например, HTML страница 502 от
+                // nginx). Наружу его не показываем: родителю оно ни о чём, а на
+                // экране выглядит как мусор. Пишем в консоль и падаем в общий текст.
+                console.error('[signup] отказ без текста', response.status, raw.slice(0, 200));
+                throw new Error();
             }
 
             setStatus('success');
