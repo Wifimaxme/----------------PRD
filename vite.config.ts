@@ -11,26 +11,39 @@ import react from '@vitejs/plugin-react'
  * websocket и подсовывает стили инлайном, политика бы это заблокировала.
  *
  * Что разрешено и почему:
- *   script-src 'self'          весь JS наш, инлайновых скриптов нет
- *                              (сторож загрузки вынесен в public/boot-recovery.js)
- *   style-src 'unsafe-inline'  React и motion пишут style атрибуты, без этого
- *                              не обойтись; чужих доменов для стилей нет
- *   font-src 'self'            шрифты лежат в public/fonts
- *   img-src unsplash           обложки блога пока берутся оттуда
- *   frame-src rutube.ru        видео на главной
- *   connect-src ЛК             форма заявки шлёт запросы только туда
+ *   script-src 'self'      весь JS наш, инлайновых скриптов нет
+ *                          (сторож загрузки вынесен в public/boot-recovery.js)
+ *   style-src 'self'       без 'unsafe-inline': React и motion пишут стили
+ *                          через CSSOM (element.style), а его CSP не трогает.
+ *                          Инлайновых <style> и style="" в сборке нет, это
+ *                          проверено прогоном всех страниц в браузере. Если
+ *                          появится AnimatePresence с popLayout или сторонний
+ *                          виджет, который вставляет <style>, сюда придётся
+ *                          добавить 'unsafe-inline'
+ *   font-src 'self'        шрифты лежат в public/fonts
+ *   img-src unsplash       обложки блога пока берутся оттуда; data: не нужен,
+ *                          Vite ничего не инлайнит (в assets только js и css)
+ *   frame-src rutube.ru    видео на главной
+ *   connect-src ЛК         форма заявки шлёт запросы только туда
  *
  * frame-ancestors через метатег не работает, защиты от clickjacking на
  * GitHub Pages не будет. Для неё нужен хостинг с заголовками.
  */
 function buildCsp(leadsEndpoint: string): string {
-  const leadsOrigin = new URL(leadsEndpoint).origin
+  let leadsOrigin: string
+  try {
+    leadsOrigin = new URL(leadsEndpoint).origin
+  } catch {
+    throw new Error(
+      `VITE_LEADS_ENDPOINT должен быть абсолютным URL (https://host/path), получено: ${JSON.stringify(leadsEndpoint)}`,
+    )
+  }
   return [
     "default-src 'self'",
     "script-src 'self'",
-    "style-src 'self' 'unsafe-inline'",
+    "style-src 'self'",
     "font-src 'self'",
-    "img-src 'self' data: https://images.unsplash.com",
+    "img-src 'self' https://images.unsplash.com",
     'frame-src https://rutube.ru',
     `connect-src 'self' ${leadsOrigin}`,
     "object-src 'none'",
@@ -48,8 +61,14 @@ function cspMetaTag(leadsEndpoint: string): Plugin {
       // Вставляем строкой, а не через tags: Vite экранирует кавычки в
       // атрибутах, и 'self' превращается в &#39;self&#39;. Браузер это
       // понимает, но читать dist/index.html глазами становится неприятно.
+      // Метатег должен стоять первым в <head>, до любых загрузок.
       const meta = `<meta http-equiv="Content-Security-Policy" content="${buildCsp(leadsEndpoint)}" />`
-      return html.replace('<head>', `<head>\n    ${meta}`)
+      const head = /<head[^>]*>/
+      if (!head.test(html)) {
+        // Сайт без политики выкатывать нельзя, лучше уронить сборку.
+        throw new Error('csp-meta-tag: в index.html не найден тег <head>, CSP вставить некуда')
+      }
+      return html.replace(head, (tag) => `${tag}\n    ${meta}`)
     },
   }
 }
