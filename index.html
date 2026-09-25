@@ -3,21 +3,19 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <!-- Content-Security-Policy вставляет сборка, см. cspMetaTag в vite.config.ts -->
+    <meta name="referrer" content="strict-origin-when-cross-origin" />
     <title>ФШ «Чемпион» — футбол в детском саду | Запись на пробное занятие</title>
     <meta name="description" content="Футбольная школа «Чемпион» — занятия для детей 3–7 лет прямо в детском саду. 30+ садов-партнёров в Новосибирске, лицензия Минобра. Запишитесь на бесплатное пробное занятие." />
     <link rel="canonical" href="https://champion-footboll.ru/" />
 
-    <link rel="preconnect" href="https://fonts.googleapis.com" />
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-    <link
-      rel="preload"
-      as="style"
-      href="https://fonts.googleapis.com/css2?family=Baloo+2:wght@500;600;700;800&family=Nunito:wght@400;500;600;700&display=swap"
-    />
-    <link
-      rel="stylesheet"
-      href="https://fonts.googleapis.com/css2?family=Baloo+2:wght@500;600;700;800&family=Nunito:wght@400;500;600;700&display=swap"
-    />
+    <!--
+      Шрифты лежат в public/fonts и подключены в src/styles/fonts.css, к Google
+      за ними больше не ходим. Предзагружаем только основной текстовый: он нужен
+      на каждой странице с первого кадра.
+    -->
+    <link rel="preload" as="font" type="font/woff2" href="/fonts/nunito-cyrillic-wght-normal.woff2" crossorigin />
+    <link rel="preload" as="font" type="font/woff2" href="/fonts/nunito-latin-wght-normal.woff2" crossorigin />
 
     <meta property="og:type" content="website" />
     <meta property="og:site_name" content="Футбольная Школа «Чемпион»" />
@@ -41,43 +39,10 @@
     <script type="module" src="/src/main.tsx"></script>
 
     <!--
-      Сторож загрузки. При каждой выкатке файлы получают новые имена с хэшем,
-      а старые удаляются. Если браузер держит закэшированный index.html, он
-      просит несуществующий чанк, получает 404 и приложение не стартует —
-      пользователь видит пустую страницу. Здесь мы это замечаем и один раз
-      перезагружаемся: reload идёт мимо HTTP-кэша и подтягивает свежий html.
-      Флаг в sessionStorage не даёт зациклиться, main.tsx снимает его после
-      успешного старта.
+      Сторож загрузки: ловит устаревшую сборку и один раз перезагружает
+      страницу. Живёт в public/boot-recovery.js, там же объяснение, зачем он
+      и почему не инлайном.
     -->
-    <script>
-      (function () {
-        var KEY = 'boot-recovery-attempted';
-        var done = false;
-
-        function recover(reason) {
-          if (done) return;
-          var root = document.getElementById('root');
-          if (root && root.childElementCount > 0) return; // приложение живо
-          done = true;
-          try {
-            if (sessionStorage.getItem(KEY)) return; // одна попытка на сессию
-            sessionStorage.setItem(KEY, reason || '1');
-          } catch (e) {
-            return; // приватный режим без sessionStorage — не рискуем циклом
-          }
-          location.reload();
-        }
-
-        // Модульный скрипт не загрузился — реагируем сразу, не ждём таймаут.
-        window.addEventListener('error', function (event) {
-          var el = event.target;
-          if (el && el.tagName === 'SCRIPT' && el.type === 'module') recover('script-error');
-        }, true);
-
-        // Подстраховка на случай, когда ошибка не всплыла: через 8 секунд
-        // пустой #root означает, что стартовать не удалось.
-        setTimeout(function () { recover('timeout'); }, 8000);
-      })();
-    </script>
+    <script src="/boot-recovery.js"></script>
   </body>
 </html>

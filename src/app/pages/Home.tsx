@@ -652,7 +652,8 @@ export function Home() {
                     setIsHeroVideoReady(true);
                     requestHeroVideoPlayback();
                   }}
-                  allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+                  allow="autoplay; encrypted-media; picture-in-picture; fullscreen"
+                  referrerPolicy="strict-origin-when-cross-origin"
                   allowFullScreen
                 ></iframe>
 
