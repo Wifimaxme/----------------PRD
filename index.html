@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html lang="ru">
+  <head>
+    <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self'; style-src 'self'; font-src 'self'; img-src 'self' https://images.unsplash.com; frame-src https://rutube.ru; connect-src 'self' https://lk.champion-footboll.ru; object-src 'none'; base-uri 'self'; form-action 'self'; upgrade-insecure-requests" />
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <!-- Content-Security-Policy вставляет сборка, см. cspMetaTag в vite.config.ts -->
+    <meta name="referrer" content="strict-origin-when-cross-origin" />
+    <title>ФШ «Чемпион» — футбол в детском саду | Запись на пробное занятие</title>
+    <meta name="description" content="Футбольная школа «Чемпион» — занятия для детей 3–7 лет прямо в детском саду. 30+ садов-партнёров в Новосибирске, лицензия Минобра. Запишитесь на бесплатное пробное занятие." />
+    <link rel="canonical" href="https://champion-footboll.ru/" />
+
+    <!--
+      Шрифты лежат в public/fonts и подключены в src/styles/fonts.css, к Google
+      за ними больше не ходим. Предзагружаем только основной текстовый: он нужен
+      на каждой странице с первого кадра.
+    -->
+    <link rel="preload" as="font" type="font/woff2" href="/fonts/nunito-cyrillic-wght-normal.woff2" crossorigin />
+    <link rel="preload" as="font" type="font/woff2" href="/fonts/nunito-latin-wght-normal.woff2" crossorigin />
+
+    <meta property="og:type" content="website" />
+    <meta property="og:site_name" content="Футбольная Школа «Чемпион»" />
+    <meta property="og:locale" content="ru_RU" />
+    <meta property="og:url" content="https://champion-footboll.ru/" />
+    <meta property="og:title" content="Запись на бесплатное пробное занятие — ФШ «Чемпион»" />
+    <meta property="og:description" content="Футбольная Школа «Чемпион» ⚽ предлагает занятия футболом в детском саду для детей 3–7 лет. Пройдите опрос и запишитесь на бесплатное пробное занятие." />
+    <meta property="og:image" content="https://champion-footboll.ru/og-cover.jpg" />
+    <meta property="og:image:width" content="1200" />
+    <meta property="og:image:height" content="776" />
+    <meta property="og:image:alt" content="Футбольная Школа «Чемпион» — футбол в детском саду" />
+
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:title" content="Запись на бесплатное пробное занятие — ФШ «Чемпион»" />
+    <meta name="twitter:description" content="Футбольная Школа «Чемпион» ⚽ предлагает занятия футболом в детском саду для детей 3–7 лет. Пройдите опрос и запишитесь на бесплатное пробное занятие." />
+    <meta name="twitter:image" content="https://champion-footboll.ru/og-cover.jpg" />
+    <script type="module" crossorigin src="/assets/index-HeaApLJq.js"></script>
+    <link rel="stylesheet" crossorigin href="/assets/index-CXkEA88a.css">
+  </head>
+
+  <body>
+    <div id="root"></div>
+
+    <!--
+      Сторож загрузки: ловит устаревшую сборку и один раз перезагружает
+      страницу. Живёт в public/boot-recovery.js, там же объяснение, зачем он
+      и почему не инлайном.
+    -->
+    <script src="/boot-recovery.js"></script>
+  </body>
+</html>

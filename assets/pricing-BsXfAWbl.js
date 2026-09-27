@@ -1,0 +1,1 @@
+const i={base:2760,privileged:1960,visitsPerSubscription:8},r=`пакет из ${i.visitsPerSubscription} занятий`,t=`за ${r}`;function e(s){return String(s).replace(/\B(?=(\d{3})+(?!\d))/g," ")}export{i as P,r as a,t as b,e as f};
