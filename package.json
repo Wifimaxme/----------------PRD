@@ -10,7 +10,8 @@
     "build": "vite build",
     "dev": "vite",
     "preview": "vite preview",
-    "verify:legal": "node scripts/verify-legal.mjs"
+    "verify:legal": "node scripts/verify-legal.mjs",
+    "deploy:yc": "bash scripts/deploy-yc.sh"
   },
   "dependencies": {
     "lucide-react": "0.487.0",
